@@ -5,13 +5,6 @@ public abstract class Cadro {
     private String id;
     private String nome;
 
-    public Cadro(String id, String nome){
-
-        this.id = id;
-        this.nome = nome;
-
-    }
-
     /* getters */
 
     public String getId() {
@@ -21,6 +14,16 @@ public abstract class Cadro {
     public String getNome() {
         return nome;
     }
+
+    /* setters */
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
 
     @Override
     public boolean equals(Object obj) {
