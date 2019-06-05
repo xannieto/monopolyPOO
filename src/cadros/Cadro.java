@@ -1,5 +1,7 @@
 package cadros;
 
+import avatares.Avatar;
+
 public abstract class Cadro {
 
     private String id;
@@ -24,6 +26,14 @@ public abstract class Cadro {
         this.nome = nome;
     }
 
+    /* metodos */
+
+    public boolean estaAvatar(Avatar avatar){
+
+        if (avatar != null) return avatar.getPosicion().equals(this);
+        return false;
+
+    }
 
     @Override
     public boolean equals(Object obj) {

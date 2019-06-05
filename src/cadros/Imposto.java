@@ -4,7 +4,8 @@ public final class Imposto extends Cadro {
 
     public Imposto(String id, String nome){
 
-        super(id,nome);
+        super.setId(id);
+        super.setNome(nome);
 
     }
 
