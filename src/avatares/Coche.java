@@ -6,9 +6,9 @@ public final class Coche extends Avatar {
 
 
 
-    public Coche(String id, Xogador xogador){
+    public Coche(Xogador xogador){
 
-        this.setId(id);
+        this.xenerarId();
         this.setNome("Coche");
         this.setXogador(xogador);
         this.setPosicion(null);

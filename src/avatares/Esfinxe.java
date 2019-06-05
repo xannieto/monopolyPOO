@@ -4,9 +4,9 @@ import xogadores.Xogador;
 
 public final class Esfinxe extends Avatar {
 
-    public Esfinxe(String id, Xogador xogador){
+    public Esfinxe(Xogador xogador){
 
-        this.setId(id);
+        this.xenerarId();
         this.setNome("Esfinxe");
         this.setXogador(xogador);
         this.setPosicion(null);

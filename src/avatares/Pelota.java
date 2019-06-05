@@ -4,10 +4,10 @@ import xogadores.Xogador;
 
 public final class Pelota extends Avatar {
 
-    public Pelota(String id, Xogador xogador){
+    public Pelota(Xogador xogador){
 
-        this.setId(id);
-        this.setNome("Nome");
+        this.xenerarId();
+        this.setNome("Pelota");
         this.setXogador(xogador);
         this.setPosicion(null);
         this.setVoltasDadas(0);

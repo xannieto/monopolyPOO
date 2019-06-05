@@ -3,9 +3,6 @@ package avatares;
 import cadros.Cadro;
 import xogadores.Xogador;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
 public abstract class Avatar {
 
     private String id;
@@ -89,10 +86,20 @@ public abstract class Avatar {
 
             Integer indice = null;
             Character id = null;
-            SecureRandom numAleatorio = new SecureRandom();
 
+            indice = (int) (Math.random()*(90-65+1) + 65);
 
+            if (IdAvatares.getLibre(indice)){
 
+                id = (char) indice.intValue();
+
+                setId(String.valueOf(id));
+
+                IdAvatares.setNovoId(indice,id);
+
+                finalizado = Boolean.TRUE;
+
+            }
 
         }
 

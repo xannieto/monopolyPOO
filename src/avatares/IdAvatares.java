@@ -4,26 +4,19 @@ import java.util.HashMap;
 
 public final class IdAvatares {
 
-    //private final static Character[] id = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-    private HashMap<Integer,Character> mapaId;
-
-    public IdAvatares(){
-
-        mapaId = new HashMap<>();
-
-    }
+    private static HashMap<Integer,Character> mapaId = new HashMap<>();
 
     /* getters */
-    public Boolean getUsado(Integer indice) {
+    public static Boolean getLibre(Integer indice) {
 
-        return mapaId.containsKey(indice);
+        return mapaId.get(indice) == null;
 
     }
 
     /* setters */
-    public void setNovoId(Integer indice, Character id){
+    public static void setNovoId(Integer indice, Character id){
 
-        if (getUsado(indice))   mapaId.put(indice,id);
+        if (getLibre(indice))   mapaId.put(indice,id);
 
     }
 

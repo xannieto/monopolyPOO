@@ -4,9 +4,9 @@ import xogadores.Xogador;
 
 public final class Sombreiro extends Avatar {
 
-    public Sombreiro(String id, Xogador xogador){
+    public Sombreiro(Xogador xogador){
 
-        this.setId(id);
+        this.xenerarId();
         this.setNome("Sombreiro");
         this.setXogador(xogador);
         this.setPosicion(null);
