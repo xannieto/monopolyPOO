@@ -3,13 +3,17 @@ package avatares;
 import cadros.Cadro;
 import xogadores.Xogador;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 public abstract class Avatar {
 
     private String id;
     private String nome;
     private Xogador xogador;
     private Cadro posicion;
-    private Boolean movementoAvanzado = Boolean.FALSE;
+    private Boolean movementoAvanzado;
+    private Integer voltasDadas;
 
     /* getters */
     public String getNome(){
@@ -30,6 +34,10 @@ public abstract class Avatar {
 
     public Boolean getAvanzado(){
         return movementoAvanzado;
+    }
+
+    public Integer getVoltasDadas(){
+        return voltasDadas;
     }
 
     /* setters */
@@ -53,10 +61,40 @@ public abstract class Avatar {
         this.movementoAvanzado = movementoAvanzado;
     }
 
+    public void setVoltasDadas(){
+
+        if (voltasDadas != null)    voltasDadas++;
+
+    }
+
+    public void setVoltasDadas(Integer volta){
+
+        if (volta != null)  voltasDadas = volta;
+
+    }
+    /* métodos */
+
     public void mover(){
 
         if (!movementoAvanzado) moverEnBasico();
         else moverEnAvanzado();
+
+    }
+
+    public void xenerarId(){
+
+        Boolean finalizado = Boolean.FALSE;
+
+        while (!finalizado){
+
+            Integer indice = null;
+            Character id = null;
+            SecureRandom numAleatorio = new SecureRandom();
+
+
+
+
+        }
 
     }
 
