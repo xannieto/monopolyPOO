@@ -1,12 +1,21 @@
 package cadros;
 
-public class Accion extends Cadro {
+import cartas.Carta;
 
-    public Accion(String id, String nome){
+import java.util.ArrayList;
 
-        this.setId(id);
-        this.setNome(nome);
+public abstract class Accion extends Cadro {
 
+    public ArrayList<Carta> cartas;
+
+    /* getters */
+    public ArrayList<Carta> getCartas() {
+        return cartas;
+    }
+
+    /* setters */
+    public void setCartas(ArrayList<Carta> cartas) {
+        this.cartas = cartas;
     }
 
 

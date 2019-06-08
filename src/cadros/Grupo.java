@@ -1,26 +1,22 @@
 package cadros;
 
+import xogadores.Xogador;
+
 import java.util.ArrayList;
 
-public final class Grupo {
+public final class Grupo extends Cadro {
 
     private ArrayList<Solar> solares;
-    private String nomeGrupo;
-    private Integer limiteEdificacions;
-    private Double prezoCadro;
-    private Double hipotecaCadro;
-    private Double prezoCasa;
-    private Double prezoHotel;
-    private Double prezoPiscina;
-    private Double prezoPista;
-    private Double aluguerSolar;
-    private Double aluguerHotel;
+    private Integer tamanhoGrupo;
+    private Xogador propietario;
 
-    public Grupo(String nomeGrupo, ArrayList<Solar> solares){
+    public Grupo(String idGrupo, String nomeGrupo, ArrayList<Solar> solares){
 
+        setIdGrupo(idGrupo);
         setNomeGrupo(nomeGrupo);
         setSolares(solares);
-        setLimiteEdificacions(solares.size());
+        setTamanhoGrupo(solares.size());
+        setPropietario(null);
 
     }
 
@@ -29,86 +25,38 @@ public final class Grupo {
         return solares;
     }
 
+    public String getIdGrupo(){
+        return super.getId();
+    }
+
     public String getNomeGrupo() {
-        return nomeGrupo;
+        return super.getNome();
     }
 
-    public Integer getLimiteEdificacions(){return limiteEdificacions;}
+    public Integer getTamanhoGrupo(){return tamanhoGrupo;}
 
-    public Double getPrezoCadro() {
-        return prezoCadro;
-    }
-
-    public Double getHipotecaCadro() {
-        return hipotecaCadro;
-    }
-
-    public Double getPrezoCasa() {
-        return prezoCasa;
-    }
-
-    public Double getPrezoHotel() {
-        return prezoHotel;
-    }
-
-    public Double getPrezoPiscina() {
-        return prezoPiscina;
-    }
-
-    public Double getPrezoPista() {
-        return prezoPista;
-    }
-
-    public Double getAluguerSolar() {
-        return aluguerSolar;
-    }
-
-    public Double getAluguerHotel() {
-        return aluguerHotel;
+    public Xogador getPropietario() {
+        return propietario;
     }
 
     /* setters */
+    public void setIdGrupo(String idGrupo) {
+        super.setId(idGrupo);
+    }
+
     public void setNomeGrupo(String nomeGrupo) {
-        this.nomeGrupo = nomeGrupo;
+        this.setNome(nomeGrupo);
     }
 
     public void setSolares(ArrayList<Solar> solares) {
         this.solares = solares;
     }
 
-    public void setLimiteEdificacions(Integer limiteEdificacions) {
-        this.limiteEdificacions = limiteEdificacions;
+    public void setTamanhoGrupo(Integer tamanhoGrupo) {
+        this.tamanhoGrupo = tamanhoGrupo;
     }
 
-    public void setPrezoCadro(Double prezoCadro) {
-        this.prezoCadro = prezoCadro;
-    }
-
-    public void setHipotecaCadro(Double hipotecaCadro) {
-        this.hipotecaCadro = hipotecaCadro;
-    }
-
-    public void setPrezoCasa(Double prezoCasa) {
-        this.prezoCasa = prezoCasa;
-    }
-
-    public void setPrezoHotel(Double prezoHotel) {
-        this.prezoHotel = prezoHotel;
-    }
-
-    public void setPrezoPiscina(Double prezoPiscina) {
-        this.prezoPiscina = prezoPiscina;
-    }
-
-    public void setPrezoPista(Double prezoPista) {
-        this.prezoPista = prezoPista;
-    }
-
-    public void setAluguerSolar(Double aluguerSolar) {
-        this.aluguerSolar = aluguerSolar;
-    }
-
-    public void setAluguerHotel(Double aluguerHotel) {
-        this.aluguerHotel = aluguerHotel;
+    public void setPropietario(Xogador xogador){
+        this.propietario = xogador;
     }
 }

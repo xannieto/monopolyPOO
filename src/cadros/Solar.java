@@ -6,11 +6,16 @@ import java.util.HashMap;
 public final class Solar extends Propiedade {
 
     private HashMap<String,Edificacion> edificacions;
+    private Grupo grupo;
 
 
-    public Solar(String id, String nome){
+    public Solar(String id, String nome, Double valor){
 
-        super(id,nome);
+        this.setId(id);
+        this.setNome(nome);
+        this.setValor(valor);
+        this.setHipotecada(false);
+        this.setHipoteca(valor*0.5);
         this.edificacions = new HashMap<>();
 
     }
@@ -36,9 +41,15 @@ public final class Solar extends Propiedade {
 
     public void quitarEdificacion(String edificacion){
 
-        if(edificacion.isEmpty()){
+        if(!edificacion.isEmpty()){
             edificacions.remove(edificacion);
         }
+
+    }
+
+    public void incrementarValor(){
+
+        this.setValor(this.getValor()*1.05);
 
     }
 

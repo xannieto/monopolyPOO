@@ -1,4 +1,4 @@
-package main;
+package xogo;
 
 import interfaces.Consola;
 

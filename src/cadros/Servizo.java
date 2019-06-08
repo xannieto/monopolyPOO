@@ -2,10 +2,20 @@ package cadros;
 
 public final class Servizo extends Propiedade {
 
-    public Servizo(String id, String nome){
+    public Servizo(String id, String nome, Double valor){
 
-        super(id,nome);
+        this.setId(id);
+        this.setNome(nome);
+        this.setValor(valor);
+        this.setHipoteca(valor*0.5);
+        this.setHipotecada(false);
 
     }
 
+    @Override
+    public void aluguer() {
+
+
+
+    }
 }
