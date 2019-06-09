@@ -118,5 +118,8 @@ public interface Constantes {
     String	G7 = "\u001B[41m";
     String	G8 = "\u001B[45m";
 
+    String bold = "\033[0;1m";
+    String normal = "\033[0;0m";
+
     String RESET_COLOR = "\u001b[0m";
 }

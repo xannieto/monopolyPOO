@@ -3,17 +3,19 @@ package xogo;
 import avatares.Avatar;
 import cadros.*;
 import interfaces.Constantes;
+import xogadores.Xogador;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Taboleiro {
 
     private HashMap<String, Cadro> cadros;
     private HashMap<Integer, Cadro> cadrosOrdenados;
+    private HashMap<String, Xogador> xogadores;
     private ArrayList<Avatar> avatares;
-
 
     public Taboleiro(){
 
@@ -22,6 +24,7 @@ public class Taboleiro {
         this.cadros = new HashMap<>();
         this.cadrosOrdenados = new HashMap<>();
         this.avatares = new ArrayList<>();
+        this.xogadores = new HashMap<>();
 
         /* creación do taboleiro */
 
@@ -200,13 +203,62 @@ public class Taboleiro {
         return this.cadros;
     }
 
+    public HashMap<String, Xogador> getXogadores() {
+        return xogadores;
+    }
+
+    public ArrayList<Avatar> getAvatares(){return  avatares;}
+
     /* métodos */
+
     public Cadro obterCadro(Integer i){
         return cadrosOrdenados.get(i);
     }
 
     public Cadro obterCadro(String id){
         return cadros.get(id);
+    }
+
+    public Integer posicionActual(Avatar avatar){
+
+        Set<Integer> indices = this.cadrosOrdenados.keySet();
+        Integer posicion = null;
+        Cadro cadroActual = avatar.getPosicion();
+
+        for (Integer i : indices){
+            if (this.cadrosOrdenados.get(i).equals(cadroActual)){
+                posicion = i;
+                break;
+            }
+        }
+
+        return posicion;
+    }
+
+    public Xogador obterXogador(String id){
+        return xogadores.get(id);
+    }
+
+    public Boolean existeXogador(String id){
+        return xogadores.get(id) != null; // true se existe
+    }
+
+    public void novoXogador(Xogador xogador){
+        if (!existeXogador(xogador.getNome())){
+            this.xogadores.put(xogador.getNome(),xogador);
+            this.avatares.add(xogador.getAvatar());
+        }
+    }
+
+    public Integer[] tiradaDados(){
+
+        Integer[] tirada = new Integer[2];
+        SecureRandom numAleatorio = new SecureRandom(new byte[1]);
+
+        tirada[0] = numAleatorio.nextInt() % 6 + 1;
+        tirada[1] = numAleatorio.nextInt() % 6 + 1;
+
+        return tirada;
     }
 
     @Override
@@ -217,13 +269,14 @@ public class Taboleiro {
 
         // parte superior
 
-        taboleiro.append("----------------".repeat(11));
+        taboleiro.append("---------------".repeat(11));
+        taboleiro.append("-");
 
-        taboleiro.append("\n|");
+        taboleiro.append("\n$");
 
-        for (int i=21; i<32; i++)   taboleiro.append(String.format(" %12s |",this.obterCadro(i).getId()));
+        for (int i=21; i<32; i++)   taboleiro.append(String.format(" %-12s $",this.obterCadro(i).getId()));
 
-        taboleiro.append("\n|");
+        taboleiro.append("\n$");
 
         for (int i=21; i<32; i++){
 
@@ -239,23 +292,25 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %12s |",temp));
+            taboleiro.append(String.format(" %-12s $",temp));
 
             temp.setLength(0); //para baleirar o buffer
 
         }
-        taboleiro.append("----------------".repeat(11));
+        taboleiro.append("\n");
+        taboleiro.append("---------------".repeat(11));
+        taboleiro.append("-");
 
 
         //laterais
 
         for (int i = 20, j = 32; j < 41; j++, i--){
 
-            taboleiro.append(String.format("\n| %12s |",this.obterCadro(i).getId()));
+            taboleiro.append(String.format("\n$ %-12s $",this.obterCadro(i).getId()));
 
-            taboleiro.append(String.format("%135|"," "));
+            taboleiro.append(String.format("%134s$"," "));
 
-            taboleiro.append(String.format(" %12s |",this.obterCadro(j).getId()));
+            taboleiro.append(String.format(" %-12s $",this.obterCadro(j).getId()));
 
             for (Avatar avatar: avatares){
 
@@ -267,9 +322,9 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format("\n| %12s |",temp));
+            taboleiro.append(String.format("\n$ %-12s $",temp));
             temp.setLength(0);
-            taboleiro.append(String.format("%135|"," "));
+            taboleiro.append(String.format("%134s$"," "));
 
             for (Avatar avatar: avatares){
 
@@ -281,22 +336,26 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %12s |",temp));
+            taboleiro.append(String.format(" %-12s $",temp));
             temp.setLength(0);
 
             if (j!=40) {
-                taboleiro.append(String.format("\n----------------%135s----------------", ""));
-            } else taboleiro.append("----------------".repeat(11));
+                taboleiro.append(String.format("\n----------------%134s----------------", ""));
+            } else {
+                taboleiro.append("\n");
+                taboleiro.append("---------------".repeat(11));
+                taboleiro.append("-");
+            }
 
         }
 
         //parte inferior
 
-        taboleiro.append("\n|");
+        taboleiro.append("\n$");
 
-        for (int i=11; i > 0; i--)   taboleiro.append(String.format(" %12s |",this.obterCadro(i).getId()));
+        for (int i=11; i > 0; i--)   taboleiro.append(String.format(" %-12s $",this.obterCadro(i).getId()));
 
-        taboleiro.append("\n|");
+        taboleiro.append("\n$");
 
         for (int i=11; i > 0; i--){
 
@@ -312,13 +371,15 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %12s |",temp));
+            taboleiro.append(String.format(" %-12s $",temp));
 
             temp.setLength(0); //para baleirar o buffer
 
         }
 
-        taboleiro.append("----------------".repeat(11));
+        taboleiro.append("\n");
+        taboleiro.append("---------------".repeat(11));
+        taboleiro.append("-");
 
         return new String(taboleiro);
     }

@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public final class ConsolaNormal implements Consola {
 
+    public ConsolaNormal(){}
+
     @Override
     public void imprimir(String mensaxe) {
         System.out.println(mensaxe);
