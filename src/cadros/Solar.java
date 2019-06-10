@@ -1,6 +1,9 @@
 package cadros;
 
 import edificacions.Edificacion;
+import xogadores.Xogador;
+import xogo.Taboleiro;
+
 import java.util.HashMap;
 
 public final class Solar extends Propiedade {
@@ -55,6 +58,11 @@ public final class Solar extends Propiedade {
 
     @Override
     public void aluguer() {
+
+    }
+
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
 
     }
 }

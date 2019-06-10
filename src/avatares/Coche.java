@@ -1,6 +1,7 @@
 package avatares;
 
 import xogadores.Xogador;
+import xogo.Taboleiro;
 
 public final class Coche extends Avatar {
 
@@ -14,6 +15,10 @@ public final class Coche extends Avatar {
         this.setPosicion(null);
         this.setVoltasDadas(0);
         this.setMovementoAvanzado(Boolean.FALSE);
+        this.setSacarDobres(false);
+        this.setVecesDobres(0);
+        this.setCarcere(false);
+        this.setQuendasPrision(0);
 
     }
 
@@ -21,12 +26,7 @@ public final class Coche extends Avatar {
     /* métodos */
 
     @Override
-    public void moverEnBasico() {
-
-    }
-
-    @Override
-    public void moverEnAvanzado() {
+    public void moverEnAvanzado(Taboleiro taboleiro, Integer[] integer) {
 
     }
 

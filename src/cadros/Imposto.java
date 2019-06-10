@@ -1,5 +1,8 @@
 package cadros;
 
+import xogadores.Xogador;
+import xogo.Taboleiro;
+
 public final class Imposto extends Cadro {
 
     private Double imposto;
@@ -26,5 +29,8 @@ public final class Imposto extends Cadro {
 
     /* metodos */
 
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
 
+    }
 }

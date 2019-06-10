@@ -1,5 +1,8 @@
 package cadros;
 
+import xogadores.Xogador;
+import xogo.Taboleiro;
+
 public final class Servizo extends Propiedade {
 
     public Servizo(String id, String nome, Double valor){
@@ -16,6 +19,11 @@ public final class Servizo extends Propiedade {
     public void aluguer() {
 
 
+
+    }
+
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
 
     }
 }

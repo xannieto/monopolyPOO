@@ -250,17 +250,6 @@ public class Taboleiro {
         }
     }
 
-    public Integer[] tiradaDados(){
-
-        Integer[] tirada = new Integer[2];
-        SecureRandom numAleatorio = new SecureRandom(new byte[1]);
-
-        tirada[0] = numAleatorio.nextInt() % 6 + 1;
-        tirada[1] = numAleatorio.nextInt() % 6 + 1;
-
-        return tirada;
-    }
-
     @Override
     public String toString() {
 

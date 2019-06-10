@@ -1,6 +1,8 @@
 package cadros;
 
 import cartas.Carta;
+import xogadores.Xogador;
+import xogo.Taboleiro;
 
 import java.util.ArrayList;
 
@@ -14,4 +16,8 @@ public final class Sorte extends Accion {
 
     }
 
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
+
+    }
 }

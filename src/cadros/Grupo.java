@@ -1,6 +1,7 @@
 package cadros;
 
 import xogadores.Xogador;
+import xogo.Taboleiro;
 
 import java.util.ArrayList;
 
@@ -58,5 +59,10 @@ public final class Grupo extends Cadro {
 
     public void setPropietario(Xogador xogador){
         this.propietario = xogador;
+    }
+
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
+
     }
 }

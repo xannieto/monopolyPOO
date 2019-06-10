@@ -1,6 +1,7 @@
 package avatares;
 
 import xogadores.Xogador;
+import xogo.Taboleiro;
 
 public final class Pelota extends Avatar {
 
@@ -12,16 +13,16 @@ public final class Pelota extends Avatar {
         this.setPosicion(null);
         this.setVoltasDadas(0);
         this.setMovementoAvanzado(Boolean.FALSE);
+        this.setSacarDobres(false);
+        this.setVecesDobres(0);
+        this.setCarcere(false);
+        this.setQuendasPrision(0);
 
     }
 
-    @Override
-    public void moverEnBasico() {
-
-    }
 
     @Override
-    public void moverEnAvanzado() {
+    public void moverEnAvanzado(Taboleiro taboleiro, Integer[] integer) {
 
     }
 

@@ -5,8 +5,8 @@ import interfaces.Comando;
 import interfaces.Constantes;
 import xogadores.Xogador;
 
+import java.security.SecureRandom;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Xogo implements Comando {
 
@@ -14,16 +14,14 @@ public class Xogo implements Comando {
     private Taboleiro taboleiro;
     private Avatar enQuenda;
     private Integer numQuenda;
-    private Integer vecesDobres;
-    private Boolean dobres;
+    private Boolean debeAcabarQuenda;
 
     public Xogo(){
 
         this.taboleiro = new Taboleiro();
         this.enQuenda = null;
         this.numQuenda = -1;
-        this.vecesDobres = 0;
-        this.dobres = false;
+        this.debeAcabarQuenda = false;
 
     }
 
@@ -40,8 +38,9 @@ public class Xogo implements Comando {
         crearXogadores();
 
         Scanner orde = new Scanner(System.in);
-
         Boolean sair = false;
+
+        quendaInicial();
 
         verTaboleiro(taboleiro);
 
@@ -62,9 +61,46 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "acabar":
+
+                    if (comando.length==2){
+
+                        if (comando[1].equals("quenda")){
+
+                            if (this.debeAcabarQuenda){
+
+                                cambiarQuenda();
+                                Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
+
+                            } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda");
+
+                        }
+
+                    }
+
+                    break;
+
                 case "lanzar":
 
+                    if (comando.length==2){
 
+                        if (comando[1].equals("dados")){
+
+                            if (this.debeAcabarQuenda) {
+
+                                Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode lanzar os dados");
+                                break;
+                            }
+
+                            this.enQuenda.mover(this.taboleiro,lanzarDados());
+                            this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
+                            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
+
+                            verTaboleiro(taboleiro);
+
+                        } else Xogo.getConsola().imprimir("Argumento incorrecto");
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
 
                     break;
 
@@ -78,6 +114,12 @@ public class Xogo implements Comando {
                         }
 
                     }
+                    break;
+
+                case "quenda":
+
+                    Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
+
                     break;
 
                 case "sair":
@@ -198,41 +240,35 @@ public class Xogo implements Comando {
     }
 
     @Override
-    public void lanzarDados(Xogador xogador){
+    public Integer[] lanzarDados(){
 
-        Integer[] tirada = this.taboleiro.tiradaDados();
-        Integer avance = tirada[0] + tirada[1];
-        Integer posicion;
+        Integer[] tirada = new Integer[2];
+        SecureRandom numAleatorio = new SecureRandom(new byte[1]);
 
+        tirada[0] = numAleatorio.nextInt(6) + 1;
+        tirada[1] = numAleatorio.nextInt(6) + 1;
 
-        if (tirada[0].equals(tirada[1]) && this.vecesDobres < 3){
-
-            if (!this.dobres)   this.dobres = true;
-
-            posicion = this.taboleiro.posicionActual(enQuenda);
-            posicion = (posicion + avance) % 40 + 1;
-
-        }
-
-
-
+        return tirada;
     }
 
 
     private void cambiarQuenda(){
 
-        if (podeRematarQuenda()){
+        if (this.enQuenda.podeRematarQuenda()){
 
             this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
-
             this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
-
+            this.debeAcabarQuenda = false;
         }
 
     }
 
-    private Boolean podeRematarQuenda(){
-        return !this.dobres;
+    private void quendaInicial(){
+
+        this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
+
+        this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
+
     }
 
 

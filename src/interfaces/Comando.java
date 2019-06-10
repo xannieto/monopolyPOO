@@ -5,7 +5,7 @@ import xogo.Taboleiro;
 
 public interface Comando {
 
-    void lanzarDados(Xogador xogador);
+    Integer[] lanzarDados();
 
     void verTaboleiro(Taboleiro taboleiro);
 

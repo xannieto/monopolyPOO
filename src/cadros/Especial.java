@@ -1,5 +1,9 @@
 package cadros;
 
+import xogadores.Xogador;
+import xogo.Taboleiro;
+import xogo.Xogo;
+
 public final class Especial extends Cadro {
 
     private Double valor;
@@ -26,6 +30,35 @@ public final class Especial extends Cadro {
     }
 
     /* metodos */
+
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
+
+        switch (this.getId()){
+
+            case "irCarcere":
+                xogador.getAvatar().setCarcere(true);
+                xogador.getAvatar().setPosicion(taboleiro.obterCadro("carcere"));
+
+                Xogo.getConsola().imprimir("O xogador "+xogador.getNome()+" vai a prisión");
+                break;
+
+            case "saida":
+                xogador.cobrar(this.valor);
+                Xogo.getConsola().imprimir("O xogador "+xogador.getNome()+" cobra "+this.valor);
+                break;
+
+            case "aparcamento":
+                xogador.cobrar(this.valor);
+                Xogo.getConsola().imprimir("O xogador "+xogador.getNome()+" cobra "+this.valor+", o bote da banca");
+                break;
+
+            case "carcere":
+                Xogo.getConsola().imprimir("Non se toma ningunha acción");
+                break;
+        }
+
+    }
 
     @Override
     public String toString() {

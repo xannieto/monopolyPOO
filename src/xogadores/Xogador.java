@@ -3,6 +3,7 @@ package xogadores;
 import avatares.*;
 import cadros.Propiedade;
 import edificacions.Edificacion;
+import xogo.Xogo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class Xogador {
     private Avatar avatar;
     private HashMap<String, Propiedade> propiedades;
     private HashMap<String, Edificacion> edificacions;
+    private Boolean hipotecar;
 
     public Xogador(String nome, Double fortunaInicial, String avatar){
 
@@ -78,6 +80,26 @@ public class Xogador {
     public void engadirPropiedade(Propiedade propiedade){
 
         if (propiedade != null) propiedades.put(propiedade.getId(), propiedade);
+
+    }
+
+    public void cobrar(Double cantidade){
+
+        if (cantidade > 0)  this.setFortuna(this.fortuna + cantidade);
+
+    }
+
+    public void pagar(Double cantidade){
+
+        if (cantidade > this.fortuna ) {
+
+            this.hipotecar = true;
+            Xogo.getConsola().imprimir("O xogador "+this.getNome()+" non pode realizar o pagamento. Debe hipotecar propiedades ou vender edificacións");
+
+        }
+
+        setFortuna(this.fortuna - cantidade);
+        Xogo.getConsola().imprimir("O xogador "+this.getNome()+" realiza un pagamento de "+cantidade+"€");
 
     }
 

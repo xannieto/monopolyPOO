@@ -1,6 +1,8 @@
 package cadros;
 
 import avatares.Avatar;
+import xogadores.Xogador;
+import xogo.Taboleiro;
 
 public abstract class Cadro {
 
@@ -26,14 +28,16 @@ public abstract class Cadro {
         this.nome = nome;
     }
 
-    /* metodos */
 
+    /* metodos */
     public boolean estaAvatar(Avatar avatar){
 
         if (avatar != null) return avatar.getPosicion().equals(this);
         return false;
 
     }
+
+    public abstract void accion(Taboleiro taboleiro, Xogador xogador);
 
     @Override
     public boolean equals(Object obj) {

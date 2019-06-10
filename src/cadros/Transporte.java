@@ -1,5 +1,8 @@
 package cadros;
 
+import xogadores.Xogador;
+import xogo.Taboleiro;
+
 public final class Transporte extends Propiedade {
 
 
@@ -17,6 +20,11 @@ public final class Transporte extends Propiedade {
 
     @Override
     public void aluguer() {
+
+    }
+
+    @Override
+    public void accion(Taboleiro taboleiro, Xogador xogador) {
 
     }
 }
