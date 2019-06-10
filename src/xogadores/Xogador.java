@@ -107,23 +107,52 @@ public class Xogador {
     public String toString() {
 
         StringBuilder descricion = new StringBuilder();
+        StringBuilder temp = new StringBuilder();
 
-        descricion.append("{\n\tNome: ");descricion.append(this.getNome());descricion.append("\n\tAvatar: ");descricion.append(this.getAvatar().getId());
-        descricion.append("\n\tFortuna: ");descricion.append(this.getFortuna());descricion.append("\n\tPropiedades: ");
+        descricion.append(String.format("{\n\tNome: %s",this.nome));
+        descricion.append(String.format("\n\tAvatar: %s",this.getAvatar().getId()));
+        descricion.append(String.format("\n\tFortuna: %.2f€",this.getFortuna()));
+        descricion.append("\n\tPropiedades: ");
 
         if (!this.getPropiedades().isEmpty()){
 
             Collection<Propiedade> prop = this.propiedades.values();
             descricion.append("[");
+            temp.append("[");
 
             for (Propiedade propiedade : prop){
-                if (!propiedade.getHipotecada()) descricion.append(propiedade.getId());
-                descricion.append(", ");
+                if (!propiedade.getHipotecada()){
+                    descricion.append(propiedade.getId());
+                    descricion.append(", ");
+                } else {
+                    temp.append(String.format("%s, ",propiedade.getId()));
+                }
+            }
+            descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]");
+
+            if (temp.length()>1)    temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
+            else {
+                temp.setLength(0);  temp.append("ningunha");
             }
 
+            descricion.append(String.format("\n\tHipotecas: %s",temp));
+            temp.setLength(0);
+
+            if (!edificacions.isEmpty()){
+                Collection<Edificacion> edificacions = this.edificacions.values();
+                descricion.append("[");
+
+                for (Edificacion edificacion: edificacions){
+                    descricion.append(String.format("%s, ",edificacion.getId()));
+                }
+                descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]");
+
+            } else descricion.append("\n\tEdificación: ningunha");
 
 
-        } else descricion.append("ningunha\n\tHipotecas: ningunha\n\tEdificios: ningún");
+
+
+        } else descricion.append("ningunha\n\tHipotecas: ningunha\n\tEdificios: ningún\n}");
 
         return new String(descricion);
     }

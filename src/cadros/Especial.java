@@ -12,6 +12,7 @@ public final class Especial extends Cadro {
 
         super.setId(id);
         super.setNome(nome);
+        setValor(valor);
 
     }
 

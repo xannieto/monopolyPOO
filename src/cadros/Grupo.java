@@ -10,14 +10,17 @@ public final class Grupo extends Cadro {
     private ArrayList<Solar> solares;
     private Integer tamanhoGrupo;
     private Xogador propietario;
+    private String cor;
 
-    public Grupo(String idGrupo, String nomeGrupo, ArrayList<Solar> solares){
+    public Grupo(String idGrupo, String nomeGrupo, ArrayList<Solar> solares, String cor){
 
         setIdGrupo(idGrupo);
         setNomeGrupo(nomeGrupo);
         setSolares(solares);
         setTamanhoGrupo(solares.size());
         setPropietario(null);
+        setCor(cor);
+
 
     }
 
@@ -40,6 +43,8 @@ public final class Grupo extends Cadro {
         return propietario;
     }
 
+    public String getCor(){return cor;}
+
     /* setters */
     public void setIdGrupo(String idGrupo) {
         super.setId(idGrupo);
@@ -59,6 +64,10 @@ public final class Grupo extends Cadro {
 
     public void setPropietario(Xogador xogador){
         this.propietario = xogador;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
     }
 
     @Override

@@ -17,6 +17,7 @@ public abstract class Avatar {
     private Integer vecesDobres;
     private Boolean carcere;
     private Integer quendasPrision;
+    private Boolean cobrarSaida;
 
     /* getters */
     public String getNome(){
@@ -57,6 +58,10 @@ public abstract class Avatar {
 
     public Boolean getCarcere(){
         return carcere;
+    }
+
+    public Boolean getCobrarSaida() {
+        return cobrarSaida;
     }
 
     /* setters */
@@ -106,6 +111,10 @@ public abstract class Avatar {
 
     public void setQuendasPrision(Integer quendasPrision) {
         this.quendasPrision = quendasPrision;
+    }
+
+    public void setCobrarSaida(Boolean cobrarSaida) {
+        this.cobrarSaida = cobrarSaida;
     }
 
     /* métodos */
@@ -159,9 +168,13 @@ public abstract class Avatar {
             }
 
             posicionAntiga = taboleiro.posicionActual(this);
-            posicionNova = (posicionAntiga + avance) % 41 + 1;
+            posicionNova = posicionAntiga + avance;
+            if (posicionNova > 40)  posicionNova -= 40;
 
-            if (posicionAntiga > posicionNova)  this.setVoltasDadas();
+            if (posicionAntiga > posicionNova){
+                this.setVoltasDadas();
+                setCobrarSaida(true);
+            }
 
             this.setPosicion(taboleiro.obterCadro(posicionNova));
 
@@ -169,11 +182,16 @@ public abstract class Avatar {
         } else {
 
             posicionAntiga = taboleiro.posicionActual(this);
-            posicionNova = (posicionAntiga + avance) % 41 + 1;
+            posicionNova = posicionAntiga + avance;
+            if (posicionNova > 40)  posicionNova -= 40;
 
-            if (posicionAntiga > posicionNova)  this.setVoltasDadas();
+            if (posicionAntiga > posicionNova){
+                this.setVoltasDadas();
+                setCobrarSaida(true);
+            }
 
             this.setPosicion(taboleiro.obterCadro(posicionNova));
+            if (this.sacarDobres)   this.sacarDobres = false;
         }
 
         Xogo.getConsola().imprimir("O avatar "+this.getId()+" avanza "+avance+" posicións, desde "+taboleiro.obterCadro(posicionAntiga).getNome()+" até "+taboleiro.obterCadro(posicionNova).getNome()+".");
@@ -186,6 +204,7 @@ public abstract class Avatar {
 
         this.sacarDobres = false;
         this.vecesDobres = 0;
+        this.setCobrarSaida(false);
 
     }
 
@@ -193,6 +212,16 @@ public abstract class Avatar {
 
         return !this.sacarDobres;
 
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder saida = new StringBuilder();
+
+        saida.append(String.format("{\n\tid: %s,\n\ttipo: \n\tcadro: %s,\n\txogador: %s\n}",this.id,this.nome,this.posicion.getId(),this.xogador.getNome()));
+
+        return new String(saida);
     }
 
     @Override

@@ -27,4 +27,14 @@ public final class Transporte extends Propiedade {
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
     }
+
+    @Override
+    public String toString() {
+
+        StringBuilder saida = new StringBuilder();
+
+        saida.append(String.format("{\n\ttipo: transporte,\n\tAluguer: %d",));
+
+        return new String(saida);
+    }
 }

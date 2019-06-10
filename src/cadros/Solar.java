@@ -20,6 +20,7 @@ public final class Solar extends Propiedade {
         this.setHipotecada(false);
         this.setHipoteca(valor*0.5);
         this.edificacions = new HashMap<>();
+        this.grupo = null;
 
     }
 
@@ -28,9 +29,17 @@ public final class Solar extends Propiedade {
         return edificacions;
     }
 
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
     /* setters */
     public void setEdificacions(HashMap<String,Edificacion> edificacions){
         this.edificacions = edificacions;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 
     /* métodos */

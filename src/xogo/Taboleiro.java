@@ -4,8 +4,6 @@ import avatares.Avatar;
 import cadros.*;
 import interfaces.Constantes;
 import xogadores.Xogador;
-
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,16 +13,18 @@ public class Taboleiro {
     private HashMap<String, Cadro> cadros;
     private HashMap<Integer, Cadro> cadrosOrdenados;
     private HashMap<String, Xogador> xogadores;
+    private ArrayList<Grupo> grupos;
     private ArrayList<Avatar> avatares;
 
     public Taboleiro(){
 
         Cadro cadro = null;
-
+        Grupo grupo = null;
         this.cadros = new HashMap<>();
         this.cadrosOrdenados = new HashMap<>();
         this.avatares = new ArrayList<>();
         this.xogadores = new HashMap<>();
+        this.grupos = new ArrayList<>();
 
         /* creación do taboleiro */
 
@@ -34,7 +34,7 @@ public class Taboleiro {
         cadrosOrdenados.put(1,cadro);
 
         cadro = new Solar("solar1",Constantes.SOLAR1,Constantes.valoresSolares.get("solar1"));
-        cadros.put("solar2",cadro);
+        cadros.put("solar1",cadro);
         cadrosOrdenados.put(2,cadro);
 
         cadro = new CaixaComunidade("caixaSur","Caixa de comunidade",null);
@@ -44,6 +44,13 @@ public class Taboleiro {
         cadro = new Solar("solar2",Constantes.SOLAR2,Constantes.valoresSolares.get("solar2"));
         cadros.put("solar2",cadro);
         cadrosOrdenados.put(4,cadro);
+
+        /* grupo 1 */
+        grupo = new Grupo("g1","Grupo 1",new ArrayList<>(){{add((Solar)cadros.get("solar1"));add((Solar)cadros.get("solar2"));}},Constantes.G1);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar1")).setGrupo(grupo);
+        ((Solar)cadros.get("solar2")).setGrupo(grupo);
+        //////////////////////////////
 
         cadro = new Imposto("impCapital","Imposto sobre o capital",Constantes.impostoCapital);
         cadros.put("impCapital",cadro);
@@ -69,6 +76,14 @@ public class Taboleiro {
         cadros.put("solar5",cadro);
         cadrosOrdenados.put(10,cadro);
 
+        /* grupo 2 */
+        grupo = new Grupo("g2","Grupo 2",new ArrayList<>(){{add((Solar)cadros.get("solar3"));add((Solar)cadros.get("solar4"));add((Solar)cadros.get("solar5"));}},Constantes.G2);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar3")).setGrupo(grupo);
+        ((Solar)cadros.get("solar4")).setGrupo(grupo);
+        ((Solar)cadros.get("solar5")).setGrupo(grupo);
+        ///////////////////////////////////
+
         cadro = new Especial("carcere","Cárcere",Constantes.fianzaCarcere);
         cadros.put("carcere",cadro);
         cadrosOrdenados.put(11,cadro);
@@ -87,8 +102,16 @@ public class Taboleiro {
         cadrosOrdenados.put(14,cadro);
 
         cadro = new Solar("solar8",Constantes.SOLAR8,Constantes.valoresSolares.get("solar8"));
-        cadros.put("solar7",cadro);
+        cadros.put("solar8",cadro);
         cadrosOrdenados.put(15,cadro);
+
+        /* grupo 3 */
+        grupo = new Grupo("g3","Grupo 3",new ArrayList<>(){{add((Solar)cadros.get("solar6"));add((Solar)cadros.get("solar7"));add((Solar)cadros.get("solar8"));}},Constantes.G3);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar6")).setGrupo(grupo);
+        ((Solar)cadros.get("solar7")).setGrupo(grupo);
+        ((Solar)cadros.get("solar8")).setGrupo(grupo);
+        ///////////////////////////////////
 
         cadro = new Transporte("transOeste","Estación do Oeste",Constantes.transporte);
         cadros.put("transOeste",cadro);
@@ -109,6 +132,14 @@ public class Taboleiro {
         cadro = new Solar("solar11",Constantes.SOLAR11,Constantes.valoresSolares.get("solar11"));
         cadros.put("solar11",cadro);
         cadrosOrdenados.put(20,cadro);
+
+        /* grupo 4 */
+        grupo = new Grupo("g4","Grupo 4",new ArrayList<>(){{add((Solar)cadros.get("solar9"));add((Solar)cadros.get("solar10"));add((Solar)cadros.get("solar11"));}},Constantes.G4);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar9")).setGrupo(grupo);
+        ((Solar)cadros.get("solar10")).setGrupo(grupo);
+        ((Solar)cadros.get("solar11")).setGrupo(grupo);
+        ///////////////////////////////////
 
         // NORTE
         cadro = new Especial("aparcamento","Aparcamento Praza de Galiza",0.0);
@@ -131,6 +162,14 @@ public class Taboleiro {
         cadros.put("solar14",cadro);
         cadrosOrdenados.put(25,cadro);
 
+        /* grupo 5 */
+        grupo = new Grupo("g5","Grupo 5",new ArrayList<>(){{add((Solar)cadros.get("solar12"));add((Solar)cadros.get("solar13"));add((Solar)cadros.get("solar14"));}},Constantes.G5);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar12")).setGrupo(grupo);
+        ((Solar)cadros.get("solar13")).setGrupo(grupo);
+        ((Solar)cadros.get("solar14")).setGrupo(grupo);
+        ///////////////////////////////////
+
         cadro = new Transporte("transNorte","Estación do Norte",Constantes.transporte);
         cadros.put("transNorte",cadro);
         cadrosOrdenados.put(26,cadro);
@@ -150,6 +189,14 @@ public class Taboleiro {
         cadro = new Solar("solar17",Constantes.SOLAR17,Constantes.valoresSolares.get("solar17"));
         cadros.put("solar17",cadro);
         cadrosOrdenados.put(30,cadro);
+
+        /* grupo 6 */
+        grupo = new Grupo("g6","Grupo 6",new ArrayList<>(){{add((Solar)cadros.get("solar15"));add((Solar)cadros.get("solar16"));add((Solar)cadros.get("solar17"));}},Constantes.G6);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar15")).setGrupo(grupo);
+        ((Solar)cadros.get("solar16")).setGrupo(grupo);
+        ((Solar)cadros.get("solar17")).setGrupo(grupo);
+        ///////////////////////////////////
 
         // LESTE
         cadro = new Especial("irCarcere", "Atallo ao cárcere",0.0);
@@ -172,6 +219,14 @@ public class Taboleiro {
         cadros.put("solar20",cadro);
         cadrosOrdenados.put(35,cadro);
 
+        /* grupo 7 */
+        grupo = new Grupo("g7","Grupo 7",new ArrayList<>(){{add((Solar)cadros.get("solar18"));add((Solar)cadros.get("solar19"));add((Solar)cadros.get("solar20"));}},Constantes.G7);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar18")).setGrupo(grupo);
+        ((Solar)cadros.get("solar19")).setGrupo(grupo);
+        ((Solar)cadros.get("solar20")).setGrupo(grupo);
+        ///////////////////////////////////
+
         cadro = new Transporte("transLeste","Estación do Leste",Constantes.transporte);
         cadros.put("transLeste",cadro);
         cadrosOrdenados.put(36,cadro);
@@ -191,6 +246,13 @@ public class Taboleiro {
         cadro = new Solar("solar22",Constantes.SOLAR22,Constantes.valoresSolares.get("solar22"));
         cadros.put("solar22",cadro);
         cadrosOrdenados.put(40,cadro);
+
+        /* grupo 8 */
+        grupo = new Grupo("g8","Grupo 8",new ArrayList<>(){{add((Solar)cadros.get("solar21"));add((Solar)cadros.get("solar22"));}},Constantes.G8);
+        grupos.add(grupo);
+        ((Solar)cadros.get("solar21")).setGrupo(grupo);
+        ((Solar)cadros.get("solar22")).setGrupo(grupo);
+        ///////////////////////////////////
 
     }
 
@@ -243,6 +305,27 @@ public class Taboleiro {
         return xogadores.get(id) != null; // true se existe
     }
 
+    public Avatar obterAvatar(String id){
+
+        if (!id.isEmpty()){
+            for(Avatar avatar: avatares)
+                if (avatar.getId().equals(id))  return avatar;
+        }
+
+        return null;
+
+    }
+
+    public Boolean existeAvatar(String id){
+
+        if (!id.isEmpty()){
+            for(Avatar avatar: avatares)
+                if (avatar.getId().equals(id))  return true;
+        }
+
+        return false;
+    }
+
     public void novoXogador(Xogador xogador){
         if (!existeXogador(xogador.getNome())){
             this.xogadores.put(xogador.getNome(),xogador);
@@ -263,7 +346,14 @@ public class Taboleiro {
 
         taboleiro.append("\n$");
 
-        for (int i=21; i<32; i++)   taboleiro.append(String.format(" %-12s $",this.obterCadro(i).getId()));
+        for (int i=21; i<32; i++){
+            Cadro cadro = obterCadro(i);
+            if (cadro instanceof Solar){
+                if (((Solar) cadro).getGrupo().getIdGrupo().equals("g5"))
+                    taboleiro.append(String.format(" %s%-12s%s $",Constantes.G5,cadro.getId(),Constantes.normal));
+                else taboleiro.append(String.format(" %s%-12s%s $",Constantes.G6,cadro.getId(),Constantes.normal));
+            } else taboleiro.append(String.format(" %-12s $",cadro.getId()));
+        }
 
         taboleiro.append("\n$");
 
@@ -295,15 +385,27 @@ public class Taboleiro {
 
         for (int i = 20, j = 32; j < 41; j++, i--){
 
-            taboleiro.append(String.format("\n$ %-12s $",this.obterCadro(i).getId()));
+            Cadro oeste = this.obterCadro(i), leste = this.obterCadro(j);
+
+            taboleiro.append("\n");
+
+            if (oeste instanceof Solar){
+                if (((Solar) oeste).getGrupo().getIdGrupo().equals("g3"))
+                    taboleiro.append(String.format("$ %s%-12s%s $",Constantes.G3,oeste.getId(),Constantes.normal));
+                else taboleiro.append(String.format("$ %s%-12s%s $",Constantes.G4,oeste.getId(),Constantes.normal));
+            } else taboleiro.append(String.format("$ %-12s $",oeste.getId()));
 
             taboleiro.append(String.format("%134s$"," "));
 
-            taboleiro.append(String.format(" %-12s $",this.obterCadro(j).getId()));
+            if (leste instanceof Solar){
+                if (((Solar) leste).getGrupo().getIdGrupo().equals("g7"))
+                    taboleiro.append(String.format(" %s%-12s%s $",Constantes.G7,leste.getId(),Constantes.normal));
+                else taboleiro.append(String.format(" %s%-12s%s $",Constantes.G8,leste.getId(),Constantes.normal));
+            } else taboleiro.append(String.format(" %-12s $",leste.getId()));
 
             for (Avatar avatar: avatares){
 
-                if (avatar.getPosicion().equals(this.obterCadro(i))){
+                if (avatar.getPosicion().equals(oeste)){
 
                     temp.append(String.format("&%s",avatar.getId()));
 
@@ -317,7 +419,7 @@ public class Taboleiro {
 
             for (Avatar avatar: avatares){
 
-                if (avatar.getPosicion().equals(this.obterCadro(j))){
+                if (avatar.getPosicion().equals(leste)){
 
                     temp.append(String.format("&%s",avatar.getId()));
 
@@ -342,7 +444,15 @@ public class Taboleiro {
 
         taboleiro.append("\n$");
 
-        for (int i=11; i > 0; i--)   taboleiro.append(String.format(" %-12s $",this.obterCadro(i).getId()));
+        for (int i=11; i > 0; i--){
+            Cadro cadro = obterCadro(i);
+
+            if (cadro instanceof Solar){
+                if (((Solar) cadro).getGrupo().getIdGrupo().equals("g2"))
+                    taboleiro.append(String.format(" %s%-12s%s $",Constantes.G2,cadro.getId(),Constantes.normal));
+                else taboleiro.append(String.format(" %s%-12s%s $",Constantes.G1,cadro.getId(),Constantes.normal));
+            } else taboleiro.append(String.format(" %-12s $",cadro.getId()));
+        }
 
         taboleiro.append("\n$");
 
