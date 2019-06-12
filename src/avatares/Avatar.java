@@ -18,6 +18,7 @@ public abstract class Avatar {
     private Boolean carcere;
     private Integer quendasPrision;
     private Boolean cobrarSaida;
+    private Integer ultimoAvance;
 
     /* getters */
     public String getNome(){
@@ -62,6 +63,14 @@ public abstract class Avatar {
 
     public Boolean getCobrarSaida() {
         return cobrarSaida;
+    }
+
+    public Integer getQuendasPrision() {
+        return quendasPrision;
+    }
+
+    public Integer getUltimoAvance() {
+        return ultimoAvance;
     }
 
     /* setters */
@@ -115,6 +124,10 @@ public abstract class Avatar {
 
     public void setCobrarSaida(Boolean cobrarSaida) {
         this.cobrarSaida = cobrarSaida;
+    }
+
+    public void setUltimoAvance(Integer ultimoAvance) {
+        this.ultimoAvance = ultimoAvance;
     }
 
     /* métodos */
@@ -177,7 +190,7 @@ public abstract class Avatar {
             }
 
             this.setPosicion(taboleiro.obterCadro(posicionNova));
-
+            setUltimoAvance(avance);
 
         } else {
 
@@ -192,10 +205,12 @@ public abstract class Avatar {
 
             this.setPosicion(taboleiro.obterCadro(posicionNova));
             if (this.sacarDobres)   this.sacarDobres = false;
+            setUltimoAvance(avance);
         }
 
-        Xogo.getConsola().imprimir("O avatar "+this.getId()+" avanza "+avance+" posicións, desde "+taboleiro.obterCadro(posicionAntiga).getNome()+" até "+taboleiro.obterCadro(posicionNova).getNome()+".");
-
+        //Xogo.getConsola().imprimir("O avatar "+this.getId()+" avanza "+avance+" posicións, desde "+taboleiro.obterCadro(posicionAntiga).getNome()+" até "+taboleiro.obterCadro(posicionNova).getNome()+".");
+        Xogo.getConsola().imprimir(String.format("O avatar %s avanza %d posicións, desde %s (%s) até %s (%s)",
+                this.getId(),avance,taboleiro.obterCadro(posicionAntiga).getNome(),taboleiro.obterCadro(posicionAntiga).getId(),taboleiro.obterCadro(posicionNova).getNome(),taboleiro.obterCadro(posicionNova).getId()));
     }
 
     public abstract void moverEnAvanzado(Taboleiro taboleiro, Integer[] integer);
@@ -219,7 +234,7 @@ public abstract class Avatar {
 
         StringBuilder saida = new StringBuilder();
 
-        saida.append(String.format("{\n\tid: %s,\n\ttipo: \n\tcadro: %s,\n\txogador: %s\n}",this.id,this.nome,this.posicion.getId(),this.xogador.getNome()));
+        saida.append(String.format("{\n\tid: %s,\n\ttipo: %s,\n\tcadro: %s,\n\txogador: %s\n}",this.id,this.nome,this.posicion.getId(),this.xogador.getNome()));
 
         return new String(saida);
     }
@@ -227,7 +242,7 @@ public abstract class Avatar {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj != null)    return ((Avatar)obj).getId().equals(this.id);
+        if (obj instanceof Avatar)    return ((Avatar)obj).getId().equals(this.id);
 
         return false;
 

@@ -1,6 +1,9 @@
 package cadros;
 
 import xogadores.Xogador;
+import xogo.Taboleiro;
+
+import java.util.HashMap;
 
 public abstract class Propiedade extends Cadro {
 
@@ -76,12 +79,13 @@ public abstract class Propiedade extends Cadro {
 
     /* metodos */
 
-    public abstract void aluguer();
+    public abstract void aluguer(Taboleiro taboleiro);
 
     public void comprar(Xogador xogador){
         this.propietario = xogador;
     }
 
+    public abstract String informacionVendaBasica();
 
     public boolean pertenceAXogador(Xogador xogador){
 

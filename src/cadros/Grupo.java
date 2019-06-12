@@ -70,6 +70,18 @@ public final class Grupo extends Cadro {
         this.cor = cor;
     }
 
+    /* métodos */
+
+    public void estaCompradoPorUnPropietario(){
+
+
+        for (Solar solar: solares){
+
+        }
+
+
+    }
+
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 

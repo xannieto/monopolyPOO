@@ -18,7 +18,7 @@ public abstract class Edificacion {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj!=null)  return ((Edificacion)obj).getId().equals(this.id);
+        if (obj instanceof Edificacion)  return ((Edificacion)obj).getId().equals(this.id);
         return false;
 
     }

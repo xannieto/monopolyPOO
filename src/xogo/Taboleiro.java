@@ -4,6 +4,8 @@ import avatares.Avatar;
 import cadros.*;
 import interfaces.Constantes;
 import xogadores.Xogador;
+
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -295,6 +297,18 @@ public class Taboleiro {
         }
 
         return posicion;
+    }
+
+    public Integer[] tiradaDados(){
+
+        Integer[] tirada = new Integer[2];
+        SecureRandom numAleatorio = new SecureRandom(new byte[1]);
+
+        tirada[0] = numAleatorio.nextInt(6) + 1;
+        tirada[1] = numAleatorio.nextInt(6) + 1;
+
+        return tirada;
+
     }
 
     public Xogador obterXogador(String id){

@@ -1,7 +1,9 @@
 package cadros;
 
+import excepcions.ExcepcionFortunaInsuficiente;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
 public final class Imposto extends Cadro {
 
@@ -11,6 +13,7 @@ public final class Imposto extends Cadro {
 
         super.setId(id);
         super.setNome(nome);
+        setImposto(imposto);
 
     }
 
@@ -31,6 +34,16 @@ public final class Imposto extends Cadro {
 
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
+
+        try {
+
+            xogador.pagar(imposto);
+
+        } catch (ExcepcionFortunaInsuficiente e){
+
+            Xogo.getConsola().imprimir(e.getMessage());
+
+        }
 
     }
 }

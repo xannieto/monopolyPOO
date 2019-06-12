@@ -3,6 +3,7 @@ package xogadores;
 import avatares.*;
 import cadros.Propiedade;
 import edificacions.Edificacion;
+import excepcions.ExcepcionFortunaInsuficiente;
 import xogo.Xogo;
 
 import java.util.Collection;
@@ -89,17 +90,18 @@ public class Xogador {
 
     }
 
-    public void pagar(Double cantidade){
+    public void pagar(Double cantidade) throws ExcepcionFortunaInsuficiente {
 
         if (cantidade > this.fortuna ) {
 
             this.hipotecar = true;
-            Xogo.getConsola().imprimir("O xogador "+this.getNome()+" non pode realizar o pagamento. Debe hipotecar propiedades ou vender edificacións");
+            throw new ExcepcionFortunaInsuficiente("O xogador "+this.getNome()+" non pode realizar o pago. Deberá buscar financiamento (hipotecas, vendas, tratos).");
+
+        } else {
+            setFortuna(this.fortuna - cantidade);
+            Xogo.getConsola().imprimir("O xogador "+this.getNome()+" realiza un pagamento de "+cantidade+"€");
 
         }
-
-        setFortuna(this.fortuna - cantidade);
-        Xogo.getConsola().imprimir("O xogador "+this.getNome()+" realiza un pagamento de "+cantidade+"€");
 
     }
 
@@ -160,7 +162,7 @@ public class Xogador {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj != null) return ((Xogador)obj).equals(this.nome);
+        if (obj instanceof Xogador) return ((Xogador)obj).equals(this.nome);
 
         return false;
 

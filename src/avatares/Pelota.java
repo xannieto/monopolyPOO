@@ -18,6 +18,7 @@ public final class Pelota extends Avatar {
         this.setCarcere(false);
         this.setQuendasPrision(0);
         this.setCobrarSaida(false);
+        this.setUltimoAvance(0);
 
     }
 

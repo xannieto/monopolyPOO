@@ -21,4 +21,6 @@ public final class CaixaComunidade extends Accion {
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
     }
+
+
 }

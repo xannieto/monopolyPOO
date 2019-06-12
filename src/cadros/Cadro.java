@@ -42,7 +42,7 @@ public abstract class Cadro {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj!=null)  return ((Cadro)obj).getId().equals(this.id);
+        if (obj instanceof Cadro)  return ((Cadro)obj).getId().equals(this.id);
 
         return false;
 

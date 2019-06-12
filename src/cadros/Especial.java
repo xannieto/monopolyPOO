@@ -64,28 +64,28 @@ public final class Especial extends Cadro {
     @Override
     public String toString() {
 
-        String descricion = null;
+        StringBuilder descricion = new StringBuilder();
 
         switch (this.getId()){
 
             case "saida":
-                descricion = "{\n"+"Cobro por volta:"+this.valor+"\n}";
+                descricion.append(String.format("{\n\tCobro por volta: %.2f\n}",this.valor));
                 break;
 
             case "carcere":
-                descricion = "{\n"+"Fianza:"+this.valor+"\n}";
-                break;
-
-            case "irCarcere":
-                descricion = "{\n"+"Atallo ao cárcere"+"\n}";
+                descricion.append(String.format("{\n\tFianza: %.2f\n}",this.valor));
                 break;
 
             case "aparcamento":
-                descricion = "{\n"+"Bote: "+this.valor+"\n}";
+                descricion.append(String.format("{\n\tBote: %.2f\n}",this.valor));
+                break;
+
+            default:
+                descricion.append("Información non dispoñíbel sobre o cadro");
                 break;
 
         }
 
-        return descricion;
+        return descricion.toString();
     }
 }
