@@ -273,6 +273,11 @@ public class Taboleiro {
 
     public ArrayList<Avatar> getAvatares(){return  avatares;}
 
+    public ArrayList<Grupo> getGrupos() {
+        return grupos;
+    }
+
+
     /* métodos */
 
     public Cadro obterCadro(Integer i){
@@ -345,6 +350,17 @@ public class Taboleiro {
             this.xogadores.put(xogador.getNome(),xogador);
             this.avatares.add(xogador.getAvatar());
         }
+    }
+
+    public Boolean deronCatroVoltas(){
+
+        for (Avatar avatar: avatares)
+            if ((avatar.getVoltasDadas()-4)< 0) return false;
+
+        for (Avatar avatar: avatares)
+            avatar.setVoltasDadas(avatar.getVoltasDadas()-4);
+
+        return true;
     }
 
     @Override

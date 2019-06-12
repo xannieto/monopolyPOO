@@ -1,10 +1,7 @@
 package xogo;
 
 import avatares.Avatar;
-import cadros.Cadro;
-import cadros.CaixaComunidade;
-import cadros.Propiedade;
-import cadros.Sorte;
+import cadros.*;
 import excepcions.ExcepcionFortunaInsuficiente;
 import interfaces.Comando;
 import interfaces.Constantes;
@@ -136,6 +133,7 @@ public class Xogo implements Comando {
                         if (comando[1].equals("xogadores")) listarXogadores();
                         else if (comando[1].equals("avatares")) listarAvatares();
                         else Xogo.getConsola().imprimir("Argumento incorrecto");
+                        verTaboleiro(taboleiro);
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
 
@@ -174,7 +172,7 @@ public class Xogo implements Comando {
                     consola.imprimir("Comando incorrecto, ténteo de novo");
             }
 
-
+            aumentarAsCatroVoltas();
         }
 
 
@@ -303,22 +301,43 @@ public class Xogo implements Comando {
 
     }
 
+    private void aumentarAsCatroVoltas(){
+
+        if (this.taboleiro.deronCatroVoltas()){
+
+            for (Cadro cadro : this.taboleiro.getCadros().values())
+                if (cadro instanceof Servizo || cadro instanceof  Solar || cadro instanceof Transporte)
+                    ((Propiedade)cadro).valor();
+        }
+
+    }
+
     /* interface comando */
 
     @Override
     public void lanzarDados(){
 
-        if (this.debeAcabarQuenda) {//excepcion
+        if (this.debeAcabarQuenda) {
 
             Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode lanzar os dados");
 
-        } else{
+        } else if (!this.enQuenda.getPosicion().equals("carcere")){
 
             Integer[] tirada = this.taboleiro.tiradaDados();
+            Cadro cadro;
 
             this.enQuenda.mover(this.taboleiro,tirada);
 
-            this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
+            cadro = this.enQuenda.getPosicion();
+
+            if (cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo){
+
+                describirCadro(cadro.getId());
+                String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
+                if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
+
+            }
+            else this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
 
             if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
 
@@ -326,6 +345,16 @@ public class Xogo implements Comando {
                 this.enQuenda.setCobrarSaida(false);
                 this.enQuenda.getXogador().cobrar(Constantes.salario);
                 Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" deu unha volta e cobra "+Constantes.salario+"€");
+            }
+
+        } else if (this.enQuenda.getQuendasPrision() > 0) {
+
+            Integer[] tirada = this.taboleiro.tiradaDados();
+
+            if (tirada[0].equals(tirada[1])){
+                this.enQuenda.setQuendasPrision(0);
+                this.enQuenda.setCarcere(false);
+                this.enQuenda.mover(this.taboleiro,tirada);
             }
 
         }
@@ -396,13 +425,14 @@ public class Xogo implements Comando {
 
             Xogo.getConsola().imprimir("O avatar non está no cadro para poder realizar a compra");
 
-        } else if (cadro instanceof Propiedade){
+        } else if (cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar){
 
             if (((Propiedade) cadro).getPropietario() == null){
 
                 try {
 
                     this.enQuenda.getXogador().pagar(((Propiedade)cadro).getValor());
+                    ((Propiedade) cadro).comprar(this.enQuenda.getXogador());
                     this.enQuenda.getXogador().engadirPropiedade((Propiedade) cadro);
                     Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€. A súa fortuna actual é de %.2f€",
                             this.enQuenda.getXogador().getNome(),cadro.getNome(),((Propiedade)cadro).getValor(),this.enQuenda.getXogador().getFortuna()));

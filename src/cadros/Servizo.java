@@ -37,13 +37,16 @@ public final class Servizo extends Propiedade {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
-        try{
-            xogador.pagar(this.getAluguer()*xogador.getAvatar().getUltimoAvance());
+        if (this.getPropietario() != null){
 
-        } catch (ExcepcionFortunaInsuficiente e){
-            Xogo.getConsola().imprimir(e.getMessage());
+            try{
+                xogador.pagar(this.getAluguer()*xogador.getAvatar().getUltimoAvance());
+                this.getPropietario().cobrar(this.getAluguer()*xogador.getAvatar().getUltimoAvance());
+
+            } catch (ExcepcionFortunaInsuficiente e){
+                Xogo.getConsola().imprimir(e.getMessage());
+            }
         }
-
     }
 
     @Override

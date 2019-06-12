@@ -1,8 +1,10 @@
 package cadros;
 
+import excepcions.ExcepcionFortunaInsuficiente;
 import interfaces.Constantes;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
 public final class Transporte extends Propiedade {
 
@@ -11,7 +13,7 @@ public final class Transporte extends Propiedade {
         this.setId(id);
         this.setNome(nome);
         this.setValor(valor);
-        this.setAluguer(Constantes.salario);
+        this.setAluguer(Constantes.transporte);
         this.setHipotecada(false);
         this.setHipoteca(valor*0.5);
 
@@ -31,7 +33,7 @@ public final class Transporte extends Propiedade {
             this.setAluguer(Constantes.transporte*conta*0.25);
 
         } else {
-            this.setAluguer(Constantes.salario);
+            this.setAluguer(Constantes.transporte);
         }
 
     }
@@ -39,7 +41,17 @@ public final class Transporte extends Propiedade {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
+        if (this.getPropietario() != null){
 
+            try{
+
+                xogador.pagar(this.getAluguer());
+
+            } catch (ExcepcionFortunaInsuficiente e){
+                Xogo.getConsola().imprimir(e.getMessage());
+            }
+
+        }
 
     }
 
@@ -48,7 +60,7 @@ public final class Transporte extends Propiedade {
 
         StringBuilder saida = new StringBuilder();
 
-        saida.append(String.format("{\n\ttipo: transporte,\n\tAluguer: %.2f",this.getAluguer()));
+        saida.append(String.format("{\n\ttipo: transporte,\n\tvalor: %.2f,\naluguer: %.2f\n}",this.getValor(),this.getAluguer()));
 
         return new String(saida);
     }

@@ -1,6 +1,7 @@
 package cadros;
 
 import avatares.Avatar;
+import avatares.Esfinxe;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 
@@ -42,7 +43,8 @@ public abstract class Cadro {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Cadro)  return ((Cadro)obj).getId().equals(this.id);
+        if (obj instanceof Especial || obj instanceof Solar || obj instanceof Servizo || obj instanceof Sorte || obj instanceof Transporte || obj instanceof Imposto || obj instanceof CaixaComunidade)
+            return ((Cadro)obj).getId().equals(this.id);
 
         return false;
 

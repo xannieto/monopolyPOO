@@ -12,7 +12,7 @@ public final class Especial extends Cadro {
 
         super.setId(id);
         super.setNome(nome);
-        setValor(valor);
+        this.setValor(valor);
 
     }
 
@@ -26,7 +26,7 @@ public final class Especial extends Cadro {
 
     public void setValor(Double valor) {
 
-        if (valor < 0) this.valor = valor;
+        if (valor > -1) this.valor = valor;
 
     }
 

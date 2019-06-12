@@ -17,11 +17,10 @@ public final class ConsolaNormal implements Consola {
     public String ler(String descricion) {
 
         Scanner lector = new Scanner(System.in);
-        String entrada = null;
 
         imprimir(descricion);
 
-        entrada = lector.nextLine();
+        String entrada = lector.nextLine();
 
         return entrada;
     }

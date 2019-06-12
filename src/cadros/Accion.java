@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 public abstract class Accion extends Cadro {
 
-    public ArrayList<Carta> cartas;
+    public ArrayList<Carta> cartasRevoltas;
 
     /* getters */
     public ArrayList<Carta> getCartas() {
-        return cartas;
+        return cartasRevoltas;
     }
 
     /* setters */
-    public void setCartas(ArrayList<Carta> cartas) {
-        this.cartas = cartas;
+    public void setCartas(ArrayList<Carta> cartasRevoltas) {
+        this.cartasRevoltas = cartasRevoltas;
     }
 
 

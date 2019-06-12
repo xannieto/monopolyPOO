@@ -95,12 +95,11 @@ public class Xogador {
         if (cantidade > this.fortuna ) {
 
             this.hipotecar = true;
-            throw new ExcepcionFortunaInsuficiente("O xogador "+this.getNome()+" non pode realizar o pago. Deberá buscar financiamento (hipotecas, vendas, tratos).");
+            throw new ExcepcionFortunaInsuficiente(String.format("O xogador %s non pode realizar o pago. Deberá buscar financiamento (hipotecas, vendas, tratos).",this.getNome()));
 
         } else {
             setFortuna(this.fortuna - cantidade);
-            Xogo.getConsola().imprimir("O xogador "+this.getNome()+" realiza un pagamento de "+cantidade+"€");
-
+            Xogo.getConsola().imprimir(String.format("O xogador %s realiza un pagamento de %.2f€",this.getNome(),cantidade));
         }
 
     }
@@ -147,9 +146,9 @@ public class Xogador {
                 for (Edificacion edificacion: edificacions){
                     descricion.append(String.format("%s, ",edificacion.getId()));
                 }
-                descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]");
+                descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]\n}");
 
-            } else descricion.append("\n\tEdificación: ningunha");
+            } else descricion.append("\n\tEdificación: ningunha\n}");
 
 
 
@@ -162,9 +161,10 @@ public class Xogador {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Xogador) return ((Xogador)obj).equals(this.nome);
+        if (obj instanceof Xogador) return obj.equals(this.nome);
 
         return false;
 
     }
+
 }

@@ -3,8 +3,6 @@ package cadros;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 
-import java.util.HashMap;
-
 public abstract class Propiedade extends Cadro {
 
     private Xogador propietario;
@@ -82,7 +80,8 @@ public abstract class Propiedade extends Cadro {
     public abstract void aluguer(Taboleiro taboleiro);
 
     public void comprar(Xogador xogador){
-        this.propietario = xogador;
+        if(this.getPropietario() == null)
+            this.propietario = xogador;
     }
 
     public abstract String informacionVendaBasica();
@@ -92,6 +91,13 @@ public abstract class Propiedade extends Cadro {
         if (xogador != null)   return xogador.equals(this.propietario);
 
         return false;
+
+    }
+
+
+    public void valor(){
+
+        this.setValor(this.getValor()*1.05);
 
     }
 

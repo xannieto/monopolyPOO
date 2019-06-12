@@ -1,8 +1,11 @@
 package cadros;
 
-import edificacions.Edificacion;
+import edificacions.*;
+import excepcions.ExcepcionFortunaInsuficiente;
+import interfaces.Constantes;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
 import java.util.HashMap;
 
@@ -176,12 +179,6 @@ public final class Solar extends Propiedade {
 
     }
 
-    public void incrementarValor(){
-
-        this.setValor(this.getValor()*1.05);
-
-    }
-
     @Override
     public String toString() {
         StringBuilder descricion = new StringBuilder();
@@ -200,12 +197,73 @@ public final class Solar extends Propiedade {
     @Override
     public void aluguer(Taboleiro taboleiro) {
 
+        if (this.getPropietario() != null){
 
+            Double aluguer = 0.0;
+
+            aluguer += Constantes.valoresSolares.get(this.getId())*0.1;
+
+            if (edificacions != null){
+
+                Integer casas = 0, hoteis = 0, piscinas = 0, pistas = 0 ;
+
+                for (Edificacion edificacion: this.edificacions.values()){
+                    if (edificacion instanceof Casa)    casas++;
+                    else if (edificacion instanceof Hotel)   hoteis++;
+                    else if (edificacion instanceof Piscina) piscinas++;
+                    else if (edificacion instanceof PistaDeporte) pistas++;
+                }
+
+                if (casas == 1) aluguer += aluguer1Casa;
+                else if (casas == 2) aluguer += aluguer1Casa + aluguer2Casa;
+                else if (casas == 3) aluguer += aluguer1Casa + aluguer2Casa + aluguer3Casa;
+                else if (casas == 4) aluguer += aluguer1Casa + aluguer2Casa + aluguer4Casa;
+
+                if (hoteis == 1)    aluguer += aluguerHotel;
+                else if (hoteis == 2)    aluguer += 2*aluguerHotel;
+
+                if (piscinas == 1)  aluguer += aluguerPiscina;
+                else if (piscinas == 2)  aluguer += 2*aluguerPiscina;
+
+                if (pistas == 1)    aluguer += aluguerPista;
+                else if (pistas == 2)    aluguer += 2*aluguerPista;
+
+            }
+
+            if (this.getGrupo().getPropietario() != null)   aluguer *= 2;
+
+            this.setAluguer(aluguer);
+
+        } else{
+            this.setAluguer(Constantes.valoresSolares.get(this.getId())*0.1);
+        }
 
     }
 
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
+
+        if (this.getPropietario()!=null){
+
+            if (!this.getPropietario().equals(xogador) && this.getPropietario() != null && !this.getHipotecada()){
+
+                try {
+                    xogador.pagar(this.getAluguer());
+                    xogador.cobrar(this.getAluguer());
+
+                } catch (ExcepcionFortunaInsuficiente e){
+                    Xogo.getConsola().imprimir(e.getMessage());
+                }
+
+            }
+
+        }
+
+    }
+
+    public void edificar(Taboleiro taboleiro, String edificio){
+
+
 
     }
 

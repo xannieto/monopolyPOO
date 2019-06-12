@@ -173,24 +173,29 @@ public abstract class Avatar {
         if (integer[0].equals(integer[1])){
 
             if (!this.sacarDobres) this.sacarDobres = true;
+
             if ((this.vecesDobres++)==3){
                 this.setPosicion(taboleiro.obterCadro("carcere"));
-
                 setCarcere(true);
                 setQuendasPrision(3);
+                resetDatosTirada();
+
+                Xogo.getConsola().imprimir(String.format("O xogador %s sacou tres veces dobres. Debe ingresar en prisión.",this.getXogador().getNome()));
+                return;
+            } else {
+
+                posicionAntiga = taboleiro.posicionActual(this);
+                posicionNova = posicionAntiga + avance;
+                if (posicionNova > 40) posicionNova -= 40;
+
+                if (posicionAntiga > posicionNova) {
+                    this.setVoltasDadas();
+                    setCobrarSaida(true);
+                }
+
+                this.setPosicion(taboleiro.obterCadro(posicionNova));
+                setUltimoAvance(avance);
             }
-
-            posicionAntiga = taboleiro.posicionActual(this);
-            posicionNova = posicionAntiga + avance;
-            if (posicionNova > 40)  posicionNova -= 40;
-
-            if (posicionAntiga > posicionNova){
-                this.setVoltasDadas();
-                setCobrarSaida(true);
-            }
-
-            this.setPosicion(taboleiro.obterCadro(posicionNova));
-            setUltimoAvance(avance);
 
         } else {
 
@@ -208,9 +213,9 @@ public abstract class Avatar {
             setUltimoAvance(avance);
         }
 
-        //Xogo.getConsola().imprimir("O avatar "+this.getId()+" avanza "+avance+" posicións, desde "+taboleiro.obterCadro(posicionAntiga).getNome()+" até "+taboleiro.obterCadro(posicionNova).getNome()+".");
         Xogo.getConsola().imprimir(String.format("O avatar %s avanza %d posicións, desde %s (%s) até %s (%s)",
                 this.getId(),avance,taboleiro.obterCadro(posicionAntiga).getNome(),taboleiro.obterCadro(posicionAntiga).getId(),taboleiro.obterCadro(posicionNova).getNome(),taboleiro.obterCadro(posicionNova).getId()));
+        if (this.sacarDobres)   Xogo.getConsola().imprimir("Sacou dobres, cando remate deberá volver lanzar os dados");
     }
 
     public abstract void moverEnAvanzado(Taboleiro taboleiro, Integer[] integer);
@@ -242,7 +247,8 @@ public abstract class Avatar {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Avatar)    return ((Avatar)obj).getId().equals(this.id);
+        if (obj instanceof Coche || obj instanceof Esfinxe || obj instanceof Pelota || obj instanceof Sombreiro)
+            return ((Avatar)obj).getId().equals(this.id);
 
         return false;
 

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public final class Sorte extends Accion {
 
+    //private static ArrayList<String,Carta> monteDeCartas;
+
     public Sorte(String id, String nome, ArrayList<Carta> cartas){
 
         this.setId(id);

@@ -72,13 +72,20 @@ public final class Grupo extends Cadro {
 
     /* métodos */
 
-    public void estaCompradoPorUnPropietario(){
+    public Boolean estaCompradoPorUnPropietario(){
 
+        Xogador xogador = this.solares.get(0).getPropietario();
 
-        for (Solar solar: solares){
+        if (xogador != null){
+
+            for (int i=1; i<this.solares.size(); i++)
+                if (!this.solares.get(i).getPropietario().equals(xogador))  return false;
+
+            return true;
 
         }
 
+        return false;
 
     }
 
