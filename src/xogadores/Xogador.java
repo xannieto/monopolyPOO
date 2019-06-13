@@ -4,7 +4,6 @@ import avatares.*;
 import cadros.Propiedade;
 import edificacions.Edificacion;
 import excepcions.ExcepcionFortunaInsuficiente;
-import xogo.Xogo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -99,7 +98,7 @@ public class Xogador {
 
         } else {
             setFortuna(this.fortuna - cantidade);
-            Xogo.getConsola().imprimir(String.format("O xogador %s realiza un pagamento de %.2f€",this.getNome(),cantidade));
+            //Xogo.getConsola().imprimir(String.format("O xogador %s realiza un pagamento de %.2f€",this.getNome(),cantidade));
         }
 
     }

@@ -2,9 +2,10 @@ package edificacions;
 
 public final class Hotel extends Edificacion {
 
-    public Hotel(String id){
+    public Hotel(String id, Double prezoVenda){
 
-        super.setId(id);
+        this.setId(id);
+        this.setPrezoVenda(prezoVenda);
 
     }
 

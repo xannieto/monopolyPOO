@@ -40,13 +40,25 @@ public final class Servizo extends Propiedade {
         if (this.getPropietario() != null){
 
             try{
-                xogador.pagar(this.getAluguer()*xogador.getAvatar().getUltimoAvance());
-                this.getPropietario().cobrar(this.getAluguer()*xogador.getAvatar().getUltimoAvance());
+                Double pago = this.getAluguer()*xogador.getAvatar().getUltimoAvance();
+                xogador.pagar(pago);
+                this.getPropietario().cobrar(pago);
+                Xogo.getConsola().imprimir(String.format("O xogador %s paga %.2f€ de aluguer.",xogador.getNome(),pago));
 
             } catch (ExcepcionFortunaInsuficiente e){
                 Xogo.getConsola().imprimir(e.getMessage());
             }
         }
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder descricion = new StringBuilder();
+
+        descricion.append(String.format("{\n\ttipo: servizo,\n\tprezo: %.2f,\n\taluguer: %.2f\n}",this.getValor(),this.getAluguer()));
+
+        return descricion.toString();
     }
 
     @Override

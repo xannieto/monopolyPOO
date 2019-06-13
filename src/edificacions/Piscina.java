@@ -2,9 +2,10 @@ package edificacions;
 
 public final class Piscina extends Edificacion {
 
-    public Piscina(String id){
+    public Piscina(String id, Double prezoVenda){
 
-        super.setId(id);
+        this.setId(id);
+        this.setPrezoVenda(prezoVenda);
 
     }
 

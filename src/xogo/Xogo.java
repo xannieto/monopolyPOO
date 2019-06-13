@@ -50,7 +50,7 @@ public class Xogo implements Comando {
 
         while(!sair){
 
-            System.out.print("$> ");
+            System.out.printf("$ %s > ",enQuenda.getXogador().getNome());
             String entrada = null;
 
             entrada = orde.nextLine();
@@ -76,7 +76,7 @@ public class Xogo implements Comando {
                                 cambiarQuenda();
                                 Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
 
-                            } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda");
+                            } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda.");
 
                         }
 
@@ -132,8 +132,9 @@ public class Xogo implements Comando {
 
                         if (comando[1].equals("xogadores")) listarXogadores();
                         else if (comando[1].equals("avatares")) listarAvatares();
+                        else if (comando[1].equals("aVenda"))   listarAVenda();
                         else Xogo.getConsola().imprimir("Argumento incorrecto");
-                        verTaboleiro(taboleiro);
+                        //verTaboleiro(taboleiro);
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
 
@@ -162,7 +163,8 @@ public class Xogo implements Comando {
                         if (comando[1].equals("carcere"))   sairCarcere();
 
                     } else {
-                        consola.imprimir("A saír do xogo...");
+                        if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]").equalsIgnoreCase("si"))
+                            consola.imprimir("A saír do xogo...");
                         sair = Boolean.TRUE;
                     }
                     
@@ -321,20 +323,22 @@ public class Xogo implements Comando {
 
             Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode lanzar os dados");
 
-        } else if (!this.enQuenda.getPosicion().equals("carcere")){
+        } else if (!this.enQuenda.getPosicion().getId().equals("carcere")){
 
             Integer[] tirada = this.taboleiro.tiradaDados();
             Cadro cadro;
 
             this.enQuenda.mover(this.taboleiro,tirada);
-
             cadro = this.enQuenda.getPosicion();
 
             if (cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo){
 
-                describirCadro(cadro.getId());
-                String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
-                if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
+                if (((Propiedade) cadro).getPropietario()==null) {
+                    describirCadro(cadro.getId());
+                    String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
+
+                    if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
+                }
 
             }
             else this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
@@ -371,7 +375,8 @@ public class Xogo implements Comando {
                 this.enQuenda.getXogador().pagar(Constantes.fianzaCarcere);
                 this.enQuenda.setCarcere(true);
                 this.enQuenda.setQuendasPrision(0);
-                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" sae de prisión");
+                Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. A súa fortuna actual é de %.2f€.",
+                        enQuenda.getXogador().getNome(),Constantes.fianzaCarcere,enQuenda.getXogador().getFortuna()));
 
             } else {
                 Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
@@ -409,8 +414,9 @@ public class Xogo implements Comando {
     public void listarAVenda() {
 
         for (Cadro cadro: this.taboleiro.getCadros().values()){
-            if (cadro instanceof Propiedade && ((Propiedade) cadro).getPropietario()==null){
-                cadro.toString();
+            if ((cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar )&& ((Propiedade) cadro).getPropietario()==null){
+                Xogo.getConsola().imprimir(String.format("%s%s (%s) %s",Constantes.bold,cadro.getNome(),cadro.getId(),Constantes.normal));
+                Xogo.getConsola().imprimir(cadro.toString());
             }
         }
 
@@ -474,10 +480,16 @@ public class Xogo implements Comando {
 
         Cadro cadro = taboleiro.obterCadro(id);
 
-        if (cadro != null && !(cadro instanceof CaixaComunidade) && !(cadro instanceof Sorte) && !cadro.getId().equals("irCarcere")){
+        if (cadro == null){
+            Xogo.getConsola().imprimir("O cadro do cal se quere obter información non existe.");
+
+        } else if (cadro.getId().equals("carcere") || cadro.getId().equals("aparcamento")){
+            Xogo.getConsola().imprimir(((Especial)cadro).toString(taboleiro));
+
+        } else if (!(cadro instanceof CaixaComunidade) && !(cadro instanceof Sorte) && !cadro.getId().equals("irCarcere")) {
             Xogo.getConsola().imprimir(cadro.toString());
 
-        } else Xogo.getConsola().imprimir("O cadro do cal se quere obter información ou ben non existe ou non se pode obter información del");
+        } else Xogo.getConsola().imprimir("Non se pode obter información deste cadro.");
 
     }
 

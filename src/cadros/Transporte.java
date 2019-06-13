@@ -44,9 +44,8 @@ public final class Transporte extends Propiedade {
         if (this.getPropietario() != null){
 
             try{
-
                 xogador.pagar(this.getAluguer());
-
+                Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
             } catch (ExcepcionFortunaInsuficiente e){
                 Xogo.getConsola().imprimir(e.getMessage());
             }
@@ -60,7 +59,7 @@ public final class Transporte extends Propiedade {
 
         StringBuilder saida = new StringBuilder();
 
-        saida.append(String.format("{\n\ttipo: transporte,\n\tvalor: %.2f,\naluguer: %.2f\n}",this.getValor(),this.getAluguer()));
+        saida.append(String.format("{\n\ttipo: transporte,\n\tvalor: %.2f,\n\taluguer: %.2f\n}",this.getValor(),this.getAluguer()));
 
         return new String(saida);
     }

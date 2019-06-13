@@ -2,6 +2,7 @@ package xogo;
 
 import avatares.Avatar;
 import cadros.*;
+import edificacions.Edificacion;
 import interfaces.Constantes;
 import xogadores.Xogador;
 
@@ -17,16 +18,18 @@ public class Taboleiro {
     private HashMap<String, Xogador> xogadores;
     private ArrayList<Grupo> grupos;
     private ArrayList<Avatar> avatares;
+    private ArrayList<Edificacion> edificacions;
 
     public Taboleiro(){
 
-        Cadro cadro = null;
-        Grupo grupo = null;
+        Cadro cadro;
+        Grupo grupo;
         this.cadros = new HashMap<>();
         this.cadrosOrdenados = new HashMap<>();
         this.avatares = new ArrayList<>();
         this.xogadores = new HashMap<>();
         this.grupos = new ArrayList<>();
+        this.edificacions = new ArrayList<>();
 
         /* creación do taboleiro */
 
@@ -286,6 +289,36 @@ public class Taboleiro {
 
     public Cadro obterCadro(String id){
         return cadros.get(id);
+    }
+
+    public ArrayList<Avatar> obterAvataresCadro(String id){
+
+        Cadro cadro = obterCadro(id);
+
+        if (cadro != null){
+
+            ArrayList<Avatar> listaAvatares = new ArrayList<>();
+
+            for (Avatar avatar: avatares)
+                if (cadro.equals(avatar.getPosicion())) listaAvatares.add(avatar);
+
+            return listaAvatares;
+        }
+        return null;
+    }
+
+    public ArrayList<Avatar> obterAvataresCadro(Cadro cadro){
+
+        if (cadro != null){
+
+            ArrayList<Avatar> listaAvatares = new ArrayList<>();
+
+            for (Avatar avatar: avatares)
+                if (cadro.equals(avatar.getPosicion())) listaAvatares.add(avatar);
+
+            return listaAvatares;
+        }
+        return null;
     }
 
     public Integer posicionActual(Avatar avatar){

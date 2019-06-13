@@ -2,9 +2,10 @@ package edificacions;
 
 public final class PistaDeporte extends Edificacion {
 
-    public PistaDeporte(String id){
+    public PistaDeporte(String id, Double prezoVenda){
 
-        super.setId(id);
+        this.setId(id);
+        this.setPrezoVenda(prezoVenda);
 
     }
 

@@ -187,7 +187,7 @@ public final class Solar extends Propiedade {
         descricion.append(String.format("\n\taluguer: %.2f,\n\tvalor casa: %.2f,\n\tvalor hotel: %.2f,\n\tvalor piscina: %.2f,\n\tvalor pista de deporte: %.2f,",
                 this.getAluguer(),this.getValorCasa(),this.getValorHotel(),this.getValorPiscina(),this.getValorPista()));
         descricion.append(String.format("\n\taluguer dunha casa: %.2f,\n\taluguer de dúas casas: %.2f,\n\taluguer de tres casas: %.2f,\n\taluguer de catro casas: %.2f,",
-                this.getAluguer1Casa(),this.getAluguer2Casa(),this.getAluguer3Casa(),this.getAluguer3Casa(),this.getAluguer4Casa()));
+                this.getAluguer1Casa(),this.getAluguer2Casa(),this.getAluguer3Casa(),this.getAluguer4Casa()));
         descricion.append(String.format("\n\taluguer hotel: %.2f,\n\taluguer piscina: %.2f,\n\taluguer pista de deporte: %.2f\n}",
                 this.getAluguerHotel(),this.getAluguerPiscina(),this.getAluguerPista()));
 
@@ -243,13 +243,14 @@ public final class Solar extends Propiedade {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
-        if (this.getPropietario()!=null){
+        if (this.getPropietario() != null){
 
-            if (!this.getPropietario().equals(xogador) && this.getPropietario() != null && !this.getHipotecada()){
+            if (!this.getPropietario().equals(xogador) && !this.getHipotecada()){
 
                 try {
                     xogador.pagar(this.getAluguer());
                     xogador.cobrar(this.getAluguer());
+                    Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
 
                 } catch (ExcepcionFortunaInsuficiente e){
                     Xogo.getConsola().imprimir(e.getMessage());
@@ -263,7 +264,23 @@ public final class Solar extends Propiedade {
 
     public void edificar(Taboleiro taboleiro, String edificio){
 
+        switch (edificio){
 
+            case "casa":
+
+
+                break;
+
+            case "hotel":
+                break;
+
+            case "piscina":
+                break;
+
+            case "pista":
+                break;
+
+        }
 
     }
 

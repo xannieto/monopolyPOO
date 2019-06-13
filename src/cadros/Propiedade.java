@@ -80,8 +80,10 @@ public abstract class Propiedade extends Cadro {
     public abstract void aluguer(Taboleiro taboleiro);
 
     public void comprar(Xogador xogador){
-        if(this.getPropietario() == null)
+        if(this.getPropietario() == null) {
             this.propietario = xogador;
+        }
+
     }
 
     public abstract String informacionVendaBasica();
