@@ -1,6 +1,6 @@
 package cadros;
 
-import excepcions.ExcepcionFortunaInsuficiente;
+import excepcions.FortunaInsuficienteExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
@@ -26,7 +26,7 @@ public final class Imposto extends Cadro {
     /* setters */
     public void setImposto(Double imposto){
 
-        if (imposto < 1)    this.imposto = imposto;
+        if (imposto > 0)    this.imposto = imposto;
 
     }
 
@@ -40,7 +40,7 @@ public final class Imposto extends Cadro {
             xogador.pagar(imposto);
             ((Especial)taboleiro.obterCadro("aparcamento")).setValor(((Especial)taboleiro.obterCadro("aparcamento")).getValor()+imposto);
             Xogo.getConsola().imprimir(String.format("O xogador %s paga o %s de %.2f€",xogador.getNome(),this.getNome(),this.imposto));
-        } catch (ExcepcionFortunaInsuficiente e){
+        } catch (FortunaInsuficienteExcepcion e){
             Xogo.getConsola().imprimir(e.getMessage());
 
         }

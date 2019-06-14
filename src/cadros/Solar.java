@@ -1,7 +1,7 @@
 package cadros;
 
 import edificacions.*;
-import excepcions.ExcepcionFortunaInsuficiente;
+import excepcions.*;
 import interfaces.Constantes;
 import xogadores.Xogador;
 import xogo.Taboleiro;
@@ -252,7 +252,7 @@ public final class Solar extends Propiedade {
                     xogador.cobrar(this.getAluguer());
                     Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
 
-                } catch (ExcepcionFortunaInsuficiente e){
+                } catch (FortunaInsuficienteExcepcion e){
                     Xogo.getConsola().imprimir(e.getMessage());
                 }
 
@@ -262,27 +262,145 @@ public final class Solar extends Propiedade {
 
     }
 
-    public void edificar(Taboleiro taboleiro, String edificio){
+    public void edificar(Taboleiro taboleiro, String edificio) throws EdificacionExcepcion {
 
-        switch (edificio){
+        Xogador xogador = this.getGrupo().getPropietario();
 
-            case "casa":
+        if (xogador.equals(this.getPropietario())) {
+
+            switch (edificio) {
+
+                case "casa":
+                    if (podeseFacerOutraCasa()){
+                        try {
+
+                            Casa casa = new Casa(String.format("casa-%d",taboleiro.obterUltimoNumSerie(0)),this.getValorCasa()*0.5);
+
+                            xogador.pagar(this.getValorCasa());
+                            taboleiro.engadirEdificacion(casa);
+                            xogador.engadirEdificacion(casa);
+                            this.engadirEdificacion(casa);
 
 
-                break;
+                        } catch (FortunaInsuficienteExcepcion e){
+                            Xogo.getConsola().imprimir("Non ten suficiente diñeiro para edificar unha casa.");
+                        }
 
-            case "hotel":
-                break;
+                    } else throw new NonMaisCasasExcepcion("Non se poden construír máis casas");
 
-            case "piscina":
-                break;
+                    break;
 
-            case "pista":
-                break;
+                case "hotel":
+                    if (podeseFacerOutroHotel()){
+
+
+                    } else throw new NonMaisHoteisExcepcion("Non se poden construír máis hoteis");
+
+                    break;
+
+                case "piscina":
+
+                    if (podeseFacerOutraPiscina()){
+
+                    } else throw new NonMaisPiscinasExcepcion("Non se poden construír máis piscinas");
+
+                    break;
+
+                case "pista":
+                    if (podeseFacerOutraPista()){
+
+                    } else throw new NonMaisPistasExcepcion("Non se poden construír máis pistas de deporte");
+
+                    break;
+
+            }
+
+        }
+
+
+    }
+
+    private Boolean podeseFacerOutraPista(){
+
+        Integer pistas = 0, hoteis = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Hotel) hoteis++;
+            else if (edificacion instanceof PistaDeporte) pistas++;
+
+        if (pistas.equals(getGrupo().getTamanhoGrupo())){
+            return false;
+        } else {
+
+            if (hoteis == 2) return false;
+            return true;
 
         }
 
     }
+
+    private Boolean podeseFacerOutraPiscina(){
+
+        Integer piscinas = 0, hoteis = 0, casas = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Casa)    casas++;
+            else if (edificacion instanceof Hotel) hoteis++;
+            else if (edificacion instanceof Piscina) piscinas++;
+
+        if (piscinas.equals(getGrupo().getTamanhoGrupo())){
+            return false;
+        } else{
+
+            if (hoteis > 0 && casas > 1)    return true;
+            return false;
+
+        }
+
+    }
+
+    private Boolean podeseFacerOutraCasa(){
+
+        Integer casas = 0, hoteis = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Casa)    casas++;
+            else if (edificacion instanceof Hotel) hoteis++;
+
+
+        if (hoteis.equals(getGrupo().getTamanhoGrupo())){
+
+            if (casas.equals(getGrupo().getTamanhoGrupo())) return false;
+            return true;
+
+        } else {
+
+            if (casas.equals(4)) return false;
+            return true;
+
+        }
+    }
+
+    private Boolean podeseFacerOutroHotel(){
+
+        Integer casas = 0, hoteis = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Casa)    casas++;
+            else if (edificacion instanceof Hotel) hoteis++;
+
+
+        if (hoteis.equals(getGrupo().getTamanhoGrupo())){
+            return false;
+
+        } else {
+
+            if (casas < 4)  return false;
+            return true;
+        }
+
+    }
+
 
     @Override
     public String informacionVendaBasica() {

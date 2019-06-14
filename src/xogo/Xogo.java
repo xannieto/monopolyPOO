@@ -2,14 +2,12 @@ package xogo;
 
 import avatares.Avatar;
 import cadros.*;
-import excepcions.ExcepcionFortunaInsuficiente;
+import excepcions.FortunaInsuficienteExcepcion;
 import interfaces.Comando;
 import interfaces.Constantes;
 import xogadores.Xogador;
 
-import java.security.SecureRandom;
 import java.util.Collection;
-import java.util.Scanner;
 
 public class Xogo implements Comando {
 
@@ -39,8 +37,6 @@ public class Xogo implements Comando {
     public void menuPrincipal(){
 
         crearXogadores();
-
-        Scanner orde = new Scanner(System.in);
         Boolean sair = false;
 
         quendaInicial();
@@ -50,10 +46,7 @@ public class Xogo implements Comando {
 
         while(!sair){
 
-            System.out.printf("$ %s > ",enQuenda.getXogador().getNome());
-            String entrada = null;
-
-            entrada = orde.nextLine();
+            String entrada = Xogo.consola.ler(String.format("$%s> ",this.enQuenda.getXogador().getNome()));
 
             String[] comando = entrada.split(" ");
 
@@ -61,7 +54,8 @@ public class Xogo implements Comando {
 
                 case "axuda":
 
-                    axudaMenuPrincipal();
+                    if (comando.length==1) axudaMenuPrincipal();
+                    else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                     break;
 
@@ -80,7 +74,7 @@ public class Xogo implements Comando {
 
                         }
 
-                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos");
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                     break;
 
@@ -90,7 +84,7 @@ public class Xogo implements Comando {
 
                         comprarCadro(comando[1]);
 
-                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos");
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                     break;
 
@@ -106,9 +100,16 @@ public class Xogo implements Comando {
                         else if (comando[1].equals("avatar"))   describirAvatar(comando[2]);
                         else Xogo.getConsola().imprimir("Argumento incorrecto");
 
-                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos");
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                     break;
+
+                case "edificar":
+
+                    if (comando.length==2){
+
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                 case "lanzar":
 
@@ -181,9 +182,6 @@ public class Xogo implements Comando {
     }
 
     private void crearXogadores(){
-
-        Scanner orde = new Scanner(System.in);
-
         Boolean sair = false;
 
         consola.imprimir("\n\nBenvidos ao Monopoly!\n\n");
@@ -192,10 +190,7 @@ public class Xogo implements Comando {
 
         while(!sair.booleanValue()){
 
-            System.out.print("$> ");
-            String entrada = null;
-
-            entrada = orde.nextLine();
+            String entrada = Xogo.consola.ler("$> ");
 
             String[] comando = entrada.split(" ");
 
@@ -321,10 +316,10 @@ public class Xogo implements Comando {
 
         if (this.debeAcabarQuenda) {
 
-            Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode lanzar os dados");
+            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados");
 
-        } else if (!this.enQuenda.getPosicion().getId().equals("carcere")){
-
+            /*} else if (!this.enQuenda.getPosicion().getId().equals("carcere")){*/
+        } else if (!this.enQuenda.getCarcere()){
             Integer[] tirada = this.taboleiro.tiradaDados();
             Cadro cadro;
 
@@ -382,7 +377,7 @@ public class Xogo implements Comando {
                 Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
             }
 
-        } catch (ExcepcionFortunaInsuficiente e){
+        } catch (FortunaInsuficienteExcepcion e){
             Xogo.getConsola().imprimir(e.getMessage());
         } catch (Exception e){
             Xogo.consola.imprimir(e.getMessage());
@@ -443,7 +438,7 @@ public class Xogo implements Comando {
                     Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€. A súa fortuna actual é de %.2f€",
                             this.enQuenda.getXogador().getNome(),cadro.getNome(),((Propiedade)cadro).getValor(),this.enQuenda.getXogador().getFortuna()));
 
-                } catch(ExcepcionFortunaInsuficiente e){
+                } catch(FortunaInsuficienteExcepcion e){
                     Xogo.getConsola().imprimir(e.getMessage());
                 }
 
@@ -490,6 +485,14 @@ public class Xogo implements Comando {
             Xogo.getConsola().imprimir(cadro.toString());
 
         } else Xogo.getConsola().imprimir("Non se pode obter información deste cadro.");
+
+    }
+
+    @Override
+    public void edificar(String edificacion) {
+
+
+
 
     }
 

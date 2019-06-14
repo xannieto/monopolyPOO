@@ -1,6 +1,5 @@
 package interfaces;
 
-import xogadores.Xogador;
 import xogo.Taboleiro;
 
 public interface Comando {
@@ -9,6 +8,7 @@ public interface Comando {
     void describirCadro(String id);
     void describirXogador(String nome);
     void describirAvatar(String id);
+    void edificar(String edificacion);
     void lanzarDados();
     void listarXogadores();
     void listarAvatares();

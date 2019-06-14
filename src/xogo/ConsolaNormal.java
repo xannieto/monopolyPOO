@@ -18,7 +18,7 @@ public final class ConsolaNormal implements Consola {
 
         Scanner lector = new Scanner(System.in);
 
-        imprimir(descricion);
+        System.out.print(descricion);
 
         String entrada = lector.nextLine();
 

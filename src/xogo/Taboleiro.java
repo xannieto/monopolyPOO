@@ -2,7 +2,7 @@ package xogo;
 
 import avatares.Avatar;
 import cadros.*;
-import edificacions.Edificacion;
+import edificacions.*;
 import interfaces.Constantes;
 import xogadores.Xogador;
 
@@ -19,6 +19,7 @@ public class Taboleiro {
     private ArrayList<Grupo> grupos;
     private ArrayList<Avatar> avatares;
     private ArrayList<Edificacion> edificacions;
+    private Integer[] idEdificacion;
 
     public Taboleiro(){
 
@@ -29,7 +30,10 @@ public class Taboleiro {
         this.avatares = new ArrayList<>();
         this.xogadores = new HashMap<>();
         this.grupos = new ArrayList<>();
+
         this.edificacions = new ArrayList<>();
+        this.idEdificacion = new Integer[4];
+        for (int i=0; i < this.idEdificacion.length; i++)   idEdificacion[i] = 0;
 
         /* creación do taboleiro */
 
@@ -280,8 +284,42 @@ public class Taboleiro {
         return grupos;
     }
 
+    public ArrayList<Edificacion> getEdificacions() {
+        return edificacions;
+    }
+
+    public Integer[] getIdEdificacion() {
+        return idEdificacion;
+    }
 
     /* métodos */
+
+    public Integer obterUltimoNumSerie(Integer num){
+        return this.idEdificacion[num];
+    }
+
+    private void incrementarNumSerie(Integer num){
+        if(num > 0 || num < idEdificacion.length)   idEdificacion[num]++;
+    }
+
+    public void engadirEdificacion(Edificacion edificacion){
+        if (edificacion != null){
+            if (edificacion instanceof Casa){
+                incrementarNumSerie(0);
+                this.edificacions.add(edificacion);
+            } else if (edificacion instanceof Hotel){
+                incrementarNumSerie(1);
+                this.edificacions.add(edificacion);
+            } else if (edificacion instanceof Piscina){
+                incrementarNumSerie(2);
+                this.edificacions.add(edificacion);
+            } else{
+                incrementarNumSerie(3);
+                this.edificacions.add(edificacion);
+            }
+
+        }
+    }
 
     public Cadro obterCadro(Integer i){
         return cadrosOrdenados.get(i);

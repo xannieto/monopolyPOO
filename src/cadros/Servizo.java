@@ -1,6 +1,6 @@
 package cadros;
 
-import excepcions.ExcepcionFortunaInsuficiente;
+import excepcions.FortunaInsuficienteExcepcion;
 import interfaces.Constantes;
 import xogadores.Xogador;
 import xogo.Taboleiro;
@@ -45,7 +45,7 @@ public final class Servizo extends Propiedade {
                 this.getPropietario().cobrar(pago);
                 Xogo.getConsola().imprimir(String.format("O xogador %s paga %.2f€ de aluguer.",xogador.getNome(),pago));
 
-            } catch (ExcepcionFortunaInsuficiente e){
+            } catch (FortunaInsuficienteExcepcion e){
                 Xogo.getConsola().imprimir(e.getMessage());
             }
         }

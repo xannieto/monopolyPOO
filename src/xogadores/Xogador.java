@@ -3,7 +3,7 @@ package xogadores;
 import avatares.*;
 import cadros.Propiedade;
 import edificacions.Edificacion;
-import excepcions.ExcepcionFortunaInsuficiente;
+import excepcions.FortunaInsuficienteExcepcion;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -69,6 +69,7 @@ public class Xogador {
         return edificacions;
     }
 
+
     /* setters */
 
     public void setFortuna(Double fortuna) {
@@ -76,6 +77,10 @@ public class Xogador {
     }
 
     /* metodos */
+
+    public void engadirEdificacion(Edificacion edificacion){
+        if (edificacion != null)    this.edificacions.put(edificacion.getId(),edificacion);
+    }
 
     public void engadirPropiedade(Propiedade propiedade){
 
@@ -89,12 +94,12 @@ public class Xogador {
 
     }
 
-    public void pagar(Double cantidade) throws ExcepcionFortunaInsuficiente {
+    public void pagar(Double cantidade) throws FortunaInsuficienteExcepcion {
 
         if (cantidade > this.fortuna ) {
 
             this.hipotecar = true;
-            throw new ExcepcionFortunaInsuficiente(String.format("O xogador %s non pode realizar o pago. Deberá buscar financiamento (hipotecas, vendas, tratos).",this.getNome()));
+            throw new FortunaInsuficienteExcepcion(String.format("O xogador %s non pode realizar o pago. Deberá buscar financiamento (hipotecas, vendas, tratos).",this.getNome()));
 
         } else {
             setFortuna(this.fortuna - cantidade);
