@@ -24,6 +24,7 @@ public final class Solar extends Propiedade {
     private Double aluguerHotel;
     private Double aluguerPiscina;
     private Double aluguerPista;
+    private Integer vecesCaidas;
 
     public Solar(String id, String nome, Double valor){
 
@@ -33,6 +34,7 @@ public final class Solar extends Propiedade {
         this.setAluguer(valor*0.1);
         this.setHipotecada(false);
         this.setHipoteca(valor*0.5);
+        this.vecesCaidas = 0;
         this.edificacions = new HashMap<>();
         this.grupo = null;
         calcularValoresDerivados();
@@ -93,6 +95,8 @@ public final class Solar extends Propiedade {
         return aluguerPista;
     }
 
+    public Integer getVecesCaidas(){return vecesCaidas;}
+
     /* setters */
     public void setEdificacions(HashMap<String,Edificacion> edificacions){
         this.edificacions = edificacions;
@@ -147,19 +151,24 @@ public final class Solar extends Propiedade {
     }
 
     /* métodos */
+    public void incrementarVecesCaidas(){
+        if (vecesCaidas != null)
+            this.vecesCaidas++;
+    }
+
     private void calcularValoresDerivados(){
 
-        valorCasa = this.getValor()*0.6;
-        valorHotel = valorCasa;
-        valorPiscina = this.getValor()*0.4;
-        valorPista = this.getValor()*1.25;
-        aluguer1Casa = this.getAluguer()*5;
-        aluguer2Casa = this.getAluguer()*15;
-        aluguer3Casa = this.getAluguer()*35;
-        aluguer4Casa = this.getAluguer()*50;
-        aluguerHotel = this.getAluguer()*70;
-        aluguerPiscina = this.getAluguer()*25;
-        aluguerPista = aluguerPiscina;
+        setValorCasa(this.getValor()*0.6);
+        setValorHotel(valorCasa);
+        setValorPiscina(this.getValor()*0.4);
+        setValorPista(this.getValor()*1.25);
+        setAluguer1Casa(this.getAluguer()*5);
+        setAluguer2Casa(this.getAluguer()*15);
+        setAluguer3Casa(this.getAluguer()*35);
+        setAluguer4Casa(this.getAluguer()*50);
+        setAluguerHotel(this.getAluguer()*70);
+        setAluguerPiscina(this.getAluguer()*25);
+        setAluguerPista(aluguerPiscina);
 
     }
 
@@ -258,7 +267,7 @@ public final class Solar extends Propiedade {
 
             }
 
-        }
+        } else incrementarVecesCaidas();
 
     }
 
@@ -273,34 +282,52 @@ public final class Solar extends Propiedade {
                 case "casa":
                     if (podeseFacerOutraCasa()){
                         try {
-
-                            Casa casa = new Casa(String.format("casa-%d",taboleiro.obterUltimoNumSerie(0)),this.getValorCasa()*0.5);
+                            Casa casa = new Casa(String.format("casa-%d",taboleiro.obterUltimoNumSerie(0)),this,this.getPropietario(),this.getValorCasa());
 
                             xogador.pagar(this.getValorCasa());
                             taboleiro.engadirEdificacion(casa);
-                            xogador.engadirEdificacion(casa);
                             this.engadirEdificacion(casa);
-
+                            aluguer(taboleiro);
 
                         } catch (FortunaInsuficienteExcepcion e){
                             Xogo.getConsola().imprimir("Non ten suficiente diñeiro para edificar unha casa.");
                         }
 
-                    } else throw new NonMaisCasasExcepcion("Non se poden construír máis casas");
+                    } else throw new NonMaisCasasExcepcion("Non se poden construír máis casas.");
 
                     break;
 
                 case "hotel":
                     if (podeseFacerOutroHotel()){
+                        try {
+                            Hotel hotel = new Hotel(String.format("hotel-%d",taboleiro.obterUltimoNumSerie(1)),this,this.getPropietario(),this.getValorHotel());
 
+                            xogador.pagar(this.getValorHotel());
+                            taboleiro.engadirEdificacion(hotel);
+                            this.engadirEdificacion(hotel);
+                            aluguer(taboleiro);
 
-                    } else throw new NonMaisHoteisExcepcion("Non se poden construír máis hoteis");
+                        } catch (FortunaInsuficienteExcepcion e){
+                            Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar un hotel.");
+                        }
+
+                    } else throw new NonMaisHoteisExcepcion("Non se poden construír máis hoteis.");
 
                     break;
 
                 case "piscina":
-
                     if (podeseFacerOutraPiscina()){
+                        try{
+                            Piscina piscina = new Piscina(String.format("piscina-%d",taboleiro.obterUltimoNumSerie(2)),this,this.getPropietario(),this.getValorPiscina());
+
+                            xogador.pagar(this.getValorPiscina());
+                            taboleiro.engadirEdificacion(piscina);
+                            this.engadirEdificacion(piscina);
+                            aluguer(taboleiro);
+
+                        } catch (FortunaInsuficienteExcepcion e){
+                            Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar unha piscina.");
+                        }
 
                     } else throw new NonMaisPiscinasExcepcion("Non se poden construír máis piscinas");
 
@@ -308,15 +335,28 @@ public final class Solar extends Propiedade {
 
                 case "pista":
                     if (podeseFacerOutraPista()){
+                        try {
+                            PistaDeporte pistaDeporte = new PistaDeporte(String.format("pista-%d",taboleiro.obterUltimoNumSerie(3)),this,this.getPropietario(),this.getValorPista());
 
-                    } else throw new NonMaisPistasExcepcion("Non se poden construír máis pistas de deporte");
+                            xogador.pagar(this.getValorPista());
+                            taboleiro.engadirEdificacion(pistaDeporte);
+                            this.engadirEdificacion(pistaDeporte);
+                            aluguer(taboleiro);
+
+                        } catch(FortunaInsuficienteExcepcion e){
+                            Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar unha pista de deporte.");
+                        }
+
+                    } else throw new NonMaisPistasExcepcion("Non se poden construír máis pistas de deporte.");
 
                     break;
+
+                default:
+                    Xogo.getConsola().imprimir("Non se recoñece o tipo de edifiicio que se quere construír.");
 
             }
 
         }
-
 
     }
 
@@ -400,7 +440,6 @@ public final class Solar extends Propiedade {
         }
 
     }
-
 
     @Override
     public String informacionVendaBasica() {

@@ -2,6 +2,8 @@ package xogo;
 
 import avatares.Avatar;
 import cadros.*;
+import edificacions.Edificacion;
+import excepcions.EdificacionExcepcion;
 import excepcions.FortunaInsuficienteExcepcion;
 import interfaces.Comando;
 import interfaces.Constantes;
@@ -107,7 +109,7 @@ public class Xogo implements Comando {
                 case "edificar":
 
                     if (comando.length==2){
-
+                        edificar(comando[1]);
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
@@ -131,11 +133,17 @@ public class Xogo implements Comando {
 
                     if (comando.length==2){
 
+                        verTaboleiro(taboleiro);
                         if (comando[1].equals("xogadores")) listarXogadores();
                         else if (comando[1].equals("avatares")) listarAvatares();
                         else if (comando[1].equals("aVenda"))   listarAVenda();
-                        else Xogo.getConsola().imprimir("Argumento incorrecto");
-                        //verTaboleiro(taboleiro);
+                        else if (comando[1].equals("edificios"))    listarEdificios();
+                        else Xogo.getConsola().imprimir("Argumento incorrecto.");
+
+                    } else if (comando.length==3){
+
+                        if (comando[1].equals("edificios")) listarEdificiosGrupo(comando[2]);
+                        else Xogo.getConsola().imprimir("Argumento incorrecto.");
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
 
@@ -309,113 +317,8 @@ public class Xogo implements Comando {
 
     }
 
+
     /* interface comando */
-
-    @Override
-    public void lanzarDados(){
-
-        if (this.debeAcabarQuenda) {
-
-            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados");
-
-            /*} else if (!this.enQuenda.getPosicion().getId().equals("carcere")){*/
-        } else if (!this.enQuenda.getCarcere()){
-            Integer[] tirada = this.taboleiro.tiradaDados();
-            Cadro cadro;
-
-            this.enQuenda.mover(this.taboleiro,tirada);
-            cadro = this.enQuenda.getPosicion();
-
-            if (cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo){
-
-                if (((Propiedade) cadro).getPropietario()==null) {
-                    describirCadro(cadro.getId());
-                    String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
-
-                    if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
-                }
-
-            }
-            else this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
-
-            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
-
-            if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
-                this.enQuenda.setCobrarSaida(false);
-                this.enQuenda.getXogador().cobrar(Constantes.salario);
-                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" deu unha volta e cobra "+Constantes.salario+"€");
-            }
-
-        } else if (this.enQuenda.getQuendasPrision() > 0) {
-
-            Integer[] tirada = this.taboleiro.tiradaDados();
-
-            if (tirada[0].equals(tirada[1])){
-                this.enQuenda.setQuendasPrision(0);
-                this.enQuenda.setCarcere(false);
-                this.enQuenda.mover(this.taboleiro,tirada);
-            }
-
-        }
-
-    }
-
-    @Override
-    public void sairCarcere() {
-
-        try {
-
-            if (this.enQuenda.getCarcere()){
-
-                this.enQuenda.getXogador().pagar(Constantes.fianzaCarcere);
-                this.enQuenda.setCarcere(true);
-                this.enQuenda.setQuendasPrision(0);
-                Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. A súa fortuna actual é de %.2f€.",
-                        enQuenda.getXogador().getNome(),Constantes.fianzaCarcere,enQuenda.getXogador().getFortuna()));
-
-            } else {
-                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
-            }
-
-        } catch (FortunaInsuficienteExcepcion e){
-            Xogo.getConsola().imprimir(e.getMessage());
-        } catch (Exception e){
-            Xogo.consola.imprimir(e.getMessage());
-        }
-
-    }
-
-    @Override
-    public void listarXogadores() {
-
-        Collection<Xogador> xogadores = this.taboleiro.getXogadores().values();
-
-        for (Xogador xogador: xogadores){
-            Xogo.getConsola().imprimir(xogador.toString());
-        }
-
-    }
-
-    @Override
-    public void listarAvatares() {
-
-        for (Avatar avatar: this.taboleiro.getAvatares()){
-            Xogo.getConsola().imprimir(avatar.toString());
-        }
-
-    }
-
-    @Override
-    public void listarAVenda() {
-
-        for (Cadro cadro: this.taboleiro.getCadros().values()){
-            if ((cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar )&& ((Propiedade) cadro).getPropietario()==null){
-                Xogo.getConsola().imprimir(String.format("%s%s (%s) %s",Constantes.bold,cadro.getNome(),cadro.getId(),Constantes.normal));
-                Xogo.getConsola().imprimir(cadro.toString());
-            }
-        }
-
-    }
 
     @Override
     public void comprarCadro(String id) {
@@ -449,22 +352,11 @@ public class Xogo implements Comando {
     }
 
     @Override
-    public void describirXogador(String xogador) {
-
-        if (this.taboleiro.existeXogador(xogador)){
-
-            Xogo.getConsola().imprimir(this.taboleiro.obterXogador(xogador).toString());
-
-        } else Xogo.getConsola().imprimir("O xogador do cal se pide unha descrición non existe");
-
-    }
-
-    @Override
     public void describirAvatar(String id) {
 
         if (taboleiro.existeAvatar(id)){
 
-            taboleiro.obterAvatar(id).toString();
+            Xogo.getConsola().imprimir(taboleiro.obterAvatar(id).toString());
 
         } else Xogo.getConsola().imprimir("O avatar non existe");
 
@@ -489,10 +381,168 @@ public class Xogo implements Comando {
     }
 
     @Override
+    public void describirXogador(String xogador) {
+
+        if (this.taboleiro.existeXogador(xogador)){
+
+            Xogo.getConsola().imprimir(this.taboleiro.obterXogador(xogador).toString());
+
+        } else Xogo.getConsola().imprimir("O xogador do cal se pide unha descrición non existe");
+
+    }
+
+    @Override
     public void edificar(String edificacion) {
 
+        Cadro cadro = this.enQuenda.getPosicion();
 
+        if (cadro instanceof Solar){
+            Grupo grupo = ((Solar) cadro).getGrupo();
+            if (grupo.getPropietario().equals(this.enQuenda.getXogador()) || ((Solar) cadro).getVecesCaidas() > 2){
+                try {
+                    ((Solar) cadro).edificar(taboleiro,edificacion);
+                } catch (EdificacionExcepcion e){
+                    Xogo.getConsola().imprimir(e.getMessage());
+                }
 
+            } else Xogo.getConsola().imprimir("Non se pode edificar en solares que non son da súa propiedade");
+
+        } else Xogo.getConsola().imprimir("Só se poden edificar edificios en solares");
+
+    }
+
+    @Override
+    public void lanzarDados(){
+
+        if (this.debeAcabarQuenda) {
+            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados");
+
+        } else if (!this.enQuenda.getCarcere()){
+            Integer[] tirada = this.taboleiro.tiradaDados();
+            Cadro cadro;
+
+            this.enQuenda.mover(this.taboleiro,tirada);
+            cadro = this.enQuenda.getPosicion();
+
+            if (cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo){
+
+                if (((Propiedade) cadro).getPropietario()==null) {
+                    describirCadro(cadro.getId());
+                    String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
+
+                    if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
+                }
+
+            } else this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
+
+            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
+
+            if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
+                this.enQuenda.setCobrarSaida(false);
+                this.enQuenda.getXogador().cobrar(Constantes.salario);
+                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" deu unha volta e cobra "+Constantes.salario+"€");
+            }
+
+        } else if (this.enQuenda.getQuendasPrision() > 0) {
+
+            Integer[] tirada = this.taboleiro.tiradaDados();
+
+            if (tirada[0].equals(tirada[1])){
+                this.enQuenda.setQuendasPrision(0);
+                this.enQuenda.setCarcere(false);
+                this.enQuenda.mover(this.taboleiro,tirada);
+            }
+
+        }
+
+    }
+
+    @Override
+    public void listarAvatares() {
+
+        for (Avatar avatar: this.taboleiro.getAvatares()){
+            Xogo.getConsola().imprimir(avatar.toString());
+        }
+
+    }
+
+    @Override
+    public void listarAVenda() {
+
+        for (Cadro cadro: this.taboleiro.getCadros().values()){
+            if ((cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar )&& ((Propiedade) cadro).getPropietario()==null){
+                Xogo.getConsola().imprimir(String.format("%s%s (%s) %s",Constantes.bold,cadro.getNome(),cadro.getId(),Constantes.normal));
+                Xogo.getConsola().imprimir(cadro.toString());
+            }
+        }
+
+    }
+
+    @Override
+    public void listarEdificios() {
+
+        if (!taboleiro.getEdificacions().isEmpty()){
+            for (Edificacion edificacion: this.taboleiro.getEdificacions())
+                Xogo.getConsola().imprimir(edificacion.toString());
+
+        } else Xogo.getConsola().imprimir("Non hai edificación construídas.");
+    }
+
+    @Override
+    public void listarEdificiosGrupo(String idGrupo) {
+
+        Grupo grupo = this.taboleiro.obterGrupo(idGrupo);
+
+        if (grupo != null){
+            if (!grupo.getSolares().isEmpty()){
+                for (Solar solar: grupo.getSolares()){
+                    if (!solar.getEdificacions().isEmpty()){
+                        for (Edificacion edificacion: solar.getEdificacions().values())
+                            Xogo.getConsola().imprimir(edificacion.toString());
+
+                    }
+
+                }
+
+            }
+
+        } else Xogo.getConsola().imprimir("O grupo non existe.");
+
+    }
+
+    @Override
+    public void listarXogadores() {
+
+        Collection<Xogador> xogadores = this.taboleiro.getXogadores().values();
+
+        for (Xogador xogador: xogadores){
+            Xogo.getConsola().imprimir(xogador.toString());
+        }
+
+    }
+
+    @Override
+    public void sairCarcere() {
+
+        try {
+
+            if (this.enQuenda.getCarcere()){
+
+                this.enQuenda.getXogador().pagar(Constantes.fianzaCarcere);
+                this.enQuenda.setCarcere(true);
+                this.enQuenda.setQuendasPrision(0);
+                Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. A súa fortuna actual é de %.2f€.",
+                        enQuenda.getXogador().getNome(),Constantes.fianzaCarcere,enQuenda.getXogador().getFortuna()));
+
+            } else {
+                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
+            }
+
+        } catch (FortunaInsuficienteExcepcion e){
+            Xogo.getConsola().imprimir(e.getMessage());
+        } catch (Exception e){
+            Xogo.consola.imprimir(e.getMessage());
+        }
 
     }
 

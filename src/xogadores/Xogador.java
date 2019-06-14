@@ -2,9 +2,11 @@ package xogadores;
 
 import avatares.*;
 import cadros.Propiedade;
+import cadros.Solar;
 import edificacions.Edificacion;
 import excepcions.FortunaInsuficienteExcepcion;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -14,7 +16,6 @@ public class Xogador {
     private Double fortuna;
     private Avatar avatar;
     private HashMap<String, Propiedade> propiedades;
-    private HashMap<String, Edificacion> edificacions;
     private Boolean hipotecar;
 
     public Xogador(String nome, Double fortunaInicial, String avatar){
@@ -22,7 +23,6 @@ public class Xogador {
         this.nome = nome;
         this.fortuna = fortunaInicial;
         this.propiedades = new HashMap<>();
-        this.edificacions = new HashMap<>();
 
         switch (avatar){
 
@@ -65,10 +65,6 @@ public class Xogador {
         return propiedades;
     }
 
-    public HashMap<String, Edificacion> getEdificacions() {
-        return edificacions;
-    }
-
 
     /* setters */
 
@@ -78,8 +74,24 @@ public class Xogador {
 
     /* metodos */
 
-    public void engadirEdificacion(Edificacion edificacion){
-        if (edificacion != null)    this.edificacions.put(edificacion.getId(),edificacion);
+    public ArrayList<Edificacion> obterEdificacions(){
+
+        if (!propiedades.isEmpty()){
+
+            ArrayList<Edificacion> edificacions = new ArrayList<>();
+
+            for (Propiedade propiedade: propiedades.values()){
+                if (propiedade instanceof Solar){
+                    Collection<Edificacion> edif = ((Solar) propiedade).getEdificacions().values();
+                    edificacions.addAll(edif);
+                }
+
+            }
+
+            return edificacions;
+        }
+
+        return null;
     }
 
     public void engadirPropiedade(Propiedade propiedade){
@@ -122,6 +134,7 @@ public class Xogador {
         if (!this.getPropiedades().isEmpty()){
 
             Collection<Propiedade> prop = this.propiedades.values();
+
             descricion.append("[");
             temp.append("[");
 
@@ -143,19 +156,15 @@ public class Xogador {
             descricion.append(String.format("\n\tHipotecas: %s",temp));
             temp.setLength(0);
 
-            if (!edificacions.isEmpty()){
-                Collection<Edificacion> edificacions = this.edificacions.values();
-                descricion.append("[");
+            descricion.append("\n\tEdificacións: ");
+            temp.append("[");
+            for (Edificacion edificacion: obterEdificacions())
+                temp.append(String.format("%s, ",edificacion.getId()));
 
-                for (Edificacion edificacion: edificacions){
-                    descricion.append(String.format("%s, ",edificacion.getId()));
-                }
-                descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]\n}");
-
-            } else descricion.append("\n\tEdificación: ningunha\n}");
-
-
-
+            if (temp.length()>1)    temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
+            else {
+                descricion.append("ningunha\n}"); temp.setLength(0);
+            }
 
         } else descricion.append("ningunha\n\tHipotecas: ningunha\n\tEdificios: ningún\n}");
 

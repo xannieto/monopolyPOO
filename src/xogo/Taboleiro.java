@@ -321,6 +321,16 @@ public class Taboleiro {
         }
     }
 
+    public Grupo obterGrupo(String id){
+
+        if (this.grupos != null){
+            for (Grupo grupo: this.getGrupos())
+                if (grupo.getIdGrupo().equals(id)) return grupo;
+
+        }
+        return null;
+    }
+
     public Cadro obterCadro(Integer i){
         return cadrosOrdenados.get(i);
     }
