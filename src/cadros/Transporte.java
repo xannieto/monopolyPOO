@@ -43,10 +43,19 @@ public final class Transporte extends Propiedade {
 
         if (this.getPropietario() != null){
 
+            if (this.pertenceAXogador(xogador)) return;
+
             try{
                 xogador.pagar(this.getAluguer());
+                this.getPropietario().incrementarCobroDeAluguere(this.getAluguer());
+
+                xogador.incrementarPagoDeAlugueres(this.getAluguer());
+                this.getPropietario().incrementarCobroDeAluguere(this.getAluguer());
+
                 Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
             } catch (FortunaInsuficienteExcepcion e){
+                xogador.setDebeda(this.getAluguer());
+                xogador.setHipotecar(true);
                 Xogo.getConsola().imprimir(e.getMessage());
             }
 

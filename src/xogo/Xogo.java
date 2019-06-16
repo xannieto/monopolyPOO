@@ -5,6 +5,7 @@ import cadros.*;
 import edificacions.Edificacion;
 import excepcions.EdificacionExcepcion;
 import excepcions.FortunaInsuficienteExcepcion;
+import excepcions.HipotecaExcepcion;
 import interfaces.Comando;
 import interfaces.Constantes;
 import xogadores.Xogador;
@@ -67,12 +68,7 @@ public class Xogo implements Comando {
 
                         if (comando[1].equals("quenda")){
 
-                            if (this.debeAcabarQuenda){
-
-                                cambiarQuenda();
-                                Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
-
-                            } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda.");
+                            acabarQuenda();
 
                         }
 
@@ -106,12 +102,32 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "deshipotecar":
+
+                    if (comando.length==2){
+
+                        deshipotecar(comando[1]);
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
+                    break;
+
                 case "edificar":
 
                     if (comando.length==2){
                         edificar(comando[1]);
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
+                case "hipotecar":
+
+                    if (comando.length==2){
+
+                        hipotecar(comando[1]);
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
+                    break;
 
                 case "lanzar":
 
@@ -123,9 +139,9 @@ public class Xogo implements Comando {
 
                             verTaboleiro(taboleiro);
 
-                        } else Xogo.getConsola().imprimir("Argumento incorrecto");
+                        } else Xogo.getConsola().imprimir("Argumento incorrecto.");
 
-                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo.");
 
                     break;
 
@@ -149,7 +165,33 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "sair":
+
+                    if (comando.length==2){
+
+                        if (comando[1].equals("carcere"))   sairCarcere();
+
+                    } else {
+                        if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]: ").equalsIgnoreCase("si"))
+                            consola.imprimir("A saír do xogo...");
+                        sair = Boolean.TRUE;
+                    }
+
+                    break;
+
+                case "vender":
+
+                    if (comando.length==3){
+
+                        if (comando[1].equals("casas") || comando[1].equals("hoteis") || comando[1].equals("piscinas") || comando[1].equals("pistas"))
+                            venderEdificios(comando[1],comando[2],Integer.valueOf(comando[3]));
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
+
+                    break;
+
                 case "ver":
+
                     if (comando.length==2){
 
                         if (comando[1].equals("taboleiro")) verTaboleiro(taboleiro);
@@ -165,22 +207,8 @@ public class Xogo implements Comando {
 
                     break;
 
-                case "sair":
-
-                    if (comando.length==2){
-
-                        if (comando[1].equals("carcere"))   sairCarcere();
-
-                    } else {
-                        if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]").equalsIgnoreCase("si"))
-                            consola.imprimir("A saír do xogo...");
-                        sair = Boolean.TRUE;
-                    }
-                    
-                    break;
-
                 default:
-                    consola.imprimir("Comando incorrecto, ténteo de novo");
+                    consola.imprimir("Comando incorrecto, ténteo de novo.");
             }
 
             aumentarAsCatroVoltas();
@@ -321,13 +349,26 @@ public class Xogo implements Comando {
     /* interface comando */
 
     @Override
+    public void acabarQuenda() {
+
+        if (this.debeAcabarQuenda){
+
+            cambiarQuenda();
+            Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
+
+        } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda.");
+
+
+    }
+
+    @Override
     public void comprarCadro(String id) {
 
         Cadro cadro = this.taboleiro.obterCadro(id);
 
         if (!this.enQuenda.getPosicion().equals(cadro)){
 
-            Xogo.getConsola().imprimir("O avatar non está no cadro para poder realizar a compra");
+            Xogo.getConsola().imprimir("O avatar non está no cadro para poder realizar a compra.");
 
         } else if (cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar){
 
@@ -338,16 +379,19 @@ public class Xogo implements Comando {
                     this.enQuenda.getXogador().pagar(((Propiedade)cadro).getValor());
                     ((Propiedade) cadro).comprar(this.enQuenda.getXogador());
                     this.enQuenda.getXogador().engadirPropiedade((Propiedade) cadro);
-                    Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€. A súa fortuna actual é de %.2f€",
+                    Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€. A súa fortuna actual é de %.2f€.",
                             this.enQuenda.getXogador().getNome(),cadro.getNome(),((Propiedade)cadro).getValor(),this.enQuenda.getXogador().getFortuna()));
 
                 } catch(FortunaInsuficienteExcepcion e){
                     Xogo.getConsola().imprimir(e.getMessage());
                 }
 
-            } else Xogo.getConsola().imprimir("O cadro xa ten un propietario, deberá negociar a súa adquisición mediante un trato");
+            } else if (((Propiedade) cadro).pertenceAXogador(this.enQuenda.getXogador())){
+                Xogo.getConsola().imprimir("A propiedade xa está comprada.");
 
-        } else Xogo.getConsola().imprimir("O cadro que quere comprar non existe ou non é unha propiedade");
+            } else Xogo.getConsola().imprimir("O cadro xa ten un propietario, deberá negociar a súa adquisición mediante un trato.");
+
+        } else Xogo.getConsola().imprimir("O cadro que quere comprar non existe ou non é unha propiedade.");
 
     }
 
@@ -392,6 +436,27 @@ public class Xogo implements Comando {
     }
 
     @Override
+    public void deshipotecar(String id) {
+
+        Cadro cadro = this.taboleiro.obterCadro(id);
+
+        if (cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar){
+            if (((Propiedade) cadro).pertenceAXogador(this.enQuenda.getXogador())){
+                try{
+                    ((Propiedade) cadro).deshipotecarPropiedade();
+
+                }catch (HipotecaExcepcion e){
+                    Xogo.getConsola().imprimir(e.getMessage());
+
+                }
+
+            } else Xogo.getConsola().imprimir(String.format("%s non se pode deshipotecar %s (%s), debido a que non lle pertence.",this.enQuenda.getXogador().getNome(),cadro.getNome(),cadro.getId()));
+
+        } else Xogo.getConsola().imprimir(String.format("Só se poden deshipotecar propiedades (servizo, transporte, solar), non outro tipo de cadros."));
+
+    }
+
+    @Override
     public void edificar(String edificacion) {
 
         Cadro cadro = this.enQuenda.getPosicion();
@@ -412,10 +477,32 @@ public class Xogo implements Comando {
     }
 
     @Override
+    public void hipotecar(String id) {
+
+        Cadro cadro = this.taboleiro.obterCadro(id);
+
+        if (cadro instanceof Solar || cadro instanceof Servizo || cadro instanceof Transporte){
+            if (((Propiedade) cadro).pertenceAXogador(this.enQuenda.getXogador())){
+
+                try {
+                    ((Propiedade) cadro).hipotecarPropiedade();
+
+                } catch (HipotecaExcepcion e){
+                    Xogo.getConsola().imprimir(e.getMessage());
+
+                }
+
+            } else Xogo.getConsola().imprimir(String.format("%s non se pode deshipotecar %s (%s), debido a que non lle pertence.",this.enQuenda.getXogador().getNome(),cadro.getNome(),cadro.getId()));
+
+        } else Xogo.getConsola().imprimir(String.format("Só se poden hipotecar propiedades (servizo, transporte, solar), non outro tipo de cadros."));
+
+    }
+
+    @Override
     public void lanzarDados(){
 
-        if (this.debeAcabarQuenda) {
-            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados");
+        if (this.debeAcabarQuenda || this.enQuenda.getXogador().getHipotecar()) {
+            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados.");
 
         } else if (!this.enQuenda.getCarcere()){
             Integer[] tirada = this.taboleiro.tiradaDados();
@@ -433,7 +520,12 @@ public class Xogo implements Comando {
                     if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
                 }
 
-            } else this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
+            } else {
+                this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
+
+                if (this.enQuenda.getXogador().getHipotecar())  Xogo.getConsola().imprimir("O xogador debe hipotecar ou vender propied");
+
+            }
 
             if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
 
@@ -543,6 +635,22 @@ public class Xogo implements Comando {
         } catch (Exception e){
             Xogo.consola.imprimir(e.getMessage());
         }
+
+    }
+
+    @Override
+    public void venderEdificios(String edificacion, String solar, Integer cantidade) {
+
+        Cadro cadro = this.taboleiro.obterCadro(solar);
+
+        if (cadro instanceof Solar){
+            if (cantidade > 0){
+
+                ((Solar) cadro).venderEdificios(this.taboleiro,edificacion,cantidade);
+
+            } else Xogo.getConsola().imprimir("A cantidade de edificacións a eliminar debe ser maior que cero.");
+
+        } else Xogo.getConsola().imprimir("O solar indicado non existe ou ben é un cadro no que non se pode edificar.");
 
     }
 

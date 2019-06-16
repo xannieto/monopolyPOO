@@ -1,5 +1,6 @@
 package cadros;
 
+import edificacions.Edificacion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 
@@ -87,6 +88,28 @@ public final class Grupo extends Cadro {
 
         return false;
 
+    }
+
+    public String queSePodeConstruir(){
+
+        StringBuilder informacion = new StringBuilder();
+
+        Integer casas = 0, hoteis = 0, piscinas = 0, pistas = 0;
+
+        for (Solar solar: this.getSolares()){
+            if(!solar.getEdificacions().isEmpty()){
+                casas += solar.contarCasas();
+                hoteis += solar.contarHoteis();
+                piscinas += solar.contarPiscinas();
+                pistas += solar.contarPistas();
+            }
+        }
+
+        informacion.append("Pódense construír:");
+
+
+
+        return informacion.toString();
     }
 
     @Override

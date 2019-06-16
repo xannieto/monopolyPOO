@@ -39,10 +39,14 @@ public final class Imposto extends Cadro {
 
             xogador.pagar(imposto);
             ((Especial)taboleiro.obterCadro("aparcamento")).setValor(((Especial)taboleiro.obterCadro("aparcamento")).getValor()+imposto);
+
+            xogador.incrementarPagoDeImpostos(this.imposto);
+
             Xogo.getConsola().imprimir(String.format("O xogador %s paga o %s de %.2f€",xogador.getNome(),this.getNome(),this.imposto));
         } catch (FortunaInsuficienteExcepcion e){
+            xogador.setHipotecar(true);
+            xogador.setDebeda(this.imposto);
             Xogo.getConsola().imprimir(e.getMessage());
-
         }
 
     }

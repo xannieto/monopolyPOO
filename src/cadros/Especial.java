@@ -43,6 +43,7 @@ public final class Especial extends Cadro {
             case "irCarcere":
                 xogador.getAvatar().setCarcere(true);
                 xogador.getAvatar().setPosicion(taboleiro.obterCadro("carcere"));
+                xogador.incrementarVecesEnPrision();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión.",xogador.getNome()));
                 break;

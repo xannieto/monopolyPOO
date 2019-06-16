@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public final class CaixaComunidade extends Accion {
 
-    //private static HashMap<String,Carta> montoDeCartas;
+    private static HashMap<String,Carta> montoDeCartas;
 
     public CaixaComunidade(String id, String nome, ArrayList<Carta> cartas){
 

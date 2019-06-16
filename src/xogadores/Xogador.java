@@ -17,12 +17,31 @@ public class Xogador {
     private Avatar avatar;
     private HashMap<String, Propiedade> propiedades;
     private Boolean hipotecar;
+    private Double debeda;
+
+    private Double dinheiroInvestido;
+    private Double pagoDeAlugueres;
+    private Double cobroDeAlugueres;
+    private Double pagoDeImpostos;
+    private Double cobroDeSaida;
+    private Double premiosInversionsBote;
+    private Integer vecesEnPrision;
+
 
     public Xogador(String nome, Double fortunaInicial, String avatar){
 
         this.nome = nome;
         this.fortuna = fortunaInicial;
         this.propiedades = new HashMap<>();
+        this.debeda = 0.0;
+
+        this.dinheiroInvestido = 0.0;
+        this.pagoDeAlugueres = 0.0;
+        this.cobroDeAlugueres = 0.0;
+        this.pagoDeImpostos = 0.0;
+        this.cobroDeSaida = 0.0;
+        this.premiosInversionsBote = 0.0;
+        this.vecesEnPrision = 0;
 
         switch (avatar){
 
@@ -65,6 +84,41 @@ public class Xogador {
         return propiedades;
     }
 
+    public Double getDebeda() {
+        return debeda;
+    }
+
+    public Boolean getHipotecar() {
+        return hipotecar;
+    }
+
+    public Double getDinheiroInvestido() {
+        return dinheiroInvestido;
+    }
+
+    public Double getPagoDeAlugueres() {
+        return pagoDeAlugueres;
+    }
+
+    public Double getCobroDeAlugueres() {
+        return cobroDeAlugueres;
+    }
+
+    public Double getPagoDeImpostos() {
+        return pagoDeImpostos;
+    }
+
+    public Double getCobroDeSaida() {
+        return cobroDeSaida;
+    }
+
+    public Double getPremiosInversionsBote() {
+        return premiosInversionsBote;
+    }
+
+    public Integer getVecesEnPrision() {
+        return vecesEnPrision;
+    }
 
     /* setters */
 
@@ -72,7 +126,60 @@ public class Xogador {
         this.fortuna = fortuna;
     }
 
+    public void setDebeda(Double debeda) {
+        this.debeda = debeda;
+    }
+
+    public void setHipotecar(Boolean hipotecar) {
+        this.hipotecar = hipotecar;
+    }
+
     /* metodos */
+
+    public void incrementarDinheiroInvestido(Double cantidade){
+
+        if (cantidade > 0)  this.dinheiroInvestido += cantidade;
+
+    }
+
+    public void incrementarCobroDeAluguere(Double cantidade){
+
+        if (cantidade > 0)  this.cobroDeAlugueres += cantidade;
+
+    }
+
+    public void incrementarPagoDeAlugueres(Double cantidade){
+
+        if (cantidade > 0)  this.pagoDeAlugueres += cantidade;
+
+    }
+
+    public void incrementarCobroDeSaida(Double cantidade){
+
+        if (cantidade > 0)  this.cobroDeSaida += cantidade;
+    }
+
+
+    public void incrementarPagoDeImpostos(Double cantidade){
+
+        if (cantidade > 0)  this.pagoDeImpostos += cantidade;
+    }
+
+
+    public void incrementarPremiosInversionsBote(Double cantidade){
+
+        if (cantidade > 0)  this.premiosInversionsBote += cantidade;
+    }
+
+    public void incrementarVecesEnPrision(){
+        this.vecesEnPrision++;
+    }
+
+    public void incrementar(Double cantidade){
+
+        if (cantidade > 0)  this.pagoDeAlugueres += cantidade;
+
+    }
 
     public ArrayList<Edificacion> obterEdificacions(){
 
@@ -118,6 +225,16 @@ public class Xogador {
             //Xogo.getConsola().imprimir(String.format("O xogador %s realiza un pagamento de %.2f€",this.getNome(),cantidade));
         }
 
+    }
+
+    public String estatiscas(){
+
+        StringBuilder descricion = new StringBuilder();
+
+        descricion.append(String.format("{\n\tdiñeiro investido: %.2f€,\n\tpago de alugueres: %.2f€,\n\tcobro de alugueres: %.2f,\n\tpago de taxas e impostos: %.2f€,\n\tcobros por pasar pola saída: %.2f€,\n\tpremios por inversion ou bote: %.2f€,\n\tveces en prisión: %d\n}",
+                this.dinheiroInvestido, this.pagoDeAlugueres,this.cobroDeAlugueres, this.pagoDeImpostos, this.cobroDeSaida,this.premiosInversionsBote, this.vecesEnPrision));
+
+        return descricion.toString();
     }
 
     @Override

@@ -179,6 +179,7 @@ public abstract class Avatar {
                 this.setPosicion(taboleiro.obterCadro("carcere"));
                 setCarcere(true);
                 setQuendasPrision(3);
+                xogador.incrementarVecesEnPrision();
                 resetDatosTirada();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s sacou tres veces dobres. Debe ingresar en prisión.",this.getXogador().getNome()));

@@ -39,13 +39,22 @@ public final class Servizo extends Propiedade {
 
         if (this.getPropietario() != null){
 
+            if (this.pertenceAXogador(xogador)) return;
+
             try{
                 Double pago = this.getAluguer()*xogador.getAvatar().getUltimoAvance();
                 xogador.pagar(pago);
                 this.getPropietario().cobrar(pago);
+
+                //estatiscas
+                xogador.incrementarPagoDeAlugueres(pago);
+                this.getPropietario().incrementarCobroDeAluguere(pago);
+
                 Xogo.getConsola().imprimir(String.format("O xogador %s paga %.2f€ de aluguer.",xogador.getNome(),pago));
 
             } catch (FortunaInsuficienteExcepcion e){
+                xogador.setDebeda(this.getAluguer());
+                xogador.setHipotecar(true);
                 Xogo.getConsola().imprimir(e.getMessage());
             }
         }

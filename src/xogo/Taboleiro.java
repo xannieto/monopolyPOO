@@ -321,6 +321,18 @@ public class Taboleiro {
         }
     }
 
+    public void quitarEdificacion(String nome){
+
+        if (!edificacions.isEmpty()){
+            for (Edificacion edificacion: this.edificacions)
+                if(edificacion.getId().equals(nome)){
+                    this.edificacions.remove(edificacion);
+                    break;
+                }
+        }
+
+    }
+
     public Grupo obterGrupo(String id){
 
         if (this.grupos != null){

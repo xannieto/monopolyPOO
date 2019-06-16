@@ -189,18 +189,17 @@ public final class Solar extends Propiedade {
     }
 
     @Override
-    public String toString() {
-        StringBuilder descricion = new StringBuilder();
+    public void hipotecarPropiedade() throws HipotecaExcepcion {
 
-        descricion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f,",this.grupo.getNomeGrupo(),this.getValor()));
-        descricion.append(String.format("\n\taluguer: %.2f,\n\tvalor casa: %.2f,\n\tvalor hotel: %.2f,\n\tvalor piscina: %.2f,\n\tvalor pista de deporte: %.2f,",
-                this.getAluguer(),this.getValorCasa(),this.getValorHotel(),this.getValorPiscina(),this.getValorPista()));
-        descricion.append(String.format("\n\taluguer dunha casa: %.2f,\n\taluguer de dúas casas: %.2f,\n\taluguer de tres casas: %.2f,\n\taluguer de catro casas: %.2f,",
-                this.getAluguer1Casa(),this.getAluguer2Casa(),this.getAluguer3Casa(),this.getAluguer4Casa()));
-        descricion.append(String.format("\n\taluguer hotel: %.2f,\n\taluguer piscina: %.2f,\n\taluguer pista de deporte: %.2f\n}",
-                this.getAluguerHotel(),this.getAluguerPiscina(),this.getAluguerPista()));
+        if (!this.getHipotecada()){
+            if (!this.edificacions.isEmpty()) {
+                this.setHipotecada(true);
+                this.getPropietario().cobrar(this.getHipoteca());
+                Xogo.getConsola().imprimir(String.format("%s recibe %.2f€ pola hipoteca de %s. Non pode cobrar ningún aluguer.",
+                        this.getPropietario().getNome(),this.getHipoteca(),this.getNome()));
 
-        return descricion.toString();
+            } else Xogo.getConsola().imprimir("Este solar ten edificacións, deberá vendelas primeiro antes de hipotecar este solar.");
+        } else throw new HipotecaExcepcion(String.format("%s, a propiedade %s (%s) xa está hipotecada.",this.getPropietario(),this.getNome(),this.getId()));
     }
 
     @Override
@@ -223,10 +222,23 @@ public final class Solar extends Propiedade {
                     else if (edificacion instanceof PistaDeporte) pistas++;
                 }
 
-                if (casas == 1) aluguer += aluguer1Casa;
+                switch (casas){
+
+                    case 4:
+                        aluguer += aluguer4Casa;
+                    case 3:
+                        aluguer += aluguer3Casa;
+                    case 2:
+                        aluguer += aluguer3Casa;
+                    case 1:
+                        aluguer += aluguer1Casa;
+
+                }
+
+                /*if (casas == 1) aluguer += aluguer1Casa;
                 else if (casas == 2) aluguer += aluguer1Casa + aluguer2Casa;
                 else if (casas == 3) aluguer += aluguer1Casa + aluguer2Casa + aluguer3Casa;
-                else if (casas == 4) aluguer += aluguer1Casa + aluguer2Casa + aluguer4Casa;
+                else if (casas == 4) aluguer += aluguer1Casa + aluguer2Casa + aluguer4Casa;*/
 
                 if (hoteis == 1)    aluguer += aluguerHotel;
                 else if (hoteis == 2)    aluguer += 2*aluguerHotel;
@@ -254,14 +266,20 @@ public final class Solar extends Propiedade {
 
         if (this.getPropietario() != null){
 
-            if (!this.getPropietario().equals(xogador) && !this.getHipotecada()){
+            if (!this.pertenceAXogador(xogador) && !this.getHipotecada()){
 
                 try {
                     xogador.pagar(this.getAluguer());
-                    xogador.cobrar(this.getAluguer());
+                    this.getPropietario().cobrar(this.getAluguer());
+
+                    xogador.incrementarPagoDeAlugueres(this.getAluguer());
+                    this.getPropietario().incrementarCobroDeAluguere(this.getAluguer());
+
                     Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
 
                 } catch (FortunaInsuficienteExcepcion e){
+                    xogador.setDebeda(this.getAluguer());
+                    xogador.setHipotecar(true);
                     Xogo.getConsola().imprimir(e.getMessage());
                 }
 
@@ -305,6 +323,15 @@ public final class Solar extends Propiedade {
                             xogador.pagar(this.getValorHotel());
                             taboleiro.engadirEdificacion(hotel);
                             this.engadirEdificacion(hotel);
+
+                            for (Edificacion edificacion: edificacions.values()){
+                                if (edificacion instanceof Casa){
+                                    taboleiro.quitarEdificacion(edificacion.getId());
+                                    this.quitarEdificacion(edificacion.getId());
+                                }
+
+                            }
+
                             aluguer(taboleiro);
 
                         } catch (FortunaInsuficienteExcepcion e){
@@ -360,20 +387,205 @@ public final class Solar extends Propiedade {
 
     }
 
-    private Boolean podeseFacerOutraPista(){
+    public void venderEdificios(Taboleiro taboleiro, String edificio, Integer cantidade){
 
-        Integer pistas = 0, hoteis = 0;
+        if (!edificio.isEmpty()){
+            Integer vendido = 0;
+
+            switch (edificio){
+
+                case "casas":
+
+                    if (contarCasas() >= cantidade){
+
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Casa && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu/venderon %d casa(s) en %s, percibindo %.2f. Queda(n) %d casa(s) na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
+
+                    } else {
+
+                        cantidade = contarCasas();
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Casa && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d casa(s) en %s, percibindo %.2f. Queda(n) %d casa(s) na propiedade.",
+                                vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
+
+                    }
+
+                    break;
+
+                case "hoteis":
+
+                    if (contarHoteis() >= cantidade){
+
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Hotel && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f. Quedan %d hotel/-teis na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
+
+                    } else {
+
+                        cantidade = contarHoteis();
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Hotel && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f. Quedan %d hotel/-teis na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
+                    }
+
+                    break;
+
+                case "piscinas":
+
+                    if (contarPiscinas() >= cantidade){
+
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Piscina && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f. Quedan %d piscina(s) na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
+
+                    } else {
+
+                        cantidade = contarPiscinas();
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof Piscina && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f. Quedan %d piscina(s) na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
+
+                    }
+
+                    break;
+
+                case "pistas":
+
+                    if (contarPistas() >= cantidade){
+
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof PistaDeporte && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d pista(s) en %s, percibindo %.2f. Quedan %d pista(s) na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
+
+                    } else {
+
+                        cantidade = contarPistas();
+                        vendido = cantidade;
+
+                        for (Edificacion edificacion: this.edificacions.values())
+                            if (edificacion instanceof PistaDeporte && cantidade > 0){
+                                this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());
+                                cantidade--;
+                            }
+
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d casa(s) en %s, percibindo %.2f. Quedan %d casa(s) na propiedade.",
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
+                    }
+
+                    break;
+
+                default:
+                    Xogo.getConsola().imprimir("Non se recoñece o tipo de edificación a derrubar.");
+            }
+
+        }
+
+    }
+
+    public Integer contarCasas(){
+        Integer conta = 0;
 
         for (Edificacion edificacion: edificacions.values())
-            if (edificacion instanceof Hotel) hoteis++;
-            else if (edificacion instanceof PistaDeporte) pistas++;
+            if (edificacion instanceof Casa) conta++;
+
+        return conta;
+    }
+
+    public Integer contarHoteis(){
+        Integer conta = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Hotel) conta++;
+
+        return conta;
+    }
+
+    public Integer contarPiscinas(){
+        Integer conta = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof Piscina) conta++;
+
+        return conta;
+    }
+
+    public Integer contarPistas(){
+        Integer conta = 0;
+
+        for (Edificacion edificacion: edificacions.values())
+            if (edificacion instanceof PistaDeporte) conta++;
+
+        return conta;
+    }
+
+    private Boolean podeseFacerOutraPista(){
+
+        Integer pistas = contarPistas(), hoteis = contarHoteis();
 
         if (pistas.equals(getGrupo().getTamanhoGrupo())){
             return false;
         } else {
 
-            if (hoteis == 2) return false;
-            return true;
+            if (hoteis > 1) return true;
+            return false;
 
         }
 
@@ -381,12 +593,7 @@ public final class Solar extends Propiedade {
 
     private Boolean podeseFacerOutraPiscina(){
 
-        Integer piscinas = 0, hoteis = 0, casas = 0;
-
-        for (Edificacion edificacion: edificacions.values())
-            if (edificacion instanceof Casa)    casas++;
-            else if (edificacion instanceof Hotel) hoteis++;
-            else if (edificacion instanceof Piscina) piscinas++;
+        Integer piscinas = contarPiscinas(), hoteis = contarHoteis(), casas = contarCasas();
 
         if (piscinas.equals(getGrupo().getTamanhoGrupo())){
             return false;
@@ -401,12 +608,7 @@ public final class Solar extends Propiedade {
 
     private Boolean podeseFacerOutraCasa(){
 
-        Integer casas = 0, hoteis = 0;
-
-        for (Edificacion edificacion: edificacions.values())
-            if (edificacion instanceof Casa)    casas++;
-            else if (edificacion instanceof Hotel) hoteis++;
-
+        Integer casas = contarCasas(), hoteis = contarHoteis();
 
         if (hoteis.equals(getGrupo().getTamanhoGrupo())){
 
@@ -423,12 +625,7 @@ public final class Solar extends Propiedade {
 
     private Boolean podeseFacerOutroHotel(){
 
-        Integer casas = 0, hoteis = 0;
-
-        for (Edificacion edificacion: edificacions.values())
-            if (edificacion instanceof Casa)    casas++;
-            else if (edificacion instanceof Hotel) hoteis++;
-
+        Integer casas = contarCasas(), hoteis = contarHoteis();
 
         if (hoteis.equals(getGrupo().getTamanhoGrupo())){
             return false;
@@ -449,5 +646,20 @@ public final class Solar extends Propiedade {
         informacion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f\n}",this.grupo.getNomeGrupo(),this.getValor()));
 
         return informacion.toString();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder descricion = new StringBuilder();
+
+        descricion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f,",this.grupo.getNomeGrupo(),this.getValor()));
+        descricion.append(String.format("\n\taluguer: %.2f,\n\tvalor casa: %.2f,\n\tvalor hotel: %.2f,\n\tvalor piscina: %.2f,\n\tvalor pista de deporte: %.2f,",
+                this.getAluguer(),this.getValorCasa(),this.getValorHotel(),this.getValorPiscina(),this.getValorPista()));
+        descricion.append(String.format("\n\taluguer dunha casa: %.2f,\n\taluguer de dúas casas: %.2f,\n\taluguer de tres casas: %.2f,\n\taluguer de catro casas: %.2f,",
+                this.getAluguer1Casa(),this.getAluguer2Casa(),this.getAluguer3Casa(),this.getAluguer4Casa()));
+        descricion.append(String.format("\n\taluguer hotel: %.2f,\n\taluguer piscina: %.2f,\n\taluguer pista de deporte: %.2f\n}",
+                this.getAluguerHotel(),this.getAluguerPiscina(),this.getAluguerPista()));
+
+        return descricion.toString();
     }
 }

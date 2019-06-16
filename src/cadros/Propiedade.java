@@ -1,7 +1,10 @@
 package cadros;
 
+import excepcions.FortunaInsuficienteExcepcion;
+import excepcions.HipotecaExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
 public abstract class Propiedade extends Cadro {
 
@@ -88,7 +91,7 @@ public abstract class Propiedade extends Cadro {
 
     public abstract String informacionVendaBasica();
 
-    public boolean pertenceAXogador(Xogador xogador){
+    public Boolean pertenceAXogador(Xogador xogador){
 
         if (xogador != null)   return xogador.equals(this.propietario);
 
@@ -96,6 +99,37 @@ public abstract class Propiedade extends Cadro {
 
     }
 
+    public void hipotecarPropiedade() throws HipotecaExcepcion {
+
+        if (this.hipotecada)
+            throw new HipotecaExcepcion(String.format("%s, a propiedade %s (%s) xa está hipotecada.",this.propietario,this.getNome(),this.getId()));
+
+        else {
+            this.propietario.cobrar(this.hipoteca);
+            setHipotecada(true);
+            Xogo.getConsola().imprimir(String.format("%s recibe %.2f€ pola hipoteca de %s. Non pode cobrar ningún aluguer.",
+                    this.propietario.getNome(),this.hipoteca,this.getNome()));
+        }
+
+    }
+
+    public void deshipotecarPropiedade() throws HipotecaExcepcion {
+
+        if (!this.hipotecada)
+            throw new HipotecaExcepcion(String.format("%s, a propiedade %s (%s) xa está deshipotecada.",this.propietario,this.getNome(),this.getId()));
+
+        else{
+            try {
+                this.propietario.pagar(this.hipoteca*1.1);
+                this.setHipotecada(false);
+
+            } catch (FortunaInsuficienteExcepcion e){
+                Xogo.getConsola().imprimir(String.format("Non se pode levar a cabo a deshipoteca de %s (%s).", this.getNome(),this.getId()));
+            }
+
+        }
+
+    }
 
     public void valor(){
 
