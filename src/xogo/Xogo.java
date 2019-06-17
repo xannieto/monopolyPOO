@@ -181,7 +181,7 @@ public class Xogo implements Comando {
 
                 case "vender":
 
-                    if (comando.length==3){
+                    if (comando.length==4){
 
                         if (comando[1].equals("casas") || comando[1].equals("hoteis") || comando[1].equals("piscinas") || comando[1].equals("pistas"))
                             venderEdificios(comando[1],comando[2],Integer.valueOf(comando[3]));
@@ -345,19 +345,69 @@ public class Xogo implements Comando {
 
     }
 
+    private void xestionHipotecas(){
+
+        Xogador xogador = this.enQuenda.getXogador();
+
+        while(xogador.getFortuna() < xogador.getDebeda()){
+            if (!xogador.getPropiedades().isEmpty()){
+
+                describirXogador(xogador.getNome());
+
+                String entrada = Xogo.consola.ler("Escolla que propiedade/edificación quere hipotecar ou vender: ");
+                String[] comando = entrada.split(" ");
+
+                /* pequeno menú que só permite hipotecar ou vender cousas */
+                switch (comando[0]){
+                    case "hipotecar":
+                        if (comando.length==2){
+
+                            hipotecar(comando[1]);
+
+                        } else Xogo.consola.imprimir("Cantidade incorrecta de argumentos, ténteo de novo.");
+
+                        break;
+
+                    case "vender":
+
+                        if (comando.length==4){
+
+                            venderEdificios(comando[1],comando[2],Integer.valueOf(comando[3]));
+
+                        } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo.");
+
+                        break;
+
+                    default:
+                        Xogo.consola.imprimir("Comando incorrecto.");
+                }
+
+            } else{
+                Xogo.consola.imprimir(String.format("O xogador %s non ten máis propiedades para hipotecar ou vender. Está en situación de bancarrota.",xogador.getNome()));
+                return;
+            }
+
+        }
+
+        /* xa non ten que seguir hipotecando */
+        xogador.setHipotecar(false);
+
+    }
 
     /* interface comando */
 
     @Override
     public void acabarQuenda() {
 
-        if (this.debeAcabarQuenda){
+        if (this.debeAcabarQuenda && !this.enQuenda.getXogador().getHipotecar()) {
 
             cambiarQuenda();
-            Xogo.getConsola().imprimir("A quenda é para "+this.enQuenda.getXogador().getNome());
+            Xogo.getConsola().imprimir("A quenda é para " + this.enQuenda.getXogador().getNome());
 
-        } else Xogo.getConsola().imprimir("O xogador "+this.enQuenda.getXogador().getNome()+" non pode rematar a súa quenda aínda.");
+        } else if (this.enQuenda.getXogador().getHipotecar()) {
+            Xogo.getConsola().imprimir(String.format("O xogador %s non pode rematar a súa quenda debido a que debe axustar contas...",this.enQuenda.getXogador().getNome()));
 
+        } else Xogo.getConsola().imprimir(String.format("O xogador %s non pode rematar a súa quenda aínda.",this.enQuenda.getXogador().getNome()));
 
     }
 
@@ -507,10 +557,12 @@ public class Xogo implements Comando {
         } else if (!this.enQuenda.getCarcere()){
             Integer[] tirada = this.taboleiro.tiradaDados();
             Cadro cadro;
+            Xogador xogador = this.enQuenda.getXogador();
 
             this.enQuenda.mover(this.taboleiro,tirada);
             cadro = this.enQuenda.getPosicion();
 
+            /* isto é por se non pertence a ninguén a propiedades */
             if (cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo){
 
                 if (((Propiedade) cadro).getPropietario()==null) {
@@ -520,20 +572,47 @@ public class Xogo implements Comando {
                     if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
                 }
 
+            /* se xa ten un propietario, execútase a acción de cadro */
             } else {
-                this.enQuenda.getPosicion().accion(this.taboleiro,this.enQuenda.getXogador());
 
-                if (this.enQuenda.getXogador().getHipotecar())  Xogo.getConsola().imprimir("O xogador debe hipotecar ou vender propied");
+                try {
+                    this.enQuenda.getPosicion().accion(this.taboleiro,xogador);
+
+                    if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
+
+                    if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
+                        this.enQuenda.setCobrarSaida(false);
+                        xogador.cobrar(Constantes.salario);
+                        Xogo.consola.imprimir(String.format("O xogador %s deu unha volta completa e cobra %.2f€.",xogador.getNome(),Constantes.salario));
+                    }
+
+                } catch (HipotecaExcepcion e){
+
+                    xestionHipotecas();
+
+                    /* se xa non ten que seguir hipotecando, pode pagar */
+                    if (!xogador.getHipotecar()) {
+                        try {
+                            this.enQuenda.getPosicion().accion(this.taboleiro,xogador);
+
+                            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
+
+                            if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
+                                this.enQuenda.setCobrarSaida(false);
+                                xogador.cobrar(Constantes.salario);
+                                Xogo.consola.imprimir(String.format("O xogador %s deu unha volta completa e cobra %.2f€.",xogador.getNome(),Constantes.salario));
+                            }
+
+                            xogador.setDebeda(0.0);
+
+                        } catch (HipotecaExcepcion h){
+                            Xogo.consola.imprimir(h.getMessage());
+                        }
+                    }
+                }
 
             }
 
-            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
-
-            if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
-                this.enQuenda.setCobrarSaida(false);
-                this.enQuenda.getXogador().cobrar(Constantes.salario);
-                Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" deu unha volta e cobra "+Constantes.salario+"€");
-            }
 
         } else if (this.enQuenda.getQuendasPrision() > 0) {
 
@@ -661,6 +740,5 @@ public class Xogo implements Comando {
         consola.imprimir(" ");
 
     }
-
 
 }

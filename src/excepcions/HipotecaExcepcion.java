@@ -1,6 +1,6 @@
 package excepcions;
 
-public final class HipotecaExcepcion extends PropiedadeExcepcion {
+public class HipotecaExcepcion extends PropiedadeExcepcion {
 
     public HipotecaExcepcion(){
         super();

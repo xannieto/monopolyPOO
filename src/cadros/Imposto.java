@@ -1,6 +1,7 @@
 package cadros;
 
 import excepcions.FortunaInsuficienteExcepcion;
+import excepcions.HipotecaExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
@@ -33,7 +34,7 @@ public final class Imposto extends Cadro {
     /* metodos */
 
     @Override
-    public void accion(Taboleiro taboleiro, Xogador xogador) {
+    public void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion {
 
         try {
 
@@ -47,6 +48,7 @@ public final class Imposto extends Cadro {
             xogador.setHipotecar(true);
             xogador.setDebeda(this.imposto);
             Xogo.getConsola().imprimir(e.getMessage());
+            throw new HipotecaExcepcion("Debe hipotecar ou vender propiedades.");
         }
 
     }

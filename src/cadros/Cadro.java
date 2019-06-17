@@ -2,6 +2,7 @@ package cadros;
 
 import avatares.Avatar;
 import avatares.Esfinxe;
+import excepcions.HipotecaExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 
@@ -38,7 +39,7 @@ public abstract class Cadro {
 
     }
 
-    public abstract void accion(Taboleiro taboleiro, Xogador xogador);
+    public abstract void accion(Taboleiro taboleiro, Xogador xogador)throws HipotecaExcepcion;
 
     @Override
     public boolean equals(Object obj) {

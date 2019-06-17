@@ -262,7 +262,7 @@ public final class Solar extends Propiedade {
     }
 
     @Override
-    public void accion(Taboleiro taboleiro, Xogador xogador) {
+    public void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion {
 
         if (this.getPropietario() != null){
 
@@ -278,9 +278,10 @@ public final class Solar extends Propiedade {
                     Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
 
                 } catch (FortunaInsuficienteExcepcion e){
-                    xogador.setDebeda(this.getAluguer());
                     xogador.setHipotecar(true);
+                    xogador.setDebeda(this.getValor());
                     Xogo.getConsola().imprimir(e.getMessage());
+                    throw new HipotecaExcepcion("Debe hipotecar ou vender propiedades.");
                 }
 
             }
