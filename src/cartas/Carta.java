@@ -5,6 +5,7 @@ import xogo.Taboleiro;
 
 public abstract class Carta {
 
+    private String id;
     private String textoCarta;
     private String cadroDestino;
     private Double valor;
@@ -14,6 +15,11 @@ public abstract class Carta {
     public abstract void accion(Taboleiro taboleiro, Xogador xogador);
 
     /* setter */
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setTextoCarta(String textoCarta) {
         this.textoCarta = textoCarta;
     }
@@ -36,9 +42,14 @@ public abstract class Carta {
 
     /* getters */
 
+    public String getId() {
+        return id;
+    }
+
     public String getTextoCarta() {
         return textoCarta;
     }
+
     public String getCadroDestino() {
         return cadroDestino;
     }
@@ -53,5 +64,14 @@ public abstract class Carta {
 
     public Double getValor() {
         return valor;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof CartaSorte || obj instanceof CartaCaixaComunidade)
+            return ((Carta) obj).getId().equals(this.id);
+        return false;
+
     }
 }

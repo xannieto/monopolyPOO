@@ -4,58 +4,82 @@ import cartas.Carta;
 import excepcions.HipotecaExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public final class Sorte extends Accion {
 
     private static ArrayList<Carta> monteDeCartas;
-    private Carta ultimaEscollida;
 
-    public Sorte(String id, String nome, ArrayList<Carta> cartas){
+    public Sorte(String id, String nome){
 
         this.setId(id);
         this.setNome(nome);
-        this.setCartas(cartas);
+        this.setUltimaEscollida(null);
 
-    }
-
-    /* getters */
-    public Carta getUltimaEscollida() {
-        return ultimaEscollida;
     }
 
     /* setters */
-    private static void setMonteDeCartas(HashMap<String, Carta> montoDeCartas) {
+    private static void setMonteDeCartas(ArrayList<Carta> montoDeCartas) {
         monteDeCartas = monteDeCartas;
     }
 
-    public void setUltimaEscollida(Carta ultimaEscollida) {
-        this.ultimaEscollida = ultimaEscollida;
-    }
+    private List<Carta> barallarCartas(){
 
-    /* metodos */
+        List<Carta> baralladas = new ArrayList<>();
+        List<Carta> copiaMonte = new ArrayList<>(monteDeCartas);
+        SecureRandom sr = new SecureRandom(new byte[1]);
 
-    private ArrayList<Carta> barallar(){
+        while (baralladas.size()!=monteDeCartas.size()){
 
+            Integer num = sr.nextInt(copiaMonte.size());
+            Carta copia = copiaMonte.get(num);
 
+            baralladas.add(copia);
+            copiaMonte.remove(copia);
 
+        }
 
+        return baralladas;
     }
 
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion {
 
-        if (ultimaEscollida != null){
+        if (this.getUltimaEscollida() == null){
+            List<Carta> baralla = barallarCartas();
+            Integer numCarta = null;
 
+            /* escolle unha carta */
+            while(numCarta == null){
+                String[] cachos = Xogo.getConsola().ler("Escolla un número do un ao seis: ").split(" ");
 
+                if (cachos.length==1){
+                    numCarta = Integer.valueOf(cachos[0]);
 
+                    if (numCarta < 1 || numCarta > 6)   numCarta = null;
+                }
 
+            }
+
+            baralla.get(numCarta).accion(taboleiro,xogador);
+
+            if (xogador.getHipotecar()){
+                setUltimaEscollida(baralla.get(numCarta));
+                throw new HipotecaExcepcion();
+            }
 
         } else {
-            ultimaEscollida.accion(taboleiro,xogador);
-            ultimaEscollida = null;
+            getUltimaEscollida().accion(taboleiro,xogador);
+
+            if (xogador.getHipotecar()){
+                throw new HipotecaExcepcion();
+
+            } else setUltimaEscollida(null);
+
         }
 
     }

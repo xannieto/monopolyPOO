@@ -1,6 +1,7 @@
 package cartas;
 
 import excepcions.FortunaInsuficienteExcepcion;
+import excepcions.HipotecaExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
@@ -21,7 +22,7 @@ public final class CartaCaixaComunidade extends Carta {
     public void accion(Taboleiro taboleiro, Xogador xogador){
 
         if (this.getValor() != null){
-
+            /* para as que son simplemente multas ou premios por algo */
             if (getPagar()){
                 try{
                     xogador.pagar(this.getValor());
@@ -39,6 +40,7 @@ public final class CartaCaixaComunidade extends Carta {
             }
 
         } else if (!this.getCadroDestino().isEmpty()){
+            /* as que implican desprazarte polo taboleiro, podendo cobrar ou non */
             if (getCadroDestino().equals("carcere")){
 
                 xogador.getAvatar().setCarcere(true);
@@ -56,14 +58,16 @@ public final class CartaCaixaComunidade extends Carta {
                     xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
                     Integer posicionNova = taboleiro.posicionActual(xogador.getAvatar());
 
-                    if (posicionAntiga > posicionNova)  taboleiro.obterCadro("saida").accion(taboleiro,xogador);
+                    if (posicionAntiga > posicionNova){
+                        try {
+                            taboleiro.obterCadro("saida").accion(taboleiro,xogador);
+                        } catch (HipotecaExcepcion e){Xogo.getConsola().imprimir(e.getMessage());}
+                    }
 
 
                 } else {
                     xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
                 }
-
-
 
             }
 

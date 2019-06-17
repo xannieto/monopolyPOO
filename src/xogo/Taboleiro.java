@@ -46,7 +46,7 @@ public class Taboleiro {
         cadros.put("solar1",cadro);
         cadrosOrdenados.put(2,cadro);
 
-        cadro = new CaixaComunidade("caixaSur","Caixa de comunidade",null);
+        cadro = new CaixaComunidade("caixaSur","Caixa de comunidade");
         cadros.put("caixaSur",cadro);
         cadrosOrdenados.put(3,cadro);
 
@@ -73,7 +73,7 @@ public class Taboleiro {
         cadros.put("solar3",cadro);
         cadrosOrdenados.put(7,cadro);
 
-        cadro = new Sorte("sorteSur","Sorte",null);
+        cadro = new Sorte("sorteSur","Sorte");
         cadros.put("sorteSur",cadro);
         cadrosOrdenados.put(8,cadro);
 
@@ -130,7 +130,7 @@ public class Taboleiro {
         cadros.put("solar9",cadro);
         cadrosOrdenados.put(17,cadro);
 
-        cadro = new CaixaComunidade("caixaOeste","Caixa de comunidade",null);
+        cadro = new CaixaComunidade("caixaOeste","Caixa de comunidade");
         cadros.put("caixaOeste",cadro);
         cadrosOrdenados.put(18,cadro);
 
@@ -159,7 +159,7 @@ public class Taboleiro {
         cadros.put("solar12",cadro);
         cadrosOrdenados.put(22,cadro);
 
-        cadro = new Sorte("sorteNorte","Sorte",null);
+        cadro = new Sorte("sorteNorte","Sorte");
         cadros.put("sorteNorte",cadro);
         cadrosOrdenados.put(23,cadro);
 
@@ -220,7 +220,7 @@ public class Taboleiro {
         cadros.put("solar19",cadro);
         cadrosOrdenados.put(33,cadro);
 
-        cadro = new CaixaComunidade("caixaLeste", "Caixa de comunidade", null);
+        cadro = new CaixaComunidade("caixaLeste", "Caixa de comunidade");
         cadros.put("caixaLeste",cadro);
         cadrosOrdenados.put(34,cadro);
 
@@ -240,7 +240,7 @@ public class Taboleiro {
         cadros.put("transLeste",cadro);
         cadrosOrdenados.put(36,cadro);
 
-        cadro = new Sorte("sorteLeste","Sorte",null);
+        cadro = new Sorte("sorteLeste","Sorte");
         cadros.put("sorteLeste",cadro);
         cadrosOrdenados.put(37,cadro);
 
