@@ -8,8 +8,9 @@ import xogo.Xogo;
 
 public final class CartaCaixaComunidade extends Carta {
 
-    public CartaCaixaComunidade(String textoCarta, String cadroDestino,Double valor, Boolean pagar, Boolean cobrar){
+    public CartaCaixaComunidade(String id, String textoCarta, String cadroDestino,Double valor, Boolean pagar, Boolean cobrar){
 
+        this.setId(id);
         this.setTextoCarta(textoCarta);
         this.setCadroDestino(cadroDestino);
         this.setValor(valor);
@@ -29,9 +30,9 @@ public final class CartaCaixaComunidade extends Carta {
                     Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
 
                 } catch (FortunaInsuficienteExcepcion e) {
-                    Xogo.getConsola().imprimir(e.getMessage());
                     xogador.setDebeda(this.getValor());
                     xogador.setHipotecar(true);
+                    Xogo.getConsola().imprimir(e.getMessage());
                 }
 
             } else {
@@ -39,7 +40,8 @@ public final class CartaCaixaComunidade extends Carta {
                 Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
             }
 
-        } else if (!this.getCadroDestino().isEmpty()){
+        } else if (this.getCadroDestino() != null){
+            Xogo.getConsola().imprimir("entrada2");
             /* as que implican desprazarte polo taboleiro, podendo cobrar ou non */
             if (getCadroDestino().equals("carcere")){
 
@@ -50,28 +52,20 @@ public final class CartaCaixaComunidade extends Carta {
 
                 Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
 
-            } else {
+            } else if (getCadroDestino().equals("saida")){
 
-                if (this.getCobrar()){
-
-                    Integer posicionAntiga = taboleiro.posicionActual(xogador.getAvatar());
                     xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
-                    Integer posicionNova = taboleiro.posicionActual(xogador.getAvatar());
 
-                    if (posicionAntiga > posicionNova){
-                        try {
-                            taboleiro.obterCadro("saida").accion(taboleiro,xogador);
-                        } catch (HipotecaExcepcion e){Xogo.getConsola().imprimir(e.getMessage());}
-                    }
-
-
-                } else {
-                    xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
+                    try {
+                        xogador.getAvatar().getPosicion().accion(taboleiro, xogador);
+                        Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
+                    } catch (HipotecaExcepcion e){
+                        Xogo.getConsola().imprimir(e.getMessage());
                 }
-
             }
 
         }
 
     }
+
 }

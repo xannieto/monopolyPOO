@@ -43,7 +43,7 @@ public final class Imposto extends Cadro {
 
             xogador.incrementarPagoDeImpostos(this.imposto);
 
-            Xogo.getConsola().imprimir(String.format("O xogador %s paga o %s de %.2f€",xogador.getNome(),this.getNome(),this.imposto));
+            Xogo.getConsola().imprimir(String.format("O xogador %s paga o %s de %.2f€. A súa fortuna actual é de %.2f€.",xogador.getNome(),this.getNome(),this.imposto,xogador.getFortuna()));
         } catch (FortunaInsuficienteExcepcion e){
             xogador.setHipotecar(true);
             xogador.setDebeda(this.imposto);

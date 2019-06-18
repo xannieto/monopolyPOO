@@ -15,7 +15,7 @@ public final class Servizo extends Propiedade {
         this.setNome(nome);
         this.setValor(valor);
         this.setAluguer(Constantes.factorServizo*4);
-        this.setHipoteca(valor*0.5);
+        this.setHipoteca(valor*Constantes.factorHipoteca);
         this.setHipotecada(false);
 
     }
@@ -38,7 +38,7 @@ public final class Servizo extends Propiedade {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion {
 
-        if (this.getPropietario() != null){
+        if (this.getPropietario() != null && !this.getHipotecada()){
 
             if (this.pertenceAXogador(xogador)) return;
 

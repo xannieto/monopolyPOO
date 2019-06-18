@@ -1,13 +1,15 @@
 package interfaces;
 
-import javax.print.attribute.HashAttributeSet;
-import java.util.Collection;
-import java.util.Collections;
+import cartas.Carta;
+import cartas.CartaCaixaComunidade;
+import cartas.CartaSorte;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface Constantes {
 
-    HashMap<String,Double> valoresSolares = new HashMap<String, Double>()
+    HashMap<String,Double> valoresSolares = new HashMap<>()
     {{
         /* grupo 1 */
         put("solar1", 50000.0);
@@ -49,8 +51,42 @@ public interface Constantes {
 
     }};
 
+    /* cartas da caixa de comunidade */
+    String textoCartaComunidade1 = "Paga 32576€ por unha fin de semana nun balneario de cinco estrelas.";
+    String textoCartaComunidade2 = "Estás a ser investigado por fraude fiscal. Vai a prisión directamente, sen cobrar os 130304€ do cadro de Saída.";
+    String textoCartaComunidade3 = "Posiciónate no cadro de Saída. Cobra os 130304€";
+    String textoCartaComunidade4 = "A túa compañía de Internet obtén beneficios. Cobras 130304€.";
+    String textoCartaComunidade5 = "Paga 65152€ por invitar a tódolos teus amigos a unha viaxe a Ribeira Sacra.";
+    String textoCartaComunidade6 = "Devolución de Facenda. Cobras 32576€.";
+
+    ArrayList<Carta> comunidade = new ArrayList<>(){{
+        add(new CartaCaixaComunidade("1",textoCartaComunidade1,null,32576.0,true,false));
+        add(new CartaCaixaComunidade("2",textoCartaComunidade2,"carcere",null,false,false));
+        add(new CartaCaixaComunidade("3",textoCartaComunidade3,"saida",null,false,true));
+        add(new CartaCaixaComunidade("4",textoCartaComunidade4,null,130304.0,false,true));
+        add(new CartaCaixaComunidade("5",textoCartaComunidade5,null,65152.0,true,false));
+        add(new CartaCaixaComunidade("6",textoCartaComunidade6,null,32576.0,false,true));
+    }};
+
+    /*cartas de sorte*/
+    String textoCartaSorte1 = "Decides ir de tapas. Avanza até O Franco.";
+    String textoCartaSorte2 = "Multa por empregar o teléfono móbil mentres conduces. Pagas 13030€.";
+    String textoCartaSorte3 = "Paga 13030€ pola matrícula da escola privada.";
+    String textoCartaSorte4 = "Vai a Praza do Obradoiro. Se pasas polo cadro de Saída, cobras os 130304€.";
+    String textoCartaSorte5 = "Beneficios pola venda das túas accións en ENCE. Recibes 97728€.";
+    String textoCartaSorte6 = "Estás a ser persiguido polos teus acreedores por impagos. Vai a prisión directamente, sen cobrar os 130304€ do cadro de Saída.";
+
+    ArrayList<Carta> sorte = new ArrayList<>(){{
+       add(new CartaSorte("7",textoCartaSorte1,"solar14",null,false,false));
+       add(new CartaSorte("8",textoCartaSorte2,null,13030.0,true,false));
+       add(new CartaSorte("9",textoCartaSorte3,null,13030.0,true,false));
+       add(new CartaSorte("10",textoCartaSorte4,"solar17",130304.0,false,true));
+       add(new CartaSorte("11",textoCartaSorte5,null,97728.0,false,true));
+       add(new CartaSorte("12",textoCartaSorte6,"carcere",null,false,false));
+    }};
+
     /* suma total dos grupos */
-    Double totalGrupos = 2866686.0;
+    //Double totalGrupos = 2866686.0;
 
     /* movidas */
     Double fortunaInicial = 955562.0;
@@ -64,8 +100,7 @@ public interface Constantes {
 
     /* factores */
     Double factorServizo = 651.52;
-    Double factorCasa = 0.6;
-    Double factorHotel = 0.6;
+    Double factorCasaHotel = 0.6;
     Double factorPiscina = 0.4;
     Double factorPistaDeporte = 1.25;
     Double factorHipoteca = 0.5;
@@ -121,5 +156,4 @@ public interface Constantes {
     String bold = "\033[0;1m";
     String normal = "\033[0;0m";
 
-    String RESET_COLOR = "\u001b[0m";
 }

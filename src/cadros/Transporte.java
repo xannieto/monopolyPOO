@@ -16,7 +16,7 @@ public final class Transporte extends Propiedade {
         this.setValor(valor);
         this.setAluguer(Constantes.transporte);
         this.setHipotecada(false);
-        this.setHipoteca(valor*0.5);
+        this.setHipoteca(valor*Constantes.factorHipoteca);
 
     }
 
@@ -27,9 +27,10 @@ public final class Transporte extends Propiedade {
 
             Integer conta = 1;
 
-            for (Cadro cadro: taboleiro.getCadros().values())
-                if (cadro instanceof Transporte && ((Transporte) cadro).getPropietario().equals(this.getPropietario()))
-                    conta++;
+            for (Cadro cadro : taboleiro.getCadros().values())
+                if (cadro instanceof Transporte)
+                    if (((Transporte) cadro).pertenceAXogador(this.getPropietario()))
+                        conta++;
 
             this.setAluguer(Constantes.transporte*conta*0.25);
 
@@ -42,7 +43,7 @@ public final class Transporte extends Propiedade {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion {
 
-        if (this.getPropietario() != null){
+        if (this.getPropietario() != null && !this.getHipotecada()){
 
             if (this.pertenceAXogador(xogador)) return;
 

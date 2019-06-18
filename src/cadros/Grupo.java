@@ -73,19 +73,30 @@ public final class Grupo extends Cadro {
 
     /* métodos */
 
+    public Boolean pertenceAXogador(Xogador xogador) {
+
+        if (xogador != null) return xogador.equals(this.propietario);
+
+        return false;
+
+    }
+
     public Boolean estaCompradoPorUnPropietario(){
 
-        Xogador xogador = this.solares.get(0).getPropietario();
+        if (this.getPropietario()!=null)    return true;
+        else {
+            Xogador xogador = this.solares.get(0).getPropietario();
 
-        if (xogador != null){
+            if (xogador != null) {
 
-            for (int i=1; i<this.solares.size(); i++)
-                if (!this.solares.get(i).getPropietario().equals(xogador))  return false;
+                for (int i = 1; i < this.solares.size(); i++)
+                    if (!this.solares.get(i).pertenceAXogador(xogador)) return false;
 
-            return true;
+                this.setPropietario(xogador);
+                return true;
 
+            }
         }
-
         return false;
 
     }

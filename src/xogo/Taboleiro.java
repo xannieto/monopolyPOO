@@ -183,11 +183,11 @@ public class Taboleiro {
         cadros.put("transNorte",cadro);
         cadrosOrdenados.put(26,cadro);
 
-        cadro = new Solar("solar15",Constantes.SOLAR14,Constantes.valoresSolares.get("solar15"));
+        cadro = new Solar("solar15",Constantes.SOLAR15,Constantes.valoresSolares.get("solar15"));
         cadros.put("solar15",cadro);
         cadrosOrdenados.put(27,cadro);
 
-        cadro = new Solar("solar16",Constantes.SOLAR15,Constantes.valoresSolares.get("solar16"));
+        cadro = new Solar("solar16",Constantes.SOLAR16,Constantes.valoresSolares.get("solar16"));
         cadros.put("solar16",cadro);
         cadrosOrdenados.put(28,cadro);
 
@@ -216,7 +216,7 @@ public class Taboleiro {
         cadros.put("solar18",cadro);
         cadrosOrdenados.put(32,cadro);
 
-        cadro = new Solar("solar19",Constantes.SOLAR18,Constantes.valoresSolares.get("solar19"));
+        cadro = new Solar("solar19",Constantes.SOLAR19,Constantes.valoresSolares.get("solar19"));
         cadros.put("solar19",cadro);
         cadrosOrdenados.put(33,cadro);
 

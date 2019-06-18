@@ -2,6 +2,7 @@ package cadros;
 
 import cartas.Carta;
 import excepcions.HipotecaExcepcion;
+import interfaces.Constantes;
 import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public final class CaixaComunidade extends Accion {
 
-    private static ArrayList<Carta> monteDeCartas;
+    private static ArrayList<Carta> monteDeCartas = Constantes.comunidade;
 
     public CaixaComunidade(String id, String nome){
 
@@ -52,14 +53,19 @@ public final class CaixaComunidade extends Accion {
                 String[] cachos = Xogo.getConsola().ler("Escolla un número do un ao seis: ").split(" ");
 
                 if (cachos.length==1){
-                    numCarta = Integer.valueOf(cachos[0]);
+                    try{
+                        numCarta = Integer.valueOf(cachos[0]);
+                    } catch (NumberFormatException e){
+                        Xogo.getConsola().imprimir(e.getMessage());
+                    }
 
-                    if (numCarta < 1 || numCarta > 6)   numCarta = null;
+                    if (numCarta!=null)
+                        if (numCarta < 1 || numCarta > 6)   numCarta = null;
+
                 }
 
             }
-
-            baralla.get(numCarta).accion(taboleiro,xogador);
+            baralla.get(numCarta % 6).accion(taboleiro,xogador);
 
             if (xogador.getHipotecar()){
                 setUltimaEscollida(baralla.get(numCarta));
@@ -77,6 +83,5 @@ public final class CaixaComunidade extends Accion {
         }
 
     }
-
 
 }

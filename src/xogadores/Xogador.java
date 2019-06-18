@@ -42,6 +42,7 @@ public class Xogador {
         this.cobroDeSaida = 0.0;
         this.premiosInversionsBote = 0.0;
         this.vecesEnPrision = 0;
+        this.hipotecar = false;
 
         switch (avatar){
 
@@ -242,6 +243,7 @@ public class Xogador {
 
         StringBuilder descricion = new StringBuilder();
         StringBuilder temp = new StringBuilder();
+        StringBuilder temp2 = new StringBuilder();
 
         descricion.append(String.format("{\n\tNome: %s",this.nome));
         descricion.append(String.format("\n\tAvatar: %s",this.getAvatar().getId()));
@@ -252,18 +254,24 @@ public class Xogador {
 
             Collection<Propiedade> prop = this.propiedades.values();
 
-            descricion.append("[");
+            temp2.append("[");
             temp.append("[");
 
             for (Propiedade propiedade : prop){
                 if (!propiedade.getHipotecada()){
-                    descricion.append(propiedade.getId());
-                    descricion.append(", ");
+                    temp2.append(propiedade.getId());
+                    temp2.append(", ");
                 } else {
                     temp.append(String.format("%s, ",propiedade.getId()));
                 }
             }
-            descricion.replace(descricion.lastIndexOf(","),descricion.lastIndexOf(" "),"]");
+
+            if (temp2.length()>1)   temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
+            else {
+                temp2.setLength(0); temp2.append("ningunha");
+            }
+
+            descricion.append(temp2);
 
             if (temp.length()>1)    temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
             else {
@@ -291,7 +299,7 @@ public class Xogador {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof Xogador) return obj.equals(this.nome);
+        if (obj instanceof Xogador) return ((Xogador) obj).getNome().equals(this.nome);
 
         return false;
 

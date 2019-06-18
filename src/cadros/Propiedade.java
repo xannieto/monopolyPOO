@@ -122,7 +122,8 @@ public abstract class Propiedade extends Cadro {
             try {
                 this.propietario.pagar(this.hipoteca*1.1);
                 this.setHipotecada(false);
-
+                Xogo.getConsola().imprimir(String.format("%s paga %.2f€ pola hipoteca de %s. Podo volver a cobrar o aluguer.",
+                        this.propietario.getNome(),this.hipoteca*1.1,this.getNome()));
             } catch (FortunaInsuficienteExcepcion e){
                 Xogo.getConsola().imprimir(String.format("Non se pode levar a cabo a deshipoteca de %s (%s).", this.getNome(),this.getId()));
             }

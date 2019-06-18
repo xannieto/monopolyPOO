@@ -175,7 +175,9 @@ public abstract class Avatar {
 
             if (!this.sacarDobres) this.sacarDobres = true;
 
-            if ((this.vecesDobres++)==3){
+            this.vecesDobres++;
+
+            if (this.vecesDobres==3){
                 this.setPosicion(taboleiro.obterCadro("carcere"));
                 setCarcere(true);
                 setQuendasPrision(3);
