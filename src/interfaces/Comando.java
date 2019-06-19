@@ -11,6 +11,8 @@ public interface Comando {
     void describirXogador(String nome);
     void deshipotecar(String id);
     void edificar(String edificacion);
+    void estatisticas();
+    void estatisticasXogador(String id);
     void hipotecar(String id);
     void lanzarDados();
     void listarAvatares();

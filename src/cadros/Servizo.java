@@ -17,6 +17,7 @@ public final class Servizo extends Propiedade {
         this.setAluguer(Constantes.factorServizo*4);
         this.setHipoteca(valor*Constantes.factorHipoteca);
         this.setHipotecada(false);
+        this.setVisitas();
 
     }
 
@@ -50,6 +51,7 @@ public final class Servizo extends Propiedade {
                 //estatiscas
                 xogador.incrementarPagoDeAlugueres(pago);
                 this.getPropietario().incrementarCobroDeAluguere(pago);
+                this.setVisitas();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s paga %.2f€ de aluguer.",xogador.getNome(),pago));
 

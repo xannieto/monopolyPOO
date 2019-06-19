@@ -39,6 +39,7 @@ public final class Solar extends Propiedade {
         this.edificacions = new HashMap<>();
         this.grupo = null;
         calcularValoresDerivados();
+        this.setVisitas();
 
     }
 
@@ -273,8 +274,11 @@ public final class Solar extends Propiedade {
                     xogador.pagar(this.getAluguer());
                     this.getPropietario().cobrar(this.getAluguer());
 
+                    /* estatisticas */
                     xogador.incrementarPagoDeAlugueres(this.getAluguer());
                     this.getPropietario().incrementarCobroDeAluguere(this.getAluguer());
+                    this.setVisitas();
+                    this.setAlugueresCobrados(this.getAluguer());
 
                     Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
 
@@ -287,7 +291,10 @@ public final class Solar extends Propiedade {
 
             }
 
-        } else incrementarVecesCaidas();
+        } else{
+            incrementarVecesCaidas();
+            this.setVisitas();
+        }
 
     }
 

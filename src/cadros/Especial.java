@@ -16,6 +16,7 @@ public final class Especial extends Cadro {
         super.setId(id);
         super.setNome(nome);
         this.setValor(valor);
+        this.setVisitas();
 
     }
 
@@ -44,12 +45,15 @@ public final class Especial extends Cadro {
                 xogador.getAvatar().setCarcere(true);
                 xogador.getAvatar().setPosicion(taboleiro.obterCadro("carcere"));
                 xogador.incrementarVecesEnPrision();
+                this.setVisitas();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión.",xogador.getNome()));
                 break;
 
             case "saida":
                 xogador.cobrar(this.valor);
+                this.setVisitas();
+
                 Xogo.getConsola().imprimir(String.format("O xogador %s cobra %.2f€ por pasar polo cadro de saída.",xogador.getNome(),this.valor));
                 break;
 
@@ -58,9 +62,11 @@ public final class Especial extends Cadro {
                 if (this.valor > 0.0)
                     Xogo.getConsola().imprimir(String.format("O xogador %s cobra %.2f€, o bote da banca.",xogador.getNome(),this.valor));
                 this.setValor(0.0);
+                this.setVisitas();
                 break;
 
             case "carcere":
+                this.setVisitas();
                 Xogo.getConsola().imprimir("Non se toma ningunha acción.");
                 break;
         }

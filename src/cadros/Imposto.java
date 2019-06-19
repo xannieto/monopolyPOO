@@ -12,9 +12,10 @@ public final class Imposto extends Cadro {
 
     public Imposto(String id, String nome, Double imposto){
 
-        super.setId(id);
-        super.setNome(nome);
+        this.setId(id);
+        this.setNome(nome);
         setImposto(imposto);
+        this.setVisitas();
 
     }
 
@@ -42,6 +43,7 @@ public final class Imposto extends Cadro {
             ((Especial)taboleiro.obterCadro("aparcamento")).setValor(((Especial)taboleiro.obterCadro("aparcamento")).getValor()+imposto);
 
             xogador.incrementarPagoDeImpostos(this.imposto);
+            this.setVisitas();
 
             Xogo.getConsola().imprimir(String.format("O xogador %s paga o %s de %.2f€. A súa fortuna actual é de %.2f€.",xogador.getNome(),this.getNome(),this.imposto,xogador.getFortuna()));
         } catch (FortunaInsuficienteExcepcion e){

@@ -238,6 +238,28 @@ public class Xogador {
         return descricion.toString();
     }
 
+    public Double riqueza(){
+
+        Double riqueza = 0.0;
+
+        for (Propiedade propiedade: propiedades.values()){
+            if (!propiedade.getHipotecada()){
+                riqueza += propiedade.getValor();
+
+                if (propiedade instanceof Solar){
+                    if (!((Solar) propiedade).getEdificacions().isEmpty()){
+
+
+
+                    }
+                }
+            }
+
+        }
+
+        return riqueza;
+    }
+
     @Override
     public String toString() {
 

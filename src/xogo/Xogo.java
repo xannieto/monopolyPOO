@@ -582,6 +582,26 @@ public class Xogo implements Comando {
     }
 
     @Override
+    public void estatisticas() {
+
+        Xogo.consola.imprimir(taboleiro.estatisticas());
+
+    }
+
+    @Override
+    public void estatisticasXogador(String id) {
+
+        Xogador xogador = this.taboleiro.obterXogador(id);
+
+        if (xogador != null){
+
+            Xogo.consola.imprimir(xogador.estatiscas());
+
+        } else Xogo.consola.imprimir("O xogador non existe.");
+
+    }
+
+    @Override
     public void hipotecar(String id) {
 
         Cadro cadro = this.taboleiro.obterCadro(id);

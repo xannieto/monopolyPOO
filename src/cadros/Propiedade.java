@@ -13,6 +13,7 @@ public abstract class Propiedade extends Cadro {
     private Double valor;
     private Double hipoteca;
     private Boolean hipotecada;
+    private Double alugueresCobrados;
 
     /* getters */
 
@@ -34,6 +35,10 @@ public abstract class Propiedade extends Cadro {
 
     public Boolean getHipotecada() {
         return hipotecada;
+    }
+
+    public Double getAlugueresCobrados() {
+        return alugueresCobrados;
     }
 
     @Override
@@ -68,6 +73,13 @@ public abstract class Propiedade extends Cadro {
         this.hipotecada = hipotecada;
     }
 
+    public void setAlugueresCobrados(Double alugueresCobrados) {
+
+        if (this.alugueresCobrados != null)  this.alugueresCobrados += alugueresCobrados;
+        else this.alugueresCobrados = alugueresCobrados;
+
+    }
+
     @Override
     public void setId(String id) {
         super.setId(id);
@@ -84,7 +96,7 @@ public abstract class Propiedade extends Cadro {
 
     public void comprar(Xogador xogador){
         if(this.getPropietario() == null) {
-            this.propietario = xogador;
+            setPropietario(xogador);
         }
 
     }

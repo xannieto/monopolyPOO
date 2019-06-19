@@ -13,6 +13,7 @@ public abstract class Avatar {
     private Xogador xogador;
     private Cadro posicion;
     private Boolean movementoAvanzado;
+    private Integer vecesDadosLanzados;
     private Integer voltasDadas;
     private Boolean sacarDobres;
     private Integer vecesDobres;
@@ -74,6 +75,10 @@ public abstract class Avatar {
         return ultimoAvance;
     }
 
+    public Integer getVecesDadosLanzados() {
+        return vecesDadosLanzados;
+    }
+
     /* setters */
     public void setNome(String nome){
         this.nome = nome;
@@ -129,6 +134,13 @@ public abstract class Avatar {
 
     public void setUltimoAvance(Integer ultimoAvance) {
         this.ultimoAvance = ultimoAvance;
+    }
+
+    public void setVecesDadosLanzados() {
+
+        if (this.vecesDadosLanzados != null)    this.vecesDadosLanzados++;
+        else this.vecesDadosLanzados = 0;
+
     }
 
     /* métodos */
@@ -217,6 +229,7 @@ public abstract class Avatar {
             setUltimoAvance(avance);
         }
 
+        this.setVecesDadosLanzados();
         Xogo.getConsola().imprimir(String.format("O avatar %s avanza %d posicións, desde %s (%s) até %s (%s)",
                 this.getId(),avance,taboleiro.obterCadro(posicionAntiga).getNome(),taboleiro.obterCadro(posicionAntiga).getId(),taboleiro.obterCadro(posicionNova).getNome(),taboleiro.obterCadro(posicionNova).getId()));
         if (this.sacarDobres)   Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados", Constantes.bold,Constantes.normal));

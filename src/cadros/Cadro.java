@@ -10,6 +10,7 @@ public abstract class Cadro {
 
     private String id;
     private String nome;
+    private Integer visitas;
 
     /* getters */
 
@@ -21,6 +22,8 @@ public abstract class Cadro {
         return nome;
     }
 
+    public Integer getVisitas(){return visitas;}
+
     /* setters */
     public void setId(String id){
         this.id = id;
@@ -30,6 +33,10 @@ public abstract class Cadro {
         this.nome = nome;
     }
 
+    public void setVisitas(){
+        if (this.visitas != null) this.visitas++;
+        else this.visitas = 0;
+    }
 
     /* metodos */
     public boolean estaAvatar(Avatar avatar){
@@ -39,7 +46,7 @@ public abstract class Cadro {
 
     }
 
-    public abstract void accion(Taboleiro taboleiro, Xogador xogador)throws HipotecaExcepcion;
+    public abstract void accion(Taboleiro taboleiro, Xogador xogador) throws HipotecaExcepcion;
 
     @Override
     public boolean equals(Object obj) {

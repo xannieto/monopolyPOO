@@ -21,6 +21,7 @@ public final class Coche extends Avatar {
         this.setQuendasPrision(0);
         this.setCobrarSaida(false);
         this.setUltimoAvance(0);
+        this.setVecesDadosLanzados();
 
     }
 

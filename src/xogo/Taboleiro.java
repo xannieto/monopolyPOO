@@ -456,6 +456,87 @@ public class Taboleiro {
         return true;
     }
 
+    public String estatisticas(){
+
+        StringBuilder estatisticas = new StringBuilder();
+
+        estatisticas.append(String.format("{\n\tcadro máis rendíbel: %s (%s),\n\tgrupo más rendíbel: %s,\n\tcadro máis visitado: %s (%s),\n\txogador con mais voltas: %s,\n\txogador que máis veces lanzou os dados: %s,\n\txogador máis rico: %s\n}",
+                cadroMaisRendibel().getId(),cadroMaisRendibel().getId(),grupoMaisRendibel().getNomeGrupo(),cadroMaisVisitado().getNome(),cadroMaisVisitado().getId(),xogadorEnCabeza().getNome(),xogadorMaisVecesLanzadosDados().getNome(),));
+
+
+        return estatisticas.toString();
+    }
+
+    private Cadro cadroMaisRendibel(){
+        Cadro rendibel = obterCadro("solar1");
+
+        for (Cadro cadro: this.cadros.values()){
+            if (cadro instanceof Servizo || cadro instanceof Transporte || cadro instanceof Solar){
+                if (((Propiedade) cadro).getAlugueresCobrados() > ((Propiedade)rendibel).getAlugueresCobrados()){
+                    rendibel = cadro;
+                }
+            }
+
+        }
+
+        return rendibel;
+    }
+
+    private Cadro cadroMaisVisitado(){
+        Cadro visitado = obterCadro(1);
+
+        for (Cadro cadro: this.cadros.values()){
+            if (cadro.getVisitas()>visitado.getVisitas())   visitado = cadro;
+        }
+
+        return visitado;
+    }
+
+    private Grupo grupoMaisRendibel(){
+
+        Grupo rendibel = null; Double rendibilidade = 0.0;
+
+        for (Grupo grupo: grupos){
+            Double suma = 0.0;
+
+            for (Solar solar : grupo.getSolares()){
+                suma += solar.getAlugueresCobrados();
+            }
+
+            if (suma > rendibilidade){
+                rendibel = grupo;
+            }
+        }
+
+        return rendibel;
+    }
+
+    private Xogador xogadorEnCabeza(){
+
+        Xogador cabeza = null; Integer voltas = 0; Integer posicion = 0;
+
+        for (Xogador xogador: this.xogadores.values()){
+
+            if (xogador.getAvatar().getVoltasDadas() > voltas)
+                cabeza = xogador;
+            else if (xogador.getAvatar().getVoltasDadas()==voltas && posicionActual(xogador.getAvatar())>posicion)
+                cabeza = xogador;
+        }
+
+        return cabeza;
+    }
+
+    private Xogador xogadorMaisVecesLanzadosDados(){
+
+        Xogador lanzador = null; Integer vecesLanzadas = 0;
+
+        for (Xogador xogador: xogadores.values())
+            if (xogador.getAvatar().getVecesDadosLanzados() > vecesLanzadas)
+                lanzador = xogador;
+
+        return lanzador;
+    }
+
     @Override
     public String toString() {
 

@@ -20,6 +20,7 @@ public final class Sorte extends Accion {
         this.setId(id);
         this.setNome(nome);
         this.setUltimaEscollida(null);
+        this.setVisitas();
 
     }
 
@@ -74,6 +75,8 @@ public final class Sorte extends Accion {
             }
 
             baralla.get(numCarta).accion(taboleiro,xogador);
+
+            this.setVisitas();
 
             if (xogador.getHipotecar()){
                 setUltimaEscollida(baralla.get(numCarta));

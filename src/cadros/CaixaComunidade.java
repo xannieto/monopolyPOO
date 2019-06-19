@@ -19,6 +19,7 @@ public final class CaixaComunidade extends Accion {
 
         this.setId(id);
         this.setNome(nome);
+        this.setVisitas();
 
     }
 
@@ -66,6 +67,8 @@ public final class CaixaComunidade extends Accion {
 
             }
             baralla.get(numCarta % 6).accion(taboleiro,xogador);
+
+            this.setVisitas();
 
             if (xogador.getHipotecar()){
                 setUltimaEscollida(baralla.get(numCarta));
