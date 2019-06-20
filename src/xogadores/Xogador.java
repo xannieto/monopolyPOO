@@ -208,6 +208,12 @@ public class Xogador {
 
     }
 
+    public void quitarPropiedade(Propiedade propiedade){
+
+        if (propiedade != null) propiedades.remove(propiedade.getId(),propiedade);
+
+    }
+
     public void cobrar(Double cantidade){
 
         if (cantidade > 0)  this.setFortuna(this.fortuna + cantidade);
@@ -246,16 +252,22 @@ public class Xogador {
             if (!propiedade.getHipotecada()){
                 riqueza += propiedade.getValor();
 
+                /* valor das edificacions */
                 if (propiedade instanceof Solar){
                     if (!((Solar) propiedade).getEdificacions().isEmpty()){
 
-
+                        riqueza += ((Solar) propiedade).contarCasas()*((Solar) propiedade).getValorCasa();
+                        riqueza += ((Solar) propiedade).contarHoteis()*((Solar) propiedade).getValorHotel();
+                        riqueza += ((Solar) propiedade).contarPiscinas()*((Solar) propiedade).getValorPiscina();
+                        riqueza += ((Solar) propiedade).contarPistas()*((Solar) propiedade).getValorPista();
 
                     }
                 }
             }
 
         }
+
+        riqueza += this.getFortuna();
 
         return riqueza;
     }
@@ -265,7 +277,7 @@ public class Xogador {
 
         StringBuilder descricion = new StringBuilder();
         StringBuilder temp = new StringBuilder();
-        StringBuilder temp2 = new StringBuilder();
+        StringBuilder tempProp = new StringBuilder();
 
         descricion.append(String.format("{\n\tNome: %s",this.nome));
         descricion.append(String.format("\n\tAvatar: %s",this.getAvatar().getId()));
@@ -276,24 +288,24 @@ public class Xogador {
 
             Collection<Propiedade> prop = this.propiedades.values();
 
-            temp2.append("[");
+            tempProp.append("[");
             temp.append("[");
 
             for (Propiedade propiedade : prop){
                 if (!propiedade.getHipotecada()){
-                    temp2.append(propiedade.getId());
-                    temp2.append(", ");
+                    tempProp.append(propiedade.getId());
+                    tempProp.append(", ");
                 } else {
                     temp.append(String.format("%s, ",propiedade.getId()));
                 }
             }
 
-            if (temp2.length()>1)   temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
+            if (tempProp.length()>1)   tempProp.replace(tempProp.lastIndexOf(","),tempProp.lastIndexOf(" "),"]");
             else {
-                temp2.setLength(0); temp2.append("ningunha");
+                tempProp.setLength(0); tempProp.append("ningunha");
             }
 
-            descricion.append(temp2);
+            descricion.append(tempProp);
 
             if (temp.length()>1)    temp.replace(temp.lastIndexOf(","),temp.lastIndexOf(" "),"]");
             else {

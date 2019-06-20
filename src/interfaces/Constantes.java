@@ -52,12 +52,12 @@ public interface Constantes {
     }};
 
     /* cartas da caixa de comunidade */
-    String textoCartaComunidade1 = "Paga 32576€ por unha fin de semana nun balneario de cinco estrelas.";
-    String textoCartaComunidade2 = "Estás a ser investigado por fraude fiscal. Vai a prisión directamente, sen cobrar os 130304€ do cadro de Saída.";
-    String textoCartaComunidade3 = "Posiciónate no cadro de Saída. Cobra os 130304€";
-    String textoCartaComunidade4 = "A túa compañía de Internet obtén beneficios. Cobras 130304€.";
-    String textoCartaComunidade5 = "Paga 65152€ por invitar a tódolos teus amigos a unha viaxe a Ribeira Sacra.";
-    String textoCartaComunidade6 = "Devolución de Facenda. Cobras 32576€.";
+    String textoCartaComunidade1 = "Paga 32576,00€ por unha fin de semana nun balneario de cinco estrelas.";
+    String textoCartaComunidade2 = "Estás a ser investigado por fraude fiscal. Vai a prisión directamente, sen cobrar os 130304,00€ do cadro de Saída.";
+    String textoCartaComunidade3 = "Posiciónate no cadro de Saída. Cobra os 130304,00€";
+    String textoCartaComunidade4 = "A túa compañía de Internet obtén beneficios. Cobras 130304,00€.";
+    String textoCartaComunidade5 = "Paga 65152,00€ por invitar a tódolos teus amigos a unha viaxe a Ribeira Sacra.";
+    String textoCartaComunidade6 = "Devolución de Facenda. Cobras 32576,00€.";
 
     ArrayList<Carta> comunidade = new ArrayList<>(){{
         add(new CartaCaixaComunidade("1",textoCartaComunidade1,null,32576.0,true,false));
@@ -70,11 +70,11 @@ public interface Constantes {
 
     /*cartas de sorte*/
     String textoCartaSorte1 = "Decides ir de tapas. Avanza até O Franco.";
-    String textoCartaSorte2 = "Multa por empregar o teléfono móbil mentres conduces. Pagas 13030€.";
-    String textoCartaSorte3 = "Paga 13030€ pola matrícula da escola privada.";
-    String textoCartaSorte4 = "Vai a Praza do Obradoiro. Se pasas polo cadro de Saída, cobras os 130304€.";
-    String textoCartaSorte5 = "Beneficios pola venda das túas accións en ENCE. Recibes 97728€.";
-    String textoCartaSorte6 = "Estás a ser persiguido polos teus acreedores por impagos. Vai a prisión directamente, sen cobrar os 130304€ do cadro de Saída.";
+    String textoCartaSorte2 = "Multa por empregar o teléfono móbil mentres conduces. Pagas 13030,00€.";
+    String textoCartaSorte3 = "Paga 13030,00€ pola matrícula da escola privada.";
+    String textoCartaSorte4 = "Vai a Praza do Obradoiro. Se pasas polo cadro de Saída, cobras os 130304,00€.";
+    String textoCartaSorte5 = "Beneficios pola venda das túas accións en ENCE. Recibes 97728,00€.";
+    String textoCartaSorte6 = "Estás a ser persiguido polos teus acreedores por impagos. Vai a prisión directamente, sen cobrar os 130304,00€ do cadro de Saída.";
 
     ArrayList<Carta> sorte = new ArrayList<>(){{
        add(new CartaSorte("7",textoCartaSorte1,"solar14",null,false,false));

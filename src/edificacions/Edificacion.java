@@ -51,7 +51,7 @@ public abstract class Edificacion {
 
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\tid: %s,\n\tpropietario: %s,\n\tgrupo: %s,\n\tcuste: %s\n}",
+        descricion.append(String.format("{\n\tid: %s,\n\tpropietario: %s,\n\tgrupo: %s,\n\tcuste: %.2f€\n}",
                 this.getId(),this.getPropietario().getNome(),this.getSolar().getId(),this.getSolar().getGrupo().getNome(),this.getCuste()));
 
         return descricion.toString();

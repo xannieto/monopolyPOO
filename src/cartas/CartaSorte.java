@@ -22,8 +22,7 @@ public final class CartaSorte extends Carta {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador) {
 
-        if (this.getValor() != null){
-            Xogo.getConsola().imprimir("entrada1");
+        if (this.getValor() != null && this.getCadroDestino()==null){
             /* para as que son simplemente multas ou premios por algo */
             if (getPagar()){
                 try{
@@ -48,14 +47,14 @@ public final class CartaSorte extends Carta {
                 xogador.getAvatar().setCarcere(true);
                 xogador.getAvatar().setQuendasPrision(3);
                 xogador.getAvatar().resetDatosTirada();
-                xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
+                xogador.getAvatar().setPosicion(taboleiro.obterCadro(this.getCadroDestino()));
 
                 Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
 
             } else {
                 Integer posicionAntiga = taboleiro.posicionActual(xogador.getAvatar());
 
-                xogador.getAvatar().setPosicion(taboleiro.obterCadro(getCadroDestino()));
+                xogador.getAvatar().setPosicion(taboleiro.obterCadro(this.getCadroDestino()));
 
                 Integer posicionNova = taboleiro.posicionActual(xogador.getAvatar());
 

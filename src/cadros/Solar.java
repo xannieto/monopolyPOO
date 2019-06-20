@@ -182,10 +182,11 @@ public final class Solar extends Propiedade {
 
     }
 
-    public void quitarEdificacion(String edificacion){
+    public void quitarEdificacion(String id){
 
-        if(!edificacion.isEmpty()){
-            edificacions.remove(edificacion);
+        if(id != null){
+            Edificacion edificacion = edificacions.get(id);
+            edificacions.remove(id,edificacion);
         }
 
     }
@@ -417,7 +418,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu/venderon %d casa(s) en %s, percibindo %.2f. Queda(n) %d casa(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu/venderon %d casa(s) en %s, percibindo %.2f€. Queda(n) %d casa(s) na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
 
                     } else {
@@ -432,7 +433,7 @@ public final class Solar extends Propiedade {
                                 cantidade--;
                             }
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d casa(s) en %s, percibindo %.2f. Queda(n) %d casa(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d casa(s) en %s, percibindo %.2f€. Queda(n) %d casa(s) na propiedade.",
                                 vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
 
                     }
@@ -453,7 +454,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f. Quedan %d hotel/-teis na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f€. Quedan %d hotel/-teis na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
 
                     } else {
@@ -469,7 +470,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f. Quedan %d hotel/-teis na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f€. Quedan %d hotel/-teis na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
                     }
 
@@ -489,7 +490,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f. Quedan %d piscina(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f€. Quedan %d piscina(s) na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
 
                     } else {
@@ -505,7 +506,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f. Quedan %d piscina(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f€. Quedan %d piscina(s) na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
 
                     }
@@ -526,7 +527,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d pista(s) en %s, percibindo %.2f. Quedan %d pista(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d pista(s) en %s, percibindo %.2f€. Quedan %d pista(s) na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
 
                     } else {
@@ -542,7 +543,7 @@ public final class Solar extends Propiedade {
                             }
 
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d casa(s) en %s, percibindo %.2f. Quedan %d casa(s) na propiedade.",
+                        Xogo.getConsola().imprimir(String.format("%s vendeu %d casa(s) en %s, percibindo %.2f€. Quedan %d casa(s) na propiedade.",
                                 this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
                     }
 
@@ -659,7 +660,7 @@ public final class Solar extends Propiedade {
 
         StringBuilder informacion = new StringBuilder();
 
-        informacion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f\n}",this.grupo.getNomeGrupo(),this.getValor()));
+        informacion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f€\n}",this.grupo.getNomeGrupo(),this.getValor()));
 
         return informacion.toString();
     }
@@ -668,12 +669,12 @@ public final class Solar extends Propiedade {
     public String toString() {
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f,",this.grupo.getNomeGrupo(),this.getValor()));
-        descricion.append(String.format("\n\taluguer: %.2f,\n\tvalor casa: %.2f,\n\tvalor hotel: %.2f,\n\tvalor piscina: %.2f,\n\tvalor pista de deporte: %.2f,",
+        descricion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f€,",this.grupo.getNomeGrupo(),this.getValor()));
+        descricion.append(String.format("\n\taluguer: %.2f€,\n\tvalor casa: %.2f€,\n\tvalor hotel: %.2f€,\n\tvalor piscina: %.2f€,\n\tvalor pista de deporte: %.2f€,",
                 this.getAluguer(),this.getValorCasa(),this.getValorHotel(),this.getValorPiscina(),this.getValorPista()));
-        descricion.append(String.format("\n\taluguer dunha casa: %.2f,\n\taluguer de dúas casas: %.2f,\n\taluguer de tres casas: %.2f,\n\taluguer de catro casas: %.2f,",
+        descricion.append(String.format("\n\taluguer dunha casa: %.2f€,\n\taluguer de dúas casas: %.2f€,\n\taluguer de tres casas: %.2f€,\n\taluguer de catro casas: %.2f€,",
                 this.getAluguer1Casa(),this.getAluguer2Casa(),this.getAluguer3Casa(),this.getAluguer4Casa()));
-        descricion.append(String.format("\n\taluguer hotel: %.2f,\n\taluguer piscina: %.2f,\n\taluguer pista de deporte: %.2f\n}",
+        descricion.append(String.format("\n\taluguer hotel: %.2f€,\n\taluguer piscina: %.2f€,\n\taluguer pista de deporte: %.2f€\n}",
                 this.getAluguerHotel(),this.getAluguerPiscina(),this.getAluguerPista()));
 
         return descricion.toString();

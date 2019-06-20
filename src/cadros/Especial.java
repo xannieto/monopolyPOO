@@ -43,11 +43,12 @@ public final class Especial extends Cadro {
 
             case "irCarcere":
                 xogador.getAvatar().setCarcere(true);
+                xogador.getAvatar().setQuendasPrision(3);
                 xogador.getAvatar().setPosicion(taboleiro.obterCadro("carcere"));
                 xogador.incrementarVecesEnPrision();
                 this.setVisitas();
 
-                Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión.",xogador.getNome()));
+                Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión durante tres quendas. Pode tentar lanzar os dados nas próximas tres quendas.\n\tMais se non saca dobres en ningunha desas ocasións, deberá pagar a fianza.",xogador.getNome()));
                 break;
 
             case "saida":
@@ -93,7 +94,7 @@ public final class Especial extends Cadro {
 
         if (this.getId().equals("aparcamento")){
 
-            descricion.append(String.format("{\n\tbote: %.2f\n\txogadores: ",this.valor));
+            descricion.append(String.format("{\n\tbote: %.2f€\n\txogadores: ",this.valor));
 
             ArrayList<Avatar> avatares = taboleiro.obterAvataresCadro(this);
 
@@ -108,7 +109,7 @@ public final class Especial extends Cadro {
 
         } else if (this.getId().equals("carcere")){
 
-            descricion.append(String.format("{\n\tfianza: %.2f\n\txogadores: ",this.valor));
+            descricion.append(String.format("{\n\tfianza: %.2f€\n\txogadores: ",this.valor));
 
             ArrayList<Avatar> avatares = taboleiro.obterAvataresCadro(this);
 

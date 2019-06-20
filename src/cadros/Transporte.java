@@ -74,7 +74,7 @@ public final class Transporte extends Propiedade {
 
         StringBuilder saida = new StringBuilder();
 
-        saida.append(String.format("{\n\ttipo: transporte,\n\tvalor: %.2f,\n\taluguer: %.2f\n}",this.getValor(),this.getAluguer()));
+        saida.append(String.format("{\n\ttipo: transporte,\n\tvalor: %.2f€,\n\taluguer: %.2f€\n}",this.getValor(),this.getAluguer()));
 
         return new String(saida);
     }

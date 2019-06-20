@@ -461,7 +461,7 @@ public class Taboleiro {
         StringBuilder estatisticas = new StringBuilder();
 
         estatisticas.append(String.format("{\n\tcadro máis rendíbel: %s (%s),\n\tgrupo más rendíbel: %s,\n\tcadro máis visitado: %s (%s),\n\txogador con mais voltas: %s,\n\txogador que máis veces lanzou os dados: %s,\n\txogador máis rico: %s\n}",
-                cadroMaisRendibel().getId(),cadroMaisRendibel().getId(),grupoMaisRendibel().getNomeGrupo(),cadroMaisVisitado().getNome(),cadroMaisVisitado().getId(),xogadorEnCabeza().getNome(),xogadorMaisVecesLanzadosDados().getNome(),));
+                cadroMaisRendibel().getId(),cadroMaisRendibel().getId(),grupoMaisRendibel().getNomeGrupo(),cadroMaisVisitado().getNome(),cadroMaisVisitado().getId(),xogadorEnCabeza().getNome(),xogadorMaisVecesLanzadosDados().getNome(),xogadorMaisRico().getNome()));
 
 
         return estatisticas.toString();
@@ -519,7 +519,7 @@ public class Taboleiro {
 
             if (xogador.getAvatar().getVoltasDadas() > voltas)
                 cabeza = xogador;
-            else if (xogador.getAvatar().getVoltasDadas()==voltas && posicionActual(xogador.getAvatar())>posicion)
+            else if (xogador.getAvatar().getVoltasDadas().equals(voltas) && posicionActual(xogador.getAvatar()) > posicion)
                 cabeza = xogador;
         }
 
@@ -535,6 +535,19 @@ public class Taboleiro {
                 lanzador = xogador;
 
         return lanzador;
+    }
+
+    private Xogador xogadorMaisRico(){
+        Xogador rico = null;
+
+        for (Xogador xogador: xogadores.values()) {
+            if (rico != null) {
+                if (xogador.riqueza() > rico.riqueza()) rico = xogador;
+            } else {
+                rico = xogador;
+            }
+        }
+        return rico;
     }
 
     @Override

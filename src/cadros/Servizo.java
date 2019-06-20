@@ -69,7 +69,7 @@ public final class Servizo extends Propiedade {
 
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\ttipo: servizo,\n\tprezo: %.2f,\n\taluguer: %.2f\n}",this.getValor(),this.getAluguer()));
+        descricion.append(String.format("{\n\ttipo: servizo,\n\tprezo: %.2f€,\n\taluguer: %.2f€\n}",this.getValor(),this.getAluguer()));
 
         return descricion.toString();
     }
@@ -78,7 +78,7 @@ public final class Servizo extends Propiedade {
     public String informacionVendaBasica() {
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\ttipo: servizo,\n\tvalor: %.2f\n}",this.getValor()));
+        descricion.append(String.format("{\n\ttipo: servizo,\n\tvalor: %.2f€\n}",this.getValor()));
 
         return descricion.toString();
     }

@@ -22,7 +22,7 @@ public final class CartaCaixaComunidade extends Carta {
     @Override
     public void accion(Taboleiro taboleiro, Xogador xogador){
 
-        if (this.getValor() != null){
+        if (this.getValor() != null && this.getCadroDestino()==null){
             /* para as que son simplemente multas ou premios por algo */
             if (getPagar()){
                 try{
@@ -41,7 +41,6 @@ public final class CartaCaixaComunidade extends Carta {
             }
 
         } else if (this.getCadroDestino() != null){
-            Xogo.getConsola().imprimir("entrada2");
             /* as que implican desprazarte polo taboleiro, podendo cobrar ou non */
             if (getCadroDestino().equals("carcere")){
 

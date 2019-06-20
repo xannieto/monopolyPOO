@@ -395,6 +395,48 @@ public class Xogo implements Comando {
 
     private void xestionBancarrota(){
 
+        Cadro cadro = this.enQuenda.getPosicion();
+
+        /* en caso de ser o acreedor un xogador */
+        if (cadro instanceof Solar || cadro instanceof Servizo || cadro instanceof Transporte){
+            Xogador acreedor = ((Propiedade) cadro).getPropietario(), debedor = this.enQuenda.getXogador();
+
+            if (!debedor.getPropiedades().isEmpty()){
+
+                for (Propiedade propiedade: debedor.getPropiedades().values()){
+                    acreedor.engadirPropiedade(propiedade);
+                    propiedade.setPropietario(acreedor);
+                    debedor.quitarPropiedade(propiedade);
+
+                    if (propiedade instanceof Solar){
+                        if (!((Solar) propiedade).getEdificacions().isEmpty()){
+                            for (Edificacion edificacion: ((Solar) propiedade).getEdificacions().values()){
+                                edificacion.setPropietario(acreedor);
+                            }
+                        }
+                    }
+                }
+            }
+
+        } else if (cadro instanceof Imposto || cadro instanceof CaixaComunidade || cadro instanceof Sorte){
+           Xogador debedor = this.enQuenda.getXogador();
+
+            if (!debedor.getPropiedades().isEmpty()){
+
+                for (Propiedade propiedade: debedor.getPropiedades().values()){
+                    propiedade.setPropietario(null);
+                    debedor.quitarPropiedade(propiedade);
+
+                    if (propiedade instanceof Solar){
+                        if (!((Solar) propiedade).getEdificacions().isEmpty()){
+                            for (Edificacion edificacion: ((Solar) propiedade).getEdificacions().values()){
+                                ((Solar) propiedade).quitarEdificacion(edificacion.getId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void xestionHipotecas(){
