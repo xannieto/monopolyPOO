@@ -7,7 +7,6 @@ import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public final class Solar extends Propiedade {
@@ -669,7 +668,7 @@ public final class Solar extends Propiedade {
     public String toString() {
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f€,",this.grupo.getNomeGrupo(),this.getValor()));
+        descricion.append(String.format("{\n\tnome: %s,\n\ttipo: solar,\n\tgrupo: %s,\n\tvalor: %.2f€,",this.getNome(),this.grupo.getNomeGrupo(),this.getValor()));
         descricion.append(String.format("\n\taluguer: %.2f€,\n\tvalor casa: %.2f€,\n\tvalor hotel: %.2f€,\n\tvalor piscina: %.2f€,\n\tvalor pista de deporte: %.2f€,",
                 this.getAluguer(),this.getValorCasa(),this.getValorHotel(),this.getValorPiscina(),this.getValorPista()));
         descricion.append(String.format("\n\taluguer dunha casa: %.2f€,\n\taluguer de dúas casas: %.2f€,\n\taluguer de tres casas: %.2f€,\n\taluguer de catro casas: %.2f€,",

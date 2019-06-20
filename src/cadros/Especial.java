@@ -53,6 +53,7 @@ public final class Especial extends Cadro {
 
             case "saida":
                 xogador.cobrar(this.valor);
+                xogador.getAvatar().setCobrarSaida(false);
                 this.setVisitas();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s cobra %.2f€ por pasar polo cadro de saída.",xogador.getNome(),this.valor));
@@ -68,7 +69,8 @@ public final class Especial extends Cadro {
 
             case "carcere":
                 this.setVisitas();
-                Xogo.getConsola().imprimir("Non se toma ningunha acción.");
+                if (!xogador.getAvatar().getCarcere())
+                    Xogo.getConsola().imprimir("Visita guiada ao cárcere Soto del Real. Non se toma ningunha acción.");
                 break;
         }
 

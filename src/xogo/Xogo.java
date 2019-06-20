@@ -172,6 +172,7 @@ public class Xogo implements Comando {
                     if (comando.length==2){
 
                         if (comando[1].equals("carcere"))   sairCarcere();
+                        else consola.imprimir("Argumento incorrecto.");
 
                     } else {
                         if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]: ").equalsIgnoreCase("si"))
@@ -219,6 +220,58 @@ public class Xogo implements Comando {
             aumentarAsCatroVoltas();
         }
 
+
+    }
+
+    private void aumentarAsCatroVoltas(){
+
+        if (this.taboleiro.deronCatroVoltas()){
+
+            for (Cadro cadro : this.taboleiro.getCadros().values())
+                if (cadro instanceof Servizo || cadro instanceof  Solar || cadro instanceof Transporte)
+                    ((Propiedade)cadro).valor();
+        }
+
+    }
+
+    private void axudaMenuPrincipal(){
+
+        StringBuffer axuda = new StringBuffer();
+
+        axuda.append(String.format("\n%s ~ Comandos do menú principal ~%s\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s sair: %s sáese do xogo de forma abrupta\n",Constantes.bold,Constantes.normal));
+
+        consola.imprimir(axuda.toString());
+        axuda.setLength(0);
+    }
+
+    private void axudaMenuXogadores(){
+
+        StringBuffer axuda = new StringBuffer();
+
+        axuda.append(String.format("%s ~ Comandos do menú de inscrición de xogadores ~%s\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s crear: %s neste menú só se poden crear xogadores, polo que admite como único argumento \"xogador\".\n",Constantes.bold,Constantes.normal));
+        axuda.append(" Hai que indicar o nome do xogador e o tipo de avatar desexado\n");
+        axuda.append(String.format("%s rematar: %s termina a inscrición de xogadores e comeza a partida\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s abortar: %s provoca a saída do xogo\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("\n%s Deben rexistrarse como mínimo dous xogadores e como máximo seis. Os nomes deben ser únicos %s\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format(" Hai catro tipos de avatar a escoller:%s coche, sombreiro, pelota e esfinxe.%s\n",Constantes.bold,Constantes.normal));
+
+        consola.imprimir(axuda.toString());
+        axuda.setLength(0);
+    }
+
+    private void cambiarQuenda(){
+
+        if (this.enQuenda.podeRematarQuenda()){
+
+            this.enQuenda.resetDatosTirada();
+            this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
+            this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
+            this.debeAcabarQuenda = false;
+        }
 
     }
 
@@ -290,62 +343,38 @@ public class Xogo implements Comando {
 
     }
 
-    private void axudaMenuXogadores(){
+    private void determinarAccionCadro(Cadro cadro){
 
-        StringBuffer axuda = new StringBuffer();
+        Xogador xogador = this.enQuenda.getXogador();
 
-        axuda.append(String.format("%s ~ Comandos do menú de inscrición de xogadores ~%s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s crear: %s neste menú só se poden crear xogadores, polo que admite como único argumento \"xogador\".\n",Constantes.bold,Constantes.normal));
-        axuda.append(" Hai que indicar o nome do xogador e o tipo de avatar desexado\n");
-        axuda.append(String.format("%s rematar: %s termina a inscrición de xogadores e comeza a partida\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s abortar: %s provoca a saída do xogo\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("\n%s Deben rexistrarse como mínimo dous xogadores e como máximo seis. Os nomes deben ser únicos %s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format(" Hai catro tipos de avatar a escoller:%s coche, sombreiro, pelota e esfinxe.%s\n",Constantes.bold,Constantes.normal));
+        /* isto é por se non pertence a ninguén a propiedades */
+        if ((cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo) &&  ((Propiedade) cadro).getPropietario()==null){
 
-        consola.imprimir(axuda.toString());
-        axuda.setLength(0);
-    }
+            if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")) {
+                this.enQuenda.setCobrarSaida(false);
+                xogador.cobrar(Constantes.salario);
+                Xogo.consola.imprimir(String.format("O xogador %s deu unha volta completa e cobra %.2f€.", xogador.getNome(), Constantes.salario));
+            }
 
-    private void axudaMenuPrincipal(){
+            describirCadro(cadro.getId());
+            String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
 
-        StringBuffer axuda = new StringBuffer();
+            if (resposta.equalsIgnoreCase("si"))    comprarCadro(cadro.getId());
 
-        axuda.append(String.format("\n%s ~ Comandos do menú principal ~%s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s sair: %s sáese do xogo de forma abrupta\n",Constantes.bold,Constantes.normal));
+            if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
 
-        consola.imprimir(axuda.toString());
-        axuda.setLength(0);
-    }
+        /* se xa ten un propietario, execútase a acción de cadro */
+        } else {
 
-    private void cambiarQuenda(){
+            executarAccionDeCadro();
+            describirXogador(xogador.getNome());
 
-        if (this.enQuenda.podeRematarQuenda()){
+            /* se por efecto das cartas de sorte ou comunidade hai desprazamentos... */
+            if (!cadro.equals(this.enQuenda.getPosicion()) && !this.enQuenda.getPosicion().getId().equals("saida")){
+                executarAccionDeCadro();
+                describirXogador(xogador.getNome());
+            }
 
-            this.enQuenda.resetDatosTirada();
-            this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
-            this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
-            this.debeAcabarQuenda = false;
-        }
-
-    }
-
-    private void quendaInicial(){
-
-        this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
-
-        this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
-
-    }
-
-    private void aumentarAsCatroVoltas(){
-
-        if (this.taboleiro.deronCatroVoltas()){
-
-            for (Cadro cadro : this.taboleiro.getCadros().values())
-                if (cadro instanceof Servizo || cadro instanceof  Solar || cadro instanceof Transporte)
-                    ((Propiedade)cadro).valor();
         }
 
     }
@@ -391,6 +420,14 @@ public class Xogo implements Comando {
 
             } else xestionBancarrota();
         }
+    }
+
+    private void quendaInicial(){
+
+        this.numQuenda = (this.numQuenda + 1) % this.taboleiro.getAvatares().size();
+
+        this.enQuenda = this.taboleiro.getAvatares().get(this.numQuenda);
+
     }
 
     private void xestionBancarrota(){
@@ -525,8 +562,9 @@ public class Xogo implements Comando {
                     this.enQuenda.getXogador().engadirPropiedade((Propiedade) cadro);
                     ((Propiedade) cadro).aluguer(taboleiro);
 
-                    Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€. A súa fortuna actual é de %.2f€.",
+                    Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€.",
                             this.enQuenda.getXogador().getNome(),cadro.getNome(),((Propiedade)cadro).getValor(),this.enQuenda.getXogador().getFortuna()));
+                    describirXogador(this.enQuenda.getXogador().getNome());
 
                 } catch(FortunaInsuficienteExcepcion e){
                     this.enQuenda.getXogador().setHipotecar(false);
@@ -669,7 +707,7 @@ public class Xogo implements Comando {
     public void lanzarDados(){
 
         if (this.debeAcabarQuenda || this.enQuenda.getXogador().getHipotecar()) {
-            Xogo.getConsola().imprimir("O xogador " + this.enQuenda.getXogador().getNome() + " non pode lanzar os dados.");
+            Xogo.getConsola().imprimir(String.format("O xogador %s non pode lanzar os dados.",this.enQuenda.getXogador().getNome()));
 
         } else if (!this.enQuenda.getCarcere()){
             Integer[] tirada = this.taboleiro.tiradaDados();
@@ -679,33 +717,8 @@ public class Xogo implements Comando {
             this.enQuenda.mover(this.taboleiro,tirada);
             cadro = this.enQuenda.getPosicion();
 
-            /* isto é por se non pertence a ninguén a propiedades */
-            if ((cadro instanceof Solar || cadro instanceof Transporte || cadro instanceof Servizo) &&  ((Propiedade) cadro).getPropietario()==null){
-
-                if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")) {
-                    this.enQuenda.setCobrarSaida(false);
-                    xogador.cobrar(Constantes.salario);
-                    Xogo.consola.imprimir(String.format("O xogador %s deu unha volta completa e cobra %.2f€.", xogador.getNome(), Constantes.salario));
-                }
-
-                describirCadro(cadro.getId());
-                String resposta = Xogo.getConsola().ler("Vaia, esta propiedade non ten dono. Queres mercala? [Si/Non]: ");
-
-                if (resposta.equalsIgnoreCase("si")) comprarCadro(cadro.getId());
-
-                if (this.enQuenda.podeRematarQuenda())  this.debeAcabarQuenda = true;
-
-            /* se xa ten un propietario, execútase a acción de cadro */
-            } else {
-
-                executarAccionDeCadro();
-
-                /* se por efecto das cartas de sorte ou comunidade hai desprazamentos... */
-                if (!cadro.equals(this.enQuenda.getPosicion()) && !this.enQuenda.getPosicion().getId().equals("saida")){
-                    executarAccionDeCadro();
-                }
-
-            }
+            /* ofrecer a súa compra ou cumprir coa acción requerida */
+            determinarAccionCadro(cadro);
 
         } else if (this.enQuenda.getQuendasPrision() > 0) {
 
@@ -717,6 +730,9 @@ public class Xogo implements Comando {
                 this.enQuenda.setQuendasPrision(0);
                 this.enQuenda.setCarcere(false);
                 this.enQuenda.mover(this.taboleiro,tirada);
+
+                determinarAccionCadro(this.enQuenda.getPosicion());
+
             } else {
                 this.enQuenda.setQuendasPrision(this.enQuenda.getQuendasPrision()-1);
                 this.debeAcabarQuenda = true;
@@ -804,8 +820,8 @@ public class Xogo implements Comando {
                 this.enQuenda.getXogador().pagar(Constantes.fianzaCarcere);
                 this.enQuenda.setCarcere(false);
                 this.enQuenda.setQuendasPrision(0);
-                Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. A súa fortuna actual é de %.2f€.",
-                        enQuenda.getXogador().getNome(),Constantes.fianzaCarcere,enQuenda.getXogador().getFortuna()));
+                Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. Agora podes lanzar os dados.",
+                        enQuenda.getXogador().getNome(),Constantes.fianzaCarcere));
 
             } else {
                 Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
