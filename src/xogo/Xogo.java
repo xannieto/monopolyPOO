@@ -123,6 +123,16 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "estatistcas":
+
+                    if (comando.length==1){
+                        estatisticas();
+
+                    } else if (comando.length==2){
+                        estatisticasXogador(comando[1]);
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
                 case "hipotecar":
 
                     if (comando.length==2){
@@ -153,7 +163,6 @@ public class Xogo implements Comando {
 
                     if (comando.length==2){
 
-                        verTaboleiro(taboleiro);
                         if (comando[1].equals("xogadores")) listarXogadores();
                         else if (comando[1].equals("avatares")) listarAvatares();
                         else if (comando[1].equals("aVenda"))   listarAVenda();
@@ -177,9 +186,10 @@ public class Xogo implements Comando {
                         else consola.imprimir("Argumento incorrecto.");
 
                     } else {
-                        if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]: ").equalsIgnoreCase("si"))
+                        if (Xogo.getConsola().ler("\n\nEstá vostede seguro de saír do xogo?[Si/Non]: ").equalsIgnoreCase("si")) {
                             consola.imprimir("A saír do xogo...");
-                        sair = Boolean.TRUE;
+                            sair = Boolean.TRUE;
+                        }
                     }
 
                     break;
@@ -311,7 +321,7 @@ public class Xogo implements Comando {
 
                             } else if (!this.taboleiro.existeXogador(comando[2]) && (comando[3].equalsIgnoreCase("coche") | comando[3].equalsIgnoreCase("sombreiro") | comando[3].equalsIgnoreCase("esfinxe") | comando[3].equalsIgnoreCase("pelota") )){
 
-                                Xogador xogador = new Xogador(comando[2],Constantes.fortunaInicial, comando[3]);
+                                Xogador xogador = new Xogador(comando[2], Constantes.fortunaInicial, comando[3]);
                                 this.taboleiro.novoXogador(xogador);
 
                                 xogador.getAvatar().setPosicion(this.taboleiro.obterCadro(1));
@@ -373,9 +383,6 @@ public class Xogo implements Comando {
         } else {
 
             executarAccionDeCadro();
-            describirXogador(xogador.getNome());
-            if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
-            if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;
 
             /* se por efecto das cartas de sorte ou comunidade hai desprazamentos... */
             if (!cadro.equals(this.enQuenda.getPosicion()) && !this.enQuenda.getPosicion().getId().equals("saida") && !this.enQuenda.getPosicion().getId().equals("carcere")){
@@ -383,6 +390,12 @@ public class Xogo implements Comando {
                 describirXogador(xogador.getNome());
                 if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
                 if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;
+
+            } else {
+                describirXogador(xogador.getNome());
+                if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
+                if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;
+
             }
 
         }
@@ -464,6 +477,7 @@ public class Xogo implements Comando {
                 }
             }
 
+        /* no caso de deberlle a banca */
         } else if (cadro instanceof Imposto || cadro instanceof CaixaComunidade || cadro instanceof Sorte){
            Xogador debedor = this.enQuenda.getXogador();
 
@@ -483,6 +497,21 @@ public class Xogo implements Comando {
                 }
             }
         }
+
+        /* eliminación do xogador */
+        Avatar avatar = this.enQuenda;
+
+        avatar.resetDatosTirada();
+        this.debeAcabarQuenda = true;
+        this.taboleiro.quitarXogador(avatar.getXogador());
+
+        if (this.taboleiro.getXogadores().size()==1) {
+            cambiarQuenda();
+            Xogo.consola.imprimir(String.format("%sParabéns, %s! Ao ser o único que queda en pé é declarado gañador desta partida.%s",Constantes.bold,this.enQuenda.getXogador().getNome(),Constantes.normal));
+            System.exit(0);
+        }
+
+        cambiarQuenda();
     }
 
     private void xestionHipotecas(){
@@ -745,6 +774,8 @@ public class Xogo implements Comando {
             } else {
                 this.enQuenda.setQuendasPrision(this.enQuenda.getQuendasPrision()-1);
                 this.debeAcabarQuenda = true;
+                this.acabarDeIrAPrision = true; /* isto é por se se lle dá por querer pagar a fianza despois de probar sorte... */
+
                 Xogo.consola.imprimir(String.format("Non sacou dobres, quédanlle %d quendas en prisión.",this.enQuenda.getQuendasPrision()));
             }
 
@@ -823,8 +854,8 @@ public class Xogo implements Comando {
     @Override
     public void sairCarcere() {
 
-        if (this.acabarDeIrAPrision)    Xogo.getConsola().imprimir("Non pretenderás saír do cárcere nada máis entrar, eh?.");
-
+        if (this.acabarDeIrAPrision && this.enQuenda.getQuendasPrision()==3)    Xogo.getConsola().imprimir("Non pretenderás saír do cárcere nada máis entrar, eh?.");
+        else if (this.acabarDeIrAPrision && this.enQuenda.getQuendasPrision()<3)    Xogo.getConsola().imprimir("\"Non se pode estar en tódolos pratos á vez\".\nAcabas de probar sorte lanzando os dados, polo cal non podes agora querer pagar a fianza.");
         else {
             try {
 
@@ -839,12 +870,13 @@ public class Xogo implements Comando {
                             enQuenda.getXogador().getNome(),Constantes.fianzaCarcere));
 
                 } else {
-                    Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión");
+                    Xogo.getConsola().imprimir("O xogador "+enQuenda.getXogador().getNome()+" non está en prisión.");
                 }
 
             } catch (FortunaInsuficienteExcepcion e) {
                 Xogo.consola.imprimir("Non ten diñeiro suficiente para pagar a fianza. Debe vender ou hipotecar.");
-                this.enQuenda.getXogador().getHipotecar();
+                this.enQuenda.getXogador().setHipotecar(true);
+
                 xestionHipotecas();
 
                 if (!this.enQuenda.getXogador().getHipotecar()){
@@ -854,7 +886,7 @@ public class Xogo implements Comando {
                         this.enQuenda.setQuendasPrision(0);
                         this.debeAcabarQuenda = false;
 
-                        Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. A súa fortuna actual é de %.2f€.",
+                        Xogo.getConsola().imprimir(String.format("O xogador %s sae de prisión, pagando unha fianza de %.2f€. Agora podes lanzar os dados.",
                                 enQuenda.getXogador().getNome(),Constantes.fianzaCarcere,enQuenda.getXogador().getFortuna()));
 
                     } catch (FortunaInsuficienteExcepcion f){

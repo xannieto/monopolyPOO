@@ -445,6 +445,15 @@ public class Taboleiro {
         }
     }
 
+    public void quitarXogador(Xogador xogador){
+
+        if (existeXogador(xogador.getNome())){
+            this.xogadores.remove(xogador.getNome(),xogador);
+            this.avatares.remove(xogador.getAvatar());
+        }
+
+    }
+
     public Boolean deronCatroVoltas(){
 
         for (Avatar avatar: avatares)
@@ -588,7 +597,7 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %-12s $",temp));
+            taboleiro.append(String.format(" %s%-12s%s $",Constantes.bold,temp,Constantes.normal));
 
             temp.setLength(0); //para baleirar o buffer
 
@@ -630,7 +639,7 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format("\n$ %-12s $",temp));
+            taboleiro.append(String.format("\n$ %s%-12s%s $",Constantes.bold,temp,Constantes.normal));
             temp.setLength(0);
             taboleiro.append(String.format("%134s$"," "));
 
@@ -644,7 +653,7 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %-12s $",temp));
+            taboleiro.append(String.format(" %s%-12s%s $",Constantes.bold,temp,Constantes.normal));
             temp.setLength(0);
 
             if (j!=40) {
@@ -687,7 +696,7 @@ public class Taboleiro {
 
             }
 
-            taboleiro.append(String.format(" %-12s $",temp));
+            taboleiro.append(String.format(" %s%-12s%s $",Constantes.bold,temp,Constantes.normal));
 
             temp.setLength(0); //para baleirar o buffer
 
