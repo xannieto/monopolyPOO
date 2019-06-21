@@ -230,9 +230,8 @@ public abstract class Avatar {
         }
 
         this.setVecesDadosLanzados();
-        Xogo.getConsola().imprimir(String.format("O avatar %s avanza %d posicións, desde %s (%s) até %s (%s)",
+        Xogo.getConsola().imprimir(String.format("O avatar %s avanza %d posicións, desde %s (%s) até %s (%s).",
                 this.getId(),avance,taboleiro.obterCadro(posicionAntiga).getNome(),taboleiro.obterCadro(posicionAntiga).getId(),taboleiro.obterCadro(posicionNova).getNome(),taboleiro.obterCadro(posicionNova).getId()));
-        if (this.sacarDobres)   Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados", Constantes.bold,Constantes.normal));
     }
 
     public abstract void moverEnAvanzado(Taboleiro taboleiro, Integer[] integer);

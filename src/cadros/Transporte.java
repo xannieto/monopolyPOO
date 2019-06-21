@@ -26,7 +26,7 @@ public final class Transporte extends Propiedade {
 
         if (this.getPropietario()!=null){
 
-            Integer conta = 1;
+            Integer conta = 0;
 
             for (Cadro cadro : taboleiro.getCadros().values())
                 if (cadro instanceof Transporte)

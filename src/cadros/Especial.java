@@ -44,11 +44,13 @@ public final class Especial extends Cadro {
             case "irCarcere":
                 xogador.getAvatar().setCarcere(true);
                 xogador.getAvatar().setQuendasPrision(3);
+                xogador.getAvatar().resetDatosTirada();
                 xogador.getAvatar().setPosicion(taboleiro.obterCadro("carcere"));
+
                 xogador.incrementarVecesEnPrision();
                 this.setVisitas();
 
-                Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión durante tres quendas. Pode tentar lanzar os dados nas próximas tres quendas.\n\tMais se non saca dobres en ningunha desas ocasións, deberá pagar a fianza.",xogador.getNome()));
+                Xogo.getConsola().imprimir(String.format("O xogador %s vai a prisión durante tres quendas. Pode tentar lanzar os dados nas próximas tres quendas.\nMais se non saca dobres en ningunha desas ocasións, deberá pagar a fianza.",xogador.getNome()));
                 break;
 
             case "saida":
