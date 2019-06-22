@@ -74,7 +74,7 @@ public final class Sorte extends Accion {
 
             }
 
-            baralla.get(numCarta).accion(taboleiro,xogador);
+            baralla.get(numCarta % 6).accion(taboleiro,xogador);
 
             this.setVisitas();
 

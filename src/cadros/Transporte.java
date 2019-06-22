@@ -17,6 +17,7 @@ public final class Transporte extends Propiedade {
         this.setAluguer(Constantes.transporte);
         this.setHipotecada(false);
         this.setHipoteca(valor*Constantes.factorHipoteca);
+        this.setAlugueresCobrados(0.0);
         this.setVisitas();
 
     }
@@ -55,12 +56,12 @@ public final class Transporte extends Propiedade {
                 xogador.incrementarPagoDeAlugueres(this.getAluguer());
                 this.getPropietario().incrementarCobroDeAluguere(this.getAluguer());
                 this.setVisitas();
-                this.setAlugueresCobrados(this.getValor());
+                this.setAlugueresCobrados(this.getAluguer());
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s paga un aluguer de %.2f€",xogador.getNome(),this.getAluguer()));
             } catch (FortunaInsuficienteExcepcion e){
                 xogador.setHipotecar(true);
-                xogador.setDebeda(this.getValor());
+                xogador.setDebeda(this.getAluguer());
                 Xogo.getConsola().imprimir(e.getMessage());
                 throw new HipotecaExcepcion("Debe hipotecar ou vender propiedades.");
             }

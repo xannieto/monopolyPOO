@@ -298,7 +298,7 @@ public class Taboleiro {
         return this.idEdificacion[num];
     }
 
-    private void incrementarNumSerie(Integer num){
+    public void incrementarNumSerie(Integer num){
         if(num > 0 || num < idEdificacion.length)   idEdificacion[num]++;
     }
 
@@ -470,7 +470,7 @@ public class Taboleiro {
         StringBuilder estatisticas = new StringBuilder();
 
         estatisticas.append(String.format("{\n\tcadro máis rendíbel: %s (%s),\n\tgrupo más rendíbel: %s,\n\tcadro máis visitado: %s (%s),\n\txogador con mais voltas: %s,\n\txogador que máis veces lanzou os dados: %s,\n\txogador máis rico: %s\n}",
-                cadroMaisRendibel().getId(),cadroMaisRendibel().getId(),grupoMaisRendibel().getNomeGrupo(),cadroMaisVisitado().getNome(),cadroMaisVisitado().getId(),xogadorEnCabeza().getNome(),xogadorMaisVecesLanzadosDados().getNome(),xogadorMaisRico().getNome()));
+                cadroMaisRendibel().getNome(),cadroMaisRendibel().getId(),grupoMaisRendibel().getNomeGrupo(),cadroMaisVisitado().getNome(),cadroMaisVisitado().getId(),xogadorEnCabeza().getNome(),xogadorMaisVecesLanzadosDados().getNome(),xogadorMaisRico().getNome()));
 
 
         return estatisticas.toString();
@@ -503,7 +503,7 @@ public class Taboleiro {
 
     private Grupo grupoMaisRendibel(){
 
-        Grupo rendibel = null; Double rendibilidade = 0.0;
+        Grupo rendibel = obterGrupo("g1"); Double rendibilidade = 0.0;
 
         for (Grupo grupo: grupos){
             Double suma = 0.0;
@@ -522,7 +522,7 @@ public class Taboleiro {
 
     private Xogador xogadorEnCabeza(){
 
-        Xogador cabeza = null; Integer voltas = 0; Integer posicion = 0;
+        Xogador cabeza = getAvatares().get(0).getXogador(); Integer voltas = 0; Integer posicion = 0;
 
         for (Xogador xogador: this.xogadores.values()){
 
@@ -537,7 +537,7 @@ public class Taboleiro {
 
     private Xogador xogadorMaisVecesLanzadosDados(){
 
-        Xogador lanzador = null; Integer vecesLanzadas = 0;
+        Xogador lanzador = getAvatares().get(0).getXogador(); Integer vecesLanzadas = 0;
 
         for (Xogador xogador: xogadores.values())
             if (xogador.getAvatar().getVecesDadosLanzados() > vecesLanzadas)
@@ -547,7 +547,7 @@ public class Taboleiro {
     }
 
     private Xogador xogadorMaisRico(){
-        Xogador rico = null;
+        Xogador rico = getAvatares().get(0).getXogador();
 
         for (Xogador xogador: xogadores.values()) {
             if (rico != null) {

@@ -27,6 +27,7 @@ public final class CartaSorte extends Carta {
             if (getPagar()){
                 try{
                     xogador.pagar(this.getValor());
+                    xogador.incrementarPagoDeImpostos(this.getValor());
                     Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
 
                 } catch (FortunaInsuficienteExcepcion e) {
@@ -37,6 +38,7 @@ public final class CartaSorte extends Carta {
 
             } else {
                 xogador.cobrar(this.getValor());
+                xogador.incrementarPremiosInversionsBote(this.getValor());
                 Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));
             }
 
@@ -47,6 +49,7 @@ public final class CartaSorte extends Carta {
                 xogador.getAvatar().setCarcere(true);
                 xogador.getAvatar().setQuendasPrision(3);
                 xogador.getAvatar().resetDatosTirada();
+                xogador.incrementarVecesEnPrision();
                 xogador.getAvatar().setPosicion(taboleiro.obterCadro(this.getCadroDestino()));
 
                 Xogo.getConsola().imprimir(String.format("Acción: %s",getTextoCarta()));

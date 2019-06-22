@@ -16,6 +16,7 @@ public final class Servizo extends Propiedade {
         this.setValor(valor);
         this.setAluguer(Constantes.factorServizo*4);
         this.setHipoteca(valor*Constantes.factorHipoteca);
+        this.setAlugueresCobrados(0.0);
         this.setHipotecada(false);
         this.setVisitas();
 
@@ -57,7 +58,7 @@ public final class Servizo extends Propiedade {
 
             } catch (FortunaInsuficienteExcepcion e){
                 xogador.setHipotecar(true);
-                xogador.setDebeda(this.getValor());
+                xogador.setDebeda(this.getAluguer());
                 Xogo.getConsola().imprimir(e.getMessage());
                 throw new HipotecaExcepcion("Debe hipotecar ou vender propiedades.");
             }

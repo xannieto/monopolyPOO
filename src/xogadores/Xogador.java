@@ -238,7 +238,7 @@ public class Xogador {
 
         StringBuilder descricion = new StringBuilder();
 
-        descricion.append(String.format("{\n\tdiñeiro investido: %.2f€,\n\tpago de alugueres: %.2f€,\n\tcobro de alugueres: %.2f,\n\tpago de taxas e impostos: %.2f€,\n\tcobros por pasar pola saída: %.2f€,\n\tpremios por inversion ou bote: %.2f€,\n\tveces en prisión: %d\n}",
+        descricion.append(String.format("{\n\tdiñeiro investido: %.2f€,\n\tpago de alugueres: %.2f€,\n\tcobro de alugueres: %.2f€,\n\tpago de taxas e impostos: %.2f€,\n\tcobros por pasar pola saída: %.2f€,\n\tpremios por inversion ou bote: %.2f€,\n\tveces en prisión: %d\n}",
                 this.dinheiroInvestido, this.pagoDeAlugueres,this.cobroDeAlugueres, this.pagoDeImpostos, this.cobroDeSaida,this.premiosInversionsBote, this.vecesEnPrision));
 
         return descricion.toString();

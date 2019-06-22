@@ -7,6 +7,8 @@ import xogadores.Xogador;
 import xogo.Taboleiro;
 import xogo.Xogo;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public final class Solar extends Propiedade {
@@ -34,6 +36,7 @@ public final class Solar extends Propiedade {
         this.setAluguer(valor*Constantes.factorAluguerSolar);
         this.setHipotecada(false);
         this.setHipoteca(valor*Constantes.factorHipoteca);
+        this.setAlugueresCobrados(0.0);
         this.vecesCaidas = 0;
         this.edificacions = new HashMap<>();
         this.grupo = null;
@@ -107,47 +110,47 @@ public final class Solar extends Propiedade {
         this.grupo = grupo;
     }
 
-    public void setValorCasa(Double valorCasa) {
+    private void setValorCasa(Double valorCasa) {
         this.valorCasa = valorCasa;
     }
 
-    public void setValorHotel(Double valorHotel) {
+    private void setValorHotel(Double valorHotel) {
         this.valorHotel = valorHotel;
     }
 
-    public void setValorPiscina(Double valorPiscina) {
+    private void setValorPiscina(Double valorPiscina) {
         this.valorPiscina = valorPiscina;
     }
 
-    public void setValorPista(Double valorPista) {
+    private void setValorPista(Double valorPista) {
         this.valorPista = valorPista;
     }
 
-    public void setAluguer1Casa(Double aluguer1Casa) {
+    private void setAluguer1Casa(Double aluguer1Casa) {
         this.aluguer1Casa = aluguer1Casa;
     }
 
-    public void setAluguer2Casa(Double aluguer2Casa) {
+    private void setAluguer2Casa(Double aluguer2Casa) {
         this.aluguer2Casa = aluguer2Casa;
     }
 
-    public void setAluguer3Casa(Double aluguer3Casa) {
+    private void setAluguer3Casa(Double aluguer3Casa) {
         this.aluguer3Casa = aluguer3Casa;
     }
 
-    public void setAluguer4Casa(Double aluguer4Casa) {
+    private void setAluguer4Casa(Double aluguer4Casa) {
         this.aluguer4Casa = aluguer4Casa;
     }
 
-    public void setAluguerHotel(Double aluguerHotel) {
+    private void setAluguerHotel(Double aluguerHotel) {
         this.aluguerHotel = aluguerHotel;
     }
 
-    public void setAluguerPiscina(Double aluguerPiscina) {
+    private void setAluguerPiscina(Double aluguerPiscina) {
         this.aluguerPiscina = aluguerPiscina;
     }
 
-    public void setAluguerPista(Double aluguerPista) {
+    private void setAluguerPista(Double aluguerPista) {
         this.aluguerPista = aluguerPista;
     }
 
@@ -213,7 +216,7 @@ public final class Solar extends Propiedade {
 
             aluguer += Constantes.valoresSolares.get(this.getId())*0.1;
 
-            if (edificacions != null){
+            if (!edificacions.isEmpty()){
 
                 Integer casas = 0, hoteis = 0, piscinas = 0, pistas = 0 ;
 
@@ -237,11 +240,6 @@ public final class Solar extends Propiedade {
 
                 }
 
-                /*if (casas == 1) aluguer += aluguer1Casa;
-                else if (casas == 2) aluguer += aluguer1Casa + aluguer2Casa;
-                else if (casas == 3) aluguer += aluguer1Casa + aluguer2Casa + aluguer3Casa;
-                else if (casas == 4) aluguer += aluguer1Casa + aluguer2Casa + aluguer4Casa;*/
-
                 if (hoteis == 1)    aluguer += aluguerHotel;
                 else if (hoteis == 2)    aluguer += 2*aluguerHotel;
 
@@ -253,7 +251,7 @@ public final class Solar extends Propiedade {
 
             }
 
-            if (this.getGrupo().estaCompradoPorUnPropietario())   aluguer *= 2;
+            if (this.getGrupo().estaCompradoPorUnPropietario())   aluguer = aluguer*2;
 
             this.setAluguer(aluguer);
 
@@ -284,7 +282,7 @@ public final class Solar extends Propiedade {
 
                 } catch (FortunaInsuficienteExcepcion e){
                     xogador.setHipotecar(true);
-                    xogador.setDebeda(this.getValor());
+                    xogador.setDebeda(this.getAluguer());
                     Xogo.getConsola().imprimir(e.getMessage());
                     throw new HipotecaExcepcion("Debe hipotecar ou vender propiedades.");
                 }
@@ -314,7 +312,12 @@ public final class Solar extends Propiedade {
                             xogador.pagar(this.getValorCasa());
                             taboleiro.engadirEdificacion(casa);
                             this.engadirEdificacion(casa);
+
                             aluguer(taboleiro);
+                            xogador.incrementarDinheiroInvestido(this.getValorCasa());;
+
+                            Xogo.getConsola().imprimir(String.format("O xogador %s acaba de contruír unha casa en %s. A súa fortuna redúcese a %.2f€.",
+                                    this.getPropietario().getNome(),this.getNome(),this.getPropietario().getFortuna()));
 
                         } catch (FortunaInsuficienteExcepcion e){
                             Xogo.getConsola().imprimir("Non ten suficiente diñeiro para edificar unha casa.");
@@ -333,15 +336,24 @@ public final class Solar extends Propiedade {
                             taboleiro.engadirEdificacion(hotel);
                             this.engadirEdificacion(hotel);
 
+                            /* substituíndo as casas */
+                            ArrayList<Casa> casasAEliminar = new ArrayList<>();
                             for (Edificacion edificacion: edificacions.values()){
                                 if (edificacion instanceof Casa){
-                                    taboleiro.quitarEdificacion(edificacion.getId());
-                                    this.quitarEdificacion(edificacion.getId());
+                                    casasAEliminar.add((Casa) edificacion);
                                 }
-
                             }
 
+                            for (Casa casa: casasAEliminar){
+                                edificacions.remove(casa.getId(),casa);
+                                taboleiro.quitarEdificacion(casa.getId());
+                            }
+
+                            xogador.incrementarDinheiroInvestido(this.getValorHotel());
                             aluguer(taboleiro);
+
+                            Xogo.getConsola().imprimir(String.format("O xogador %s acaba de contruír un hotel en %s. A súa fortuna redúcese a %.2f€.",
+                                    this.getPropietario().getNome(),this.getNome(),this.getPropietario().getFortuna()));
 
                         } catch (FortunaInsuficienteExcepcion e){
                             Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar un hotel.");
@@ -359,7 +371,12 @@ public final class Solar extends Propiedade {
                             xogador.pagar(this.getValorPiscina());
                             taboleiro.engadirEdificacion(piscina);
                             this.engadirEdificacion(piscina);
+
+                            xogador.incrementarDinheiroInvestido(this.getValorPiscina());
                             aluguer(taboleiro);
+
+                            Xogo.getConsola().imprimir(String.format("O xogador %s acaba de contruír unha piscina en %s. A súa fortuna redúcese a %.2f€.",
+                                    this.getPropietario().getNome(),this.getNome(),this.getPropietario().getFortuna()));
 
                         } catch (FortunaInsuficienteExcepcion e){
                             Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar unha piscina.");
@@ -377,7 +394,12 @@ public final class Solar extends Propiedade {
                             xogador.pagar(this.getValorPista());
                             taboleiro.engadirEdificacion(pistaDeporte);
                             this.engadirEdificacion(pistaDeporte);
+
+                            xogador.incrementarDinheiroInvestido(this.getValorPista());
                             aluguer(taboleiro);
+
+                            Xogo.getConsola().imprimir(String.format("O xogador %s acaba de contruír unha pista de deporte en %s. A súa fortuna redúcese a %.2f€.",
+                                    this.getPropietario().getNome(),this.getNome(),this.getPropietario().getFortuna()));
 
                         } catch(FortunaInsuficienteExcepcion e){
                             Xogo.getConsola().imprimir("Non suficiente diñeiro para edificar unha pista de deporte.");
@@ -409,31 +431,50 @@ public final class Solar extends Propiedade {
 
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Casa && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                //this.edificacions.remove(edificacion.getId());
+                                //taboleiro.quitarEdificacion(edificacion.getId());
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorCasa*vendido*Constantes.factorHipoteca);
+
                         Xogo.getConsola().imprimir(String.format("%s vendeu/venderon %d casa(s) en %s, percibindo %.2f€. Queda(n) %d casa(s) na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorCasa*vendido*Constantes.factorHipoteca,contarCasas()));
 
                     } else {
 
                         cantidade = contarCasas();
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Casa && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
+
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorCasa*vendido*Constantes.factorHipoteca);
+
                         Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d casa(s) en %s, percibindo %.2f€. Queda(n) %d casa(s) na propiedade.",
-                                vendido,this.getNome(),this.valorCasa*vendido,contarCasas()));
+                                vendido,this.getNome(),this.valorCasa*vendido*Constantes.factorHipoteca,contarCasas()));
 
                     }
 
@@ -445,32 +486,50 @@ public final class Solar extends Propiedade {
 
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Hotel && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorHotel*vendido*Constantes.factorHipoteca);
+
                         Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f€. Quedan %d hotel/-teis na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido*Constantes.factorHipoteca,contarHoteis()));
 
                     } else {
 
                         cantidade = contarHoteis();
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Hotel && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d hotel/-teis en %s, percibindo %.2f€. Quedan %d hotel/-teis na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorHotel*vendido,contarHoteis()));
+                        this.getPropietario().cobrar(this.valorHotel*vendido*Constantes.factorHipoteca);
+
+                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d hotel/hoteis en %s, percibindo %.2f€. Queda(n) %d hotel/hoteis na propiedade.",
+                                vendido,this.getNome(),this.valorHotel*vendido*Constantes.factorHipoteca,contarHoteis()));
                     }
 
                     break;
@@ -481,33 +540,50 @@ public final class Solar extends Propiedade {
 
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Piscina && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorPiscina*vendido*Constantes.factorHipoteca);
+
                         Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f€. Quedan %d piscina(s) na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido*Constantes.factorHipoteca,contarPiscinas()));
 
                     } else {
 
                         cantidade = contarPiscinas();
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof Piscina && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
-                        aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d piscina(s) en %s, percibindo %.2f€. Quedan %d piscina(s) na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPiscina*vendido,contarPiscinas()));
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
 
+                        aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorPiscina*vendido*Constantes.factorHipoteca);
+
+                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d piscina(s) en %s, percibindo %.2f€. Quedan %d piscina(s) na propiedade.",
+                                vendido,this.getNome(),this.valorPiscina*vendido*Constantes.factorHipoteca,contarPiscinas()));
                     }
 
                     break;
@@ -518,32 +594,50 @@ public final class Solar extends Propiedade {
 
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof PistaDeporte && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
+                        this.getPropietario().cobrar(this.valorPiscina*vendido*Constantes.factorHipoteca);
+
                         Xogo.getConsola().imprimir(String.format("%s vendeu %d pista(s) en %s, percibindo %.2f€. Quedan %d pista(s) na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
+                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido*Constantes.factorHipoteca,contarPistas()));
 
                     } else {
 
                         cantidade = contarPistas();
                         vendido = cantidade;
 
+                        ArrayList<Edificacion> edificacions = new ArrayList<>();
                         for (Edificacion edificacion: this.edificacions.values())
                             if (edificacion instanceof PistaDeporte && cantidade > 0){
-                                this.edificacions.remove(edificacion.getId());
-                                taboleiro.quitarEdificacion(edificacion.getId());
+                                edificacions.add(edificacion);
+                                /*this.edificacions.remove(edificacion.getId());
+                                taboleiro.quitarEdificacion(edificacion.getId());*/
                                 cantidade--;
                             }
 
+                        for (Edificacion edificacion: edificacions){
+                            this.edificacions.remove(edificacion.getId(),edificacion);
+                            taboleiro.quitarEdificacion(edificacion.getId());
+                        }
+
                         aluguer(taboleiro);
-                        Xogo.getConsola().imprimir(String.format("%s vendeu %d casa(s) en %s, percibindo %.2f€. Quedan %d casa(s) na propiedade.",
-                                this.getPropietario().getNome(),vendido,this.getNome(),this.valorPista*vendido,contarPistas()));
+                        this.getPropietario().cobrar(this.valorPiscina*vendido*Constantes.factorHipoteca);
+
+                        Xogo.getConsola().imprimir(String.format("Só se vendeu/venderon %d pista(s) en %s, percibindo %.2f€. Quedan %d pista(s) na propiedade.",
+                                vendido,this.getNome(),this.valorPista*vendido*Constantes.factorHipoteca,contarPistas()));
                     }
 
                     break;
@@ -596,14 +690,22 @@ public final class Solar extends Propiedade {
 
         Integer pistas = contarPistas(), hoteis = contarHoteis();
 
-        if (pistas.equals(getGrupo().getTamanhoGrupo())){
+        if (pistas.equals(1)){
+            return false;
+
+        } else {
+            if (hoteis.equals(1)) return true;
+            else return false;
+        }
+
+        /*if (pistas.equals(getGrupo().getTamanhoGrupo())){
             return false;
         } else {
 
             if (hoteis > 1) return true;
             return false;
 
-        }
+        }*/
 
     }
 
@@ -611,14 +713,23 @@ public final class Solar extends Propiedade {
 
         Integer piscinas = contarPiscinas(), hoteis = contarHoteis(), casas = contarCasas();
 
-        if (piscinas.equals(getGrupo().getTamanhoGrupo())){
+        if (piscinas.equals(1)){
+            return false;
+        } else{
+
+            if (hoteis.equals(1) && casas.equals(1))    return true;
+            return false;
+
+        }
+
+        /*if (piscinas.equals(getGrupo().getTamanhoGrupo())){
             return false;
         } else{
 
             if (hoteis > 0 && casas > 1)    return true;
             return false;
 
-        }
+        }*/
 
     }
 
@@ -626,7 +737,19 @@ public final class Solar extends Propiedade {
 
         Integer casas = contarCasas(), hoteis = contarHoteis();
 
-        if (hoteis.equals(getGrupo().getTamanhoGrupo())){
+        if (hoteis.equals(1)){
+
+            if (casas.equals(1))   return false;
+            else return true;
+
+        } else {
+
+            if (casas > 3)   return false;
+            else return true;
+
+        }
+
+        /*if (hoteis.equals(getGrupo().getTamanhoGrupo())){
 
             if (casas.equals(getGrupo().getTamanhoGrupo())) return false;
             return true;
@@ -636,21 +759,30 @@ public final class Solar extends Propiedade {
             if (casas.equals(4)) return false;
             return true;
 
-        }
+        }*/
     }
 
     private Boolean podeseFacerOutroHotel(){
 
         Integer casas = contarCasas(), hoteis = contarHoteis();
 
-        if (hoteis.equals(getGrupo().getTamanhoGrupo())){
+        if (hoteis.equals(1)){
+            return false;
+
+        } else {
+            if (casas.equals(4)) return true;
+            else return false;
+
+        }
+
+        /*if (hoteis.equals(getGrupo().getTamanhoGrupo())){
             return false;
 
         } else {
 
             if (casas < 4)  return false;
             return true;
-        }
+        }*/
 
     }
 

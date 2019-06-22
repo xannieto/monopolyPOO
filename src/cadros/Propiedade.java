@@ -97,6 +97,7 @@ public abstract class Propiedade extends Cadro {
     public void comprar(Xogador xogador){
         if(this.getPropietario() == null) {
             setPropietario(xogador);
+            xogador.incrementarDinheiroInvestido(getValor());
         }
 
     }

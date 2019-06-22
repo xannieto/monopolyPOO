@@ -123,7 +123,7 @@ public class Xogo implements Comando {
 
                     break;
 
-                case "estatistcas":
+                case "estatisticas":
 
                     if (comando.length==1){
                         estatisticas();
@@ -132,6 +132,8 @@ public class Xogo implements Comando {
                         estatisticasXogador(comando[1]);
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
+                    break;
 
                 case "hipotecar":
 
@@ -150,8 +152,6 @@ public class Xogo implements Comando {
                         if (comando[1].equals("dados")){
 
                             lanzarDados();
-
-                            verTaboleiro(taboleiro);
 
                         } else Xogo.getConsola().imprimir("Argumento incorrecto.");
 
@@ -225,6 +225,15 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "comprarGrupo":
+
+                    if (comando.length==2){
+                        comprarGrupo(comando[1]);
+
+                    }
+
+                    break;
+
                 default:
                     consola.imprimir("Comando incorrecto, ténteo de novo.");
             }
@@ -233,6 +242,51 @@ public class Xogo implements Comando {
         }
 
 
+    }
+
+    private void actualizarAluguerGrupo(Grupo grupo){
+        if (grupo!=null){
+            if (grupo.estaCompradoPorUnPropietario()){
+                for (Solar solar: grupo.getSolares())
+                    solar.aluguer(taboleiro);
+                    Xogo.getConsola().imprimir("Facha");
+            }
+        }
+    }
+
+    private void actualizarAluguerTransporte(){
+        Transporte t1 = (Transporte) taboleiro.obterCadro("transSur");
+        Transporte t2 = (Transporte) taboleiro.obterCadro("transOeste");
+        Transporte t3 = (Transporte) taboleiro.obterCadro("transNorte");
+        Transporte t4 = (Transporte) taboleiro.obterCadro("transLeste");
+
+        t1.aluguer(taboleiro);
+        t2.aluguer(taboleiro);
+        t3.aluguer(taboleiro);
+        t4.aluguer(taboleiro);
+    }
+
+    private void actualizarAluguerServizo(){
+        Servizo s1 = (Servizo) taboleiro.obterCadro("luz");
+        Servizo s2 = (Servizo) taboleiro.obterCadro("auga");
+
+        s1.aluguer(taboleiro);
+        s2.aluguer(taboleiro);
+    }
+
+    private void comprarGrupo(String id){
+
+        Grupo grupo = this.taboleiro.obterGrupo(id);
+
+        if (grupo!=null){
+
+            for (Solar solar: grupo.getSolares()){
+                solar.comprar(this.enQuenda.getXogador());
+                this.enQuenda.getXogador().engadirPropiedade(solar);
+            }
+
+            actualizarAluguerGrupo(grupo);
+        }
     }
 
     private void aumentarAsCatroVoltas(){
@@ -410,6 +464,7 @@ public class Xogo implements Comando {
             if (this.enQuenda.getCobrarSaida() && !this.enQuenda.getPosicion().getId().equals("saida")){
                 this.enQuenda.setCobrarSaida(false);
                 xogador.cobrar(Constantes.salario);
+                xogador.incrementarCobroDeSaida(Constantes.salario);
                 Xogo.consola.imprimir(String.format("O xogador %s deu unha volta completa e cobra %.2f€.",xogador.getNome(),Constantes.salario));
             }
 
@@ -563,8 +618,8 @@ public class Xogo implements Comando {
 
     }
 
-    /* interface comando */
 
+    /* interface comando */
     @Override
     public void acabarQuenda() {
 
@@ -600,8 +655,19 @@ public class Xogo implements Comando {
                     this.enQuenda.getXogador().engadirPropiedade((Propiedade) cadro);
                     ((Propiedade) cadro).aluguer(taboleiro);
 
+                    /* para que cando compren, actualicen os prezos */
+                    if (cadro instanceof Solar)
+                        actualizarAluguerGrupo(((Solar) cadro).getGrupo());
+
+                    if (cadro instanceof Servizo)
+                        actualizarAluguerServizo();
+
+                    if (cadro instanceof Transporte)
+                        actualizarAluguerTransporte();
+
                     Xogo.getConsola().imprimir(String.format("O xogador %s compra %s por %.2f€.",
                             this.enQuenda.getXogador().getNome(),cadro.getNome(),((Propiedade)cadro).getValor(),this.enQuenda.getXogador().getFortuna()));
+
                     describirXogador(this.enQuenda.getXogador().getNome());
 
                 } catch(FortunaInsuficienteExcepcion e){
@@ -758,6 +824,8 @@ public class Xogo implements Comando {
             /* ofrecer a súa compra ou cumprir coa acción requerida */
             determinarAccionCadro(cadro);
 
+            verTaboleiro(taboleiro);
+
         } else if (this.enQuenda.getQuendasPrision() > 0) {
 
             Xogo.consola.imprimir("O xogador está en prisión, lanzaranse os dados para ver se saca dobres e poder saír sen pagar a fianza.");
@@ -779,10 +847,14 @@ public class Xogo implements Comando {
                 Xogo.consola.imprimir(String.format("Non sacou dobres, quédanlle %d quendas en prisión.",this.enQuenda.getQuendasPrision()));
             }
 
+            verTaboleiro(taboleiro);
+
         } else if (this.enQuenda.getQuendasPrision()==0){
 
             Xogo.consola.imprimir("Debes pagar a fianza da prisión.");
             sairCarcere();
+
+            verTaboleiro(taboleiro);
         }
 
     }
@@ -815,7 +887,7 @@ public class Xogo implements Comando {
             for (Edificacion edificacion: this.taboleiro.getEdificacions())
                 Xogo.getConsola().imprimir(edificacion.toString());
 
-        } else Xogo.getConsola().imprimir("Non hai edificación construídas.");
+        } else Xogo.getConsola().imprimir("Non hai edificacións construídas.");
     }
 
     @Override
@@ -824,17 +896,8 @@ public class Xogo implements Comando {
         Grupo grupo = this.taboleiro.obterGrupo(idGrupo);
 
         if (grupo != null){
-            if (!grupo.getSolares().isEmpty()){
-                for (Solar solar: grupo.getSolares()){
-                    if (!solar.getEdificacions().isEmpty()){
-                        for (Edificacion edificacion: solar.getEdificacions().values())
-                            Xogo.getConsola().imprimir(edificacion.toString());
-
-                    }
-
-                }
-
-            }
+            Xogo.getConsola().imprimir(grupo.toString());
+            Xogo.getConsola().imprimir(grupo.queSePodeConstruir());
 
         } else Xogo.getConsola().imprimir("O grupo non existe.");
 

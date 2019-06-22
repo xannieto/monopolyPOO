@@ -56,6 +56,7 @@ public final class Especial extends Cadro {
             case "saida":
                 xogador.cobrar(this.valor);
                 xogador.getAvatar().setCobrarSaida(false);
+                xogador.incrementarCobroDeSaida(this.valor);
                 this.setVisitas();
 
                 Xogo.getConsola().imprimir(String.format("O xogador %s cobra %.2f€ por pasar polo cadro de saída.",xogador.getNome(),this.valor));
