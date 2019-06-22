@@ -20,6 +20,7 @@ public class Taboleiro {
     private ArrayList<Avatar> avatares;
     private ArrayList<Edificacion> edificacions;
     private Integer[] idEdificacion;
+    private Integer idTrato;
 
     public Taboleiro(){
 
@@ -34,6 +35,7 @@ public class Taboleiro {
         this.edificacions = new ArrayList<>();
         this.idEdificacion = new Integer[4];
         for (int i=0; i < this.idEdificacion.length; i++)   idEdificacion[i] = 0;
+        this.idTrato = 0;
 
         /* creación do taboleiro */
 
@@ -292,7 +294,15 @@ public class Taboleiro {
         return idEdificacion;
     }
 
+    public Integer getIdTrato() {
+        return idTrato;
+    }
+
     /* métodos */
+
+    public void incrementarIdTrato(){
+        this.idTrato++;
+    }
 
     public Integer obterUltimoNumSerie(Integer num){
         return this.idEdificacion[num];

@@ -636,6 +636,11 @@ public class Xogo implements Comando {
     }
 
     @Override
+    public void aceptarTrato(String id) {
+
+    }
+
+    @Override
     public void comprarCadro(String id) {
 
         Cadro cadro = this.taboleiro.obterCadro(id);
@@ -762,6 +767,11 @@ public class Xogo implements Comando {
             } else Xogo.getConsola().imprimir("Non se pode edificar en solares dos que non posúe todo o grupo ou non caeu máis de dúas veces nese solar que lle pertence.");
 
         } else Xogo.getConsola().imprimir("Só se poden edificar edificios en solares.");
+
+    }
+
+    @Override
+    public void eliminarTrato(String id) {
 
     }
 
@@ -911,6 +921,16 @@ public class Xogo implements Comando {
         for (Xogador xogador: xogadores){
             Xogo.getConsola().imprimir(xogador.toString());
         }
+
+    }
+
+    @Override
+    public void listarTratos() {
+
+    }
+
+    @Override
+    public void proporTrato(String xogador, String prop1, String prop) {
 
     }
 
