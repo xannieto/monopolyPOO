@@ -1,7 +1,11 @@
 package tratos;
 
+import cadros.*;
+import edificacions.Edificacion;
+import excepcions.FortunaInsuficienteExcepcion;
 import xogadores.Xogador;
 import xogo.Taboleiro;
+import xogo.Xogo;
 
 public final class TratoPropiedadeCartos extends Trato {
 
@@ -45,12 +49,94 @@ public final class TratoPropiedadeCartos extends Trato {
     }
 
     @Override
-    public void viabilidadeTrato(Taboleiro taboleiro) {
+    public Boolean viabilidadeTrato(Taboleiro taboleiro) {
+
+        Cadro cadro = taboleiro.obterCadro(propiedade);
+
+        if (!invertir){
+
+            if (cadro instanceof Solar || cadro instanceof Servizo || cadro instanceof Transporte){
+                if (!((Propiedade) cadro).pertenceAXogador(this.getEmisorTrato()))
+                    return false;
+            }
+
+            if (getReceptorTrato().getFortuna() < this.cartos)    return false;
+
+            return true;
+
+        } else {
+
+
+            if (cadro instanceof Solar || cadro instanceof Servizo || cadro instanceof Transporte){
+                if (!((Propiedade) cadro).pertenceAXogador(this.getReceptorTrato()))
+                    return false;
+            }
+
+            if (getEmisorTrato().getFortuna() < this.cartos)    return false;
+
+            return true;
+
+        }
 
     }
 
     @Override
     public void accion(Taboleiro taboleiro) {
 
+        if (viabilidadeTrato(taboleiro)){
+
+            if (invertir)   realizarAccion(getReceptorTrato(),getEmisorTrato(),taboleiro);
+            else realizarAccion(getEmisorTrato(),getReceptorTrato(),taboleiro);
+
+        } Xogo.getConsola().imprimir("O trato non se pode realizar no estado actual.");
+
+    }
+
+    private void realizarAccion(Xogador emisor, Xogador receptor, Taboleiro taboleiro){
+
+        try{
+            /* cambio de cartos */
+            receptor.pagar(cartos);
+            emisor.cobrar(cartos);
+
+            /* cambio de propiedade */
+            Propiedade propiedade = (Propiedade) taboleiro.obterCadro(getPropiedade());
+
+            propiedade.setPropietario(receptor);
+            emisor.quitarPropiedade(propiedade);
+            propiedade.aluguer(taboleiro);
+
+            if (propiedade instanceof Solar)
+                if (!((Solar) propiedade).getEdificacions().isEmpty())
+                    for (Edificacion edificacion: ((Solar) propiedade).getEdificacions().values())
+                        edificacion.setPropietario(receptor);
+
+            /* adaptando a saída por pantalla */
+            if (!invertir)
+                Xogo.getConsola().imprimir(String.format("Aceptouse o seguinte trato con %s: doulle %s e %s dame %.2f€.",
+                    getEmisorTrato(),getPropiedade(),getEmisorTrato(),getCartos()));
+
+            else
+                Xogo.getConsola().imprimir(String.format("Aceptouse o seguinte trato con %s: doulle %.2f€ e %s dame %s.",
+                        getEmisorTrato(),getCartos(),getEmisorTrato(),getPropiedade()));
+
+        } catch (FortunaInsuficienteExcepcion e){
+            Xogo.getConsola().imprimir(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder informacion = new StringBuilder();
+
+        informacion.append(String.format("{\n\txogador emisor: %s,\n\ttrato: (",getEmisorTrato()));
+
+        if (!invertir) informacion.append(String.format("%s, %.2f€)\n}",getPropiedade(),getCartos()));
+
+        else informacion.append(String.format("%.2f€, %s)\n}",getCartos(),getPropiedade()));
+
+
+        return informacion.toString();
     }
 }

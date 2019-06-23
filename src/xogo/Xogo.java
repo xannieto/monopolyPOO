@@ -8,6 +8,9 @@ import excepcions.FortunaInsuficienteExcepcion;
 import excepcions.HipotecaExcepcion;
 import interfaces.Comando;
 import interfaces.Constantes;
+import tratos.Trato;
+import tratos.TratoPropiedadeCartos;
+import tratos.TratoPropiedadePropiedade;
 import xogadores.Xogador;
 
 import java.util.Collection;
@@ -78,6 +81,16 @@ public class Xogo implements Comando {
 
                     break;
 
+                case "aceptar":
+
+                    if (comando.length==2){
+
+                        aceptarTrato(comando[1]);
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
+
+                    break;
+
                 case "comprar":
 
                     if (comando.length==2){
@@ -122,6 +135,13 @@ public class Xogo implements Comando {
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                     break;
+
+                case "eliminar":
+
+                    if (comando.length==2){
+                        eliminarTrato(comando[1]);
+
+                    } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos.");
 
                 case "estatisticas":
 
@@ -202,6 +222,16 @@ public class Xogo implements Comando {
                             venderEdificios(comando[1],comando[2],Integer.valueOf(comando[3]));
 
                     } else Xogo.getConsola().imprimir("Cantidade incorrecta de argumentos, ténteo de novo");
+
+                    break;
+
+                case "trato":
+
+                    if (comando.length==5){
+
+                        proporTrato(comando);
+
+                    } else Xogo.consola.imprimir("Cantidade incorrecta de argumentos, ténteo de novo.");
 
                     break;
 
@@ -618,6 +648,22 @@ public class Xogo implements Comando {
 
     }
 
+    private Double obterValor(String s){
+
+        if (s!=null){
+            Double valor;
+
+            try {
+                valor = Double.valueOf(s);
+            } catch (NumberFormatException e){
+                valor = null;
+            }
+
+            return valor;
+        }
+        return null;
+    }
+
 
     /* interface comando */
     @Override
@@ -638,6 +684,13 @@ public class Xogo implements Comando {
     @Override
     public void aceptarTrato(String id) {
 
+        Trato trato = this.enQuenda.getXogador().buscarTrato(id);
+
+        if (trato != null){
+
+            trato.accion(taboleiro);
+
+        } else Xogo.getConsola().imprimir("O trato non existe.");
     }
 
     @Override
@@ -772,6 +825,16 @@ public class Xogo implements Comando {
 
     @Override
     public void eliminarTrato(String id) {
+
+        Trato trato = this.enQuenda.getXogador().buscarTrato(id);
+
+        if (trato != null){
+            this.enQuenda.getXogador().eliminarTrato(id);
+            trato.getReceptorTrato().eliminarTrato(id);
+
+            Xogo.getConsola().imprimir(String.format("Eliminou o trato %s",trato.getId()));
+
+        } else Xogo.getConsola().imprimir("O trato que pretende eliminar non existe.");
 
     }
 
@@ -927,10 +990,73 @@ public class Xogo implements Comando {
     @Override
     public void listarTratos() {
 
+        if (this.enQuenda.getXogador().getTratosPropostos().isEmpty())  Xogo.consola.imprimir("Non ten ningún trato proposto.");
+        else{
+            for (Trato trato: this.enQuenda.getXogador().getTratosPropostos())
+                Xogo.consola.imprimir(trato.toString());
+        }
+
     }
 
     @Override
-    public void proporTrato(String xogador, String prop1, String prop) {
+    public void proporTrato(String[] args) {
+
+        Xogador receptor;
+        Trato trato;
+        String cadea;
+        Double[] valor = new Double[2];
+
+        switch (args.length){
+
+            case 5:
+
+                /* xogador receptor */
+                args[1] = args[1].replaceFirst(":","");
+                receptor = this.taboleiro.obterXogador(args[1]);
+
+                /* solares/cartos implicados */
+                args[3] = args[3].replaceFirst("\\(",""); args[3] = args[3].replaceFirst(",","");
+                args[4] = args[4].replaceFirst("\\)","");
+
+                /* creacion do id */
+                cadea = String.format("trato%d",taboleiro.getIdTrato()); taboleiro.incrementarIdTrato();
+
+                // para saber se hai numeros
+                valor[0] = obterValor(args[3]);
+                valor[1] = obterValor(args[4]);
+
+                if (valor[0]==null && valor[1]==null){
+                    trato = new TratoPropiedadePropiedade(cadea,this.enQuenda.getXogador(),receptor,args[3],args[4]);
+                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),args[3],args[4]);
+
+                } else if (valor[0]==null){
+                    trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[3],valor[1],false);
+                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),args[3],valor[1]);
+
+                } else {
+                    trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[4],valor[0],true);
+                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),valor[0],args[4]);
+
+                }
+
+                receptor.engadirTrato(trato);
+                this.enQuenda.getXogador().engadirTrato(trato);
+
+                /* impresion da informacion xerada nos if-else anteriores */
+                Xogo.consola.imprimir(cadea);
+
+                break;
+
+            /*case 7:
+
+                break;
+
+            case 9:
+
+                break;*/
+
+        }
+
 
     }
 

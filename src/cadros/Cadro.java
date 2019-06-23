@@ -22,7 +22,7 @@ public abstract class Cadro {
         return nome;
     }
 
-    public Integer getVisitas(){return visitas;}
+    public Integer frecuenciaVisitas(){return visitas;}
 
     /* setters */
     public void setId(String id){

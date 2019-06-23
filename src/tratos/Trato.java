@@ -37,8 +37,18 @@ public abstract class Trato {
         this.receptorTrato = receptorTrato;
     }
 
-    public abstract void viabilidadeTrato(Taboleiro taboleiro);
+    public abstract Boolean viabilidadeTrato(Taboleiro taboleiro);
 
     public abstract void accion(Taboleiro taboleiro);
 
+    /* metodos */
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof TratoPropiedadePropiedade || obj instanceof TratoPropiedadeCartos)
+            return ((Trato) obj).getId().equals(this.id);
+
+        return false;
+    }
 }

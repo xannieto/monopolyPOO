@@ -82,9 +82,7 @@ public final class Grupo extends Cadro {
 
     public Boolean estaCompradoPorUnPropietario(){
 
-        if (this.getPropietario() != null)    return true;
-        else {
-            Xogador xogador = this.solares.get(0).getPropietario();
+        Xogador xogador = this.solares.get(0).getPropietario();
 
             if (xogador != null) {
 
@@ -95,9 +93,8 @@ public final class Grupo extends Cadro {
                 return true;
 
             }
-        }
-        return false;
 
+        return false;
     }
 
     public String queSePodeConstruir(){

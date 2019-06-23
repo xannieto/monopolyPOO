@@ -5,6 +5,7 @@ import cadros.Propiedade;
 import cadros.Solar;
 import edificacions.Edificacion;
 import excepcions.FortunaInsuficienteExcepcion;
+import tratos.Trato;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ public class Xogador {
     private Double fortuna;
     private Avatar avatar;
     private HashMap<String, Propiedade> propiedades;
+    private ArrayList<Trato> tratosPropostos;
     private Boolean hipotecar;
     private Double debeda;
 
@@ -33,6 +35,7 @@ public class Xogador {
         this.nome = nome;
         this.fortuna = fortunaInicial;
         this.propiedades = new HashMap<>();
+        this.tratosPropostos = new ArrayList<>();
         this.debeda = 0.0;
 
         this.dinheiroInvestido = 0.0;
@@ -121,6 +124,10 @@ public class Xogador {
         return vecesEnPrision;
     }
 
+    public ArrayList<Trato> getTratosPropostos() {
+        return tratosPropostos;
+    }
+
     /* setters */
 
     public void setFortuna(Double fortuna) {
@@ -136,6 +143,29 @@ public class Xogador {
     }
 
     /* metodos */
+
+    public void engadirTrato(Trato trato){
+        if (trato != null)  this.tratosPropostos.add(trato);
+
+    }
+
+    public Trato buscarTrato(String id){
+
+        for (Trato trato: this.tratosPropostos){
+            if (trato.getId().equals(id))   return trato;
+        }
+
+        return null;
+    }
+
+    public void eliminarTrato(String id){
+        Trato trato = buscarTrato(id);
+
+        if (trato!=null){
+            tratosPropostos.remove(trato);
+        }
+
+    }
 
     public void incrementarDinheiroInvestido(Double cantidade){
 

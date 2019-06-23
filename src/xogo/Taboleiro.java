@@ -505,7 +505,7 @@ public class Taboleiro {
         Cadro visitado = obterCadro(1);
 
         for (Cadro cadro: this.cadros.values()){
-            if (cadro.getVisitas()>visitado.getVisitas())   visitado = cadro;
+            if (cadro.frecuenciaVisitas() > visitado.frecuenciaVisitas())   visitado = cadro;
         }
 
         return visitado;

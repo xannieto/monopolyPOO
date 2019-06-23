@@ -23,7 +23,7 @@ public interface Comando {
     void listarEdificiosGrupo(String idGrupo);
     void listarXogadores();
     void listarTratos();
-    void proporTrato(String xogador, String prop1, String prop);
+    void proporTrato(String[] args);
     void sairCarcere();
     void venderEdificios(String edificacion, String solar, Integer cantidade);
     void verTaboleiro(Taboleiro taboleiro);
