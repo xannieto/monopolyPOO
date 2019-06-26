@@ -8,7 +8,6 @@ import xogo.Taboleiro;
 import xogo.Xogo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public final class Solar extends Propiedade {

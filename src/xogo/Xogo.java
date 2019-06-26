@@ -187,6 +187,7 @@ public class Xogo implements Comando {
                         else if (comando[1].equals("avatares")) listarAvatares();
                         else if (comando[1].equals("aVenda"))   listarAVenda();
                         else if (comando[1].equals("edificios"))    listarEdificios();
+                        else if (comando[1].equals("tratos"))   listarTratos();
                         else Xogo.getConsola().imprimir("Argumento incorrecto.");
 
                     } else if (comando.length==3){
@@ -279,7 +280,6 @@ public class Xogo implements Comando {
             if (grupo.estaCompradoPorUnPropietario()){
                 for (Solar solar: grupo.getSolares())
                     solar.aluguer(taboleiro);
-                    Xogo.getConsola().imprimir("Facha");
             }
         }
     }
@@ -302,6 +302,35 @@ public class Xogo implements Comando {
 
         s1.aluguer(taboleiro);
         s2.aluguer(taboleiro);
+    }
+
+    private void axudaMenuPrincipal(){
+
+        StringBuffer axuda = new StringBuffer();
+
+        axuda.append(String.format("\n%s ~ Comandos do menú principal ~%s\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s sair: %s sáese do xogo de forma abrupta\n",Constantes.bold,Constantes.normal));
+
+        consola.imprimir(axuda.toString());
+        axuda.setLength(0);
+    }
+
+    private void axudaMenuXogadores(){
+
+        StringBuffer axuda = new StringBuffer();
+
+        axuda.append(String.format("%s ~ Comandos do menú de inscrición de xogadores ~%s\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos.\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s crear: %s neste menú só se poden crear xogadores, polo que admite como único argumento \"xogador\".\n",Constantes.bold,Constantes.normal));
+        axuda.append(" Hai que indicar o nome do xogador e o tipo de avatar desexado.\n");
+        axuda.append(String.format("%s rematar: %s termina a inscrición de xogadores e comeza a partida.\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("%s abortar: %s provoca a saída do xogo.\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format("\n%s Deben rexistrarse como mínimo dous xogadores e como máximo seis. Os nomes deben ser únicos %s.\n",Constantes.bold,Constantes.normal));
+        axuda.append(String.format(" Hai catro tipos de avatar a escoller:%s coche, sombreiro, pelota e esfinxe.%s\n",Constantes.bold,Constantes.normal));
+
+        consola.imprimir(axuda.toString());
+        axuda.setLength(0);
     }
 
     private void comprarGrupo(String id){
@@ -328,35 +357,6 @@ public class Xogo implements Comando {
                     ((Propiedade)cadro).valor();
         }
 
-    }
-
-    private void axudaMenuPrincipal(){
-
-        StringBuffer axuda = new StringBuffer();
-
-        axuda.append(String.format("\n%s ~ Comandos do menú principal ~%s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s sair: %s sáese do xogo de forma abrupta\n",Constantes.bold,Constantes.normal));
-
-        consola.imprimir(axuda.toString());
-        axuda.setLength(0);
-    }
-
-    private void axudaMenuXogadores(){
-
-        StringBuffer axuda = new StringBuffer();
-
-        axuda.append(String.format("%s ~ Comandos do menú de inscrición de xogadores ~%s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s axuda: %s amosa por pantalla esta lista de comandos\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s crear: %s neste menú só se poden crear xogadores, polo que admite como único argumento \"xogador\".\n",Constantes.bold,Constantes.normal));
-        axuda.append(" Hai que indicar o nome do xogador e o tipo de avatar desexado\n");
-        axuda.append(String.format("%s rematar: %s termina a inscrición de xogadores e comeza a partida\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("%s abortar: %s provoca a saída do xogo\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format("\n%s Deben rexistrarse como mínimo dous xogadores e como máximo seis. Os nomes deben ser únicos %s\n",Constantes.bold,Constantes.normal));
-        axuda.append(String.format(" Hai catro tipos de avatar a escoller:%s coche, sombreiro, pelota e esfinxe.%s\n",Constantes.bold,Constantes.normal));
-
-        consola.imprimir(axuda.toString());
-        axuda.setLength(0);
     }
 
     private void cambiarQuenda(){
@@ -470,16 +470,16 @@ public class Xogo implements Comando {
 
             /* se por efecto das cartas de sorte ou comunidade hai desprazamentos... */
             if (!cadro.equals(this.enQuenda.getPosicion()) && !this.enQuenda.getPosicion().getId().equals("saida") && !this.enQuenda.getPosicion().getId().equals("carcere")){
-                executarAccionDeCadro();
-                describirXogador(xogador.getNome());
-                if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
-                if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;
+                //executarAccionDeCadro();
+                determinarAccionCadro(this.enQuenda.getPosicion());
+                //describirXogador(xogador.getNome());
+                /*if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
+                if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;*/
 
             } else {
                 describirXogador(xogador.getNome());
                 if (this.enQuenda.getSacarDobres()) Xogo.getConsola().imprimir(String.format("%sSacou dobres%s, cando remate deberá volver lanzar os dados.", Constantes.bold,Constantes.normal));
                 if (this.enQuenda.getCarcere()) this.acabarDeIrAPrision = true;
-
             }
 
         }
@@ -1006,54 +1006,60 @@ public class Xogo implements Comando {
         String cadea;
         Double[] valor = new Double[2];
 
-        switch (args.length){
+        /* xogador receptor */
+        args[1] = args[1].replaceFirst(":","");
+        receptor = this.taboleiro.obterXogador(args[1]);
 
-            case 5:
+        if (this.enQuenda.getXogador().equals(receptor))    Xogo.consola.imprimir("Ante a dúbida de se tes ou non dobre personalidade, non podes propor tratos a ti mesmo.");
 
-                /* xogador receptor */
-                args[1] = args[1].replaceFirst(":","");
-                receptor = this.taboleiro.obterXogador(args[1]);
+        else {
 
-                /* solares/cartos implicados */
-                args[3] = args[3].replaceFirst("\\(",""); args[3] = args[3].replaceFirst(",","");
-                args[4] = args[4].replaceFirst("\\)","");
+            switch (args.length){
 
-                /* creacion do id */
-                cadea = String.format("trato%d",taboleiro.getIdTrato()); taboleiro.incrementarIdTrato();
+                case 5:
 
-                // para saber se hai numeros
-                valor[0] = obterValor(args[3]);
-                valor[1] = obterValor(args[4]);
+                    /* solares/cartos implicados */
+                    args[3] = args[3].replaceFirst("\\(",""); args[3] = args[3].replaceFirst(",","");
+                    args[4] = args[4].replaceFirst("\\)","");
 
-                if (valor[0]==null && valor[1]==null){
-                    trato = new TratoPropiedadePropiedade(cadea,this.enQuenda.getXogador(),receptor,args[3],args[4]);
-                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),args[3],args[4]);
+                    /* creacion do id */
+                    cadea = String.format("trato%d",taboleiro.getIdTrato()); taboleiro.incrementarIdTrato();
 
-                } else if (valor[0]==null){
-                    trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[3],valor[1],false);
-                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),args[3],valor[1]);
+                    // para saber se hai numeros
+                    valor[0] = obterValor(args[3]);
+                    valor[1] = obterValor(args[4]);
 
-                } else {
-                    trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[4],valor[0],true);
-                    cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),valor[0],args[4]);
+                    if (valor[0]==null && valor[1]==null){
+                        trato = new TratoPropiedadePropiedade(cadea,this.enQuenda.getXogador(),receptor,args[3],args[4]);
+                        cadea = String.format("%s, douche %s e ti dasme %s?",receptor.getNome(),args[3],args[4]);
 
-                }
+                    } else if (valor[0]==null){
+                        trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[3],valor[1],false);
+                        cadea = String.format("%s, douche %s e ti dasme %.2f€?",receptor.getNome(),args[3],valor[1]);
 
-                receptor.engadirTrato(trato);
-                this.enQuenda.getXogador().engadirTrato(trato);
+                    } else {
+                        trato = new TratoPropiedadeCartos(cadea,this.enQuenda.getXogador(),receptor,args[4],valor[0],true);
+                        cadea = String.format("%s, douche %.2f€ e ti dasme %s?",receptor.getNome(),valor[0],args[4]);
 
-                /* impresion da informacion xerada nos if-else anteriores */
-                Xogo.consola.imprimir(cadea);
+                    }
 
-                break;
+                    receptor.engadirTrato(trato);
+                    this.enQuenda.getXogador().engadirTrato(trato);
 
-            /*case 7:
+                    /* impresion da informacion xerada nos if-else anteriores */
+                    Xogo.consola.imprimir(cadea);
 
-                break;
+                    break;
 
-            case 9:
+                /*case 7:
 
-                break;*/
+                    break;
+
+                case 9:
+
+                    break;*/
+
+            }
 
         }
 

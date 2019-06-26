@@ -88,7 +88,7 @@ public final class TratoPropiedadeCartos extends Trato {
             if (invertir)   realizarAccion(getReceptorTrato(),getEmisorTrato(),taboleiro);
             else realizarAccion(getEmisorTrato(),getReceptorTrato(),taboleiro);
 
-        } Xogo.getConsola().imprimir("O trato non se pode realizar no estado actual.");
+        } else Xogo.getConsola().imprimir("O trato non se pode realizar no estado actual.");
 
     }
 
@@ -112,13 +112,12 @@ public final class TratoPropiedadeCartos extends Trato {
                         edificacion.setPropietario(receptor);
 
             /* adaptando a saída por pantalla */
-            if (!invertir)
-                Xogo.getConsola().imprimir(String.format("Aceptouse o seguinte trato con %s: doulle %s e %s dame %.2f€.",
-                    getEmisorTrato(),getPropiedade(),getEmisorTrato(),getCartos()));
-
-            else
+            if (!invertir) {
                 Xogo.getConsola().imprimir(String.format("Aceptouse o seguinte trato con %s: doulle %.2f€ e %s dame %s.",
-                        getEmisorTrato(),getCartos(),getEmisorTrato(),getPropiedade()));
+                        getEmisorTrato().getNome(),getCartos(),getEmisorTrato().getNome(),getPropiedade()));
+            } else
+                Xogo.getConsola().imprimir(String.format("Aceptouse o seguinte trato con %s: doulle %s e %s dame %.2f€.",
+                        getEmisorTrato().getNome(),getPropiedade(),getEmisorTrato().getNome(),getCartos()));
 
         } catch (FortunaInsuficienteExcepcion e){
             Xogo.getConsola().imprimir(e.getMessage());
@@ -130,7 +129,7 @@ public final class TratoPropiedadeCartos extends Trato {
     public String toString() {
         StringBuilder informacion = new StringBuilder();
 
-        informacion.append(String.format("{\n\txogador emisor: %s,\n\ttrato: (",getEmisorTrato()));
+        informacion.append(String.format("{\n\tid: %s,\n\txogador emisor: %s,\n\ttrato: (",getId(),getEmisorTrato().getNome()));
 
         if (!invertir) informacion.append(String.format("%s, %.2f€)\n}",getPropiedade(),getCartos()));
 

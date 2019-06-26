@@ -92,7 +92,7 @@ public final class TratoPropiedadePropiedade extends Trato {
             }
 
             Xogo.getConsola().imprimir(String.format("Aceptou o seguinte trato con %s: doulle %s e %s dame %s.",
-                    getEmisorTrato(),getPropiedade2(),getEmisorTrato(),getPropiedade1()));
+                    getEmisorTrato().getNome(),getPropiedade2(),getEmisorTrato().getNome(),getPropiedade1()));
 
         } else Xogo.getConsola().imprimir("O trato non se pode realizar no estado actual.");
     }
@@ -101,7 +101,7 @@ public final class TratoPropiedadePropiedade extends Trato {
     public String toString() {
         StringBuilder informacion = new StringBuilder();
 
-        informacion.append(String.format("{\n\txogador emisor: %s,\n\ttrato: (%s, %s)\n}",getEmisorTrato(),getPropiedade1(),getPropiedade2()));
+        informacion.append(String.format("{\n\tid: %s,\n\txogador emisor: %s,\n\ttrato: (%s, %s)\n}",getId(),getEmisorTrato().getNome(),getPropiedade1(),getPropiedade2()));
 
         return informacion.toString();
     }
